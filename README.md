@@ -148,5 +148,5 @@ ng generate module core/material-bundle
 - Interceptadores
 - Http Module
 - Master Details
-  -- Master com tabela usando sort, pagination e filter
-  -- Detail para new/edit com FormGroup para validações
+  - Master com tabela usando sort, pagination e filter
+  - Detail para new/edit com FormGroup para validações
