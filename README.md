@@ -1,10 +1,6 @@
-
 # Get Started para Angular 15 + Material Angular 15
 
 Um projeto base para aplicações web baseadas em Angular e Material Angular como o estilizador
-
-
-
 
 ## Instalação
 
@@ -16,7 +12,6 @@ Para iniciar o seu projeto:
   ng new <nome-do-projeto> --routing --style scss -S
   cd <nome-do-projeto>
 ```
-
 
 ## Configurar o Material Angular
 
@@ -45,7 +40,7 @@ Cole o que foi copiado no arquivo `styles.scss`
 Esse código veio com a configuração do Angular `Material@14` então a parte das fontes não está funcionando corretamente, vamos fazer algumas alterações no que foi colado.
 
 - `@use '@angular/material' as mat;` deve estar na linha 1 do arquivo `styles.scss`
-- As fontes não funcionam do jeito que o gerador de temas manda, precisa trocar a variavel `$fontConfig` para algo como: 
+- As fontes não funcionam do jeito que o gerador de temas manda, precisa trocar a variavel `$fontConfig` para algo como:
 
 ```sass
 $fonts: mat.define-typography-config(
@@ -93,6 +88,7 @@ $altTheme: (
   background: $mat-light-theme-background,
 );
 ```
+
 por:
 
 ```scss
@@ -143,7 +139,14 @@ ng generate module core/material-bundle
   exports: [],
 })
 ```
+
 - Exporte todos os componentes, se quiser ver como, cheque nesse mesmo projeto.
 
+## Configurações Extras
 
-
+- [Login Module](./how-to/LOGIN_MODULE.md)
+- Interceptadores
+- Http Module
+- Master Details
+  -- Master com tabela usando sort, pagination e filter
+  -- Detail para new/edit com FormGroup para validações
