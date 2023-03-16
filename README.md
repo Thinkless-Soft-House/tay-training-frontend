@@ -13,6 +13,8 @@ Para iniciar o seu projeto:
   cd <nome-do-projeto>
 ```
 
+E limpe o app.component.html, deixando apenas o `<router-outlet></router-outlet>`
+
 ## Configurar o Material Angular
 
 Aqui vamos configurar todo o Material com um custom theme, aceitando tanto o dark quanto o light theme com um alternador de fácil uso. Tambem vamos configurar um modulo que exporta todos os componentes da lib para não precisar adivinhar qual ta faltando em cada componente
@@ -144,7 +146,7 @@ ng generate module core/material-bundle
 
 ## Configurações Extras
 
-- [Login Module](./how-to/LOGIN_MODULE.md)
+- [Login Module](./how-to/login-module.md)
 - Interceptadores
 - Http Module
 - Master Details
