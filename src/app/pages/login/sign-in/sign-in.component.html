@@ -1,31 +1,31 @@
 <form #formModel="ngForm">
   <mat-form-field appearance="fill">
-    <mat-label>Código</mat-label>
+    <mat-label>Email</mat-label>
     <input
       matInput
-      placeholder="Código recebido"
-      type="text"
-      name="code"
-      [(ngModel)]="form.code"
+      placeholder="pat@example.com"
+      type="email"
+      name="email"
+      autocomplete="email"
+      [(ngModel)]="form.email"
       (ngModelChange)="changeFormValue()"
+      email
       required
     />
-    <mat-error *ngIf="getControl(formModel, 'code')">{{
-      getErrorMessage(formModel, "code")
+    <mat-error *ngIf="getControl(formModel, 'email')">{{
+      getErrorMessage(formModel, "email")
     }}</mat-error>
   </mat-form-field>
   <mat-form-field appearance="fill">
-    <mat-label>Nova Senha</mat-label>
+    <mat-label>Senha</mat-label>
     <input
       matInput
       [type]="passwordToogleVisibility ? 'password' : 'text'"
-      name="newPassword"
-      autocomplete="new-password"
-      [(ngModel)]="form.newPassword"
+      name="password"
+      autocomplete="current-password"
+      [(ngModel)]="form.password"
       (ngModelChange)="changeFormValue()"
       required
-      [minlength]="6"
-      [maxlength]="20"
     />
     <button
       mat-icon-button
@@ -38,10 +38,14 @@
         passwordToogleVisibility ? "visibility_off" : "visibility"
       }}</mat-icon>
     </button>
-    <mat-error *ngIf="getControl(formModel, 'newPassword')">{{
-      getErrorMessage(formModel, "newPassword")
+    <mat-error *ngIf="getControl(formModel, 'email')">{{
+      getErrorMessage(formModel, "password")
     }}</mat-error>
   </mat-form-field>
+
+  <div class="alternative-links">
+    <a (click)="goToForgotPassword()">Esqueceu a senha?</a>
+  </div>
 
   <div class="form-actions">
     <button
@@ -56,8 +60,8 @@
 
   <div class="alternative-links">
     <span>
-      Se lembra da sua senha?
-      <a (click)="goToSignIn()"> Entre agora </a>
+      Não tem uma conta?
+      <a (click)="goToSignUp()"> Cadastre-se </a>
     </span>
   </div>
 </form>

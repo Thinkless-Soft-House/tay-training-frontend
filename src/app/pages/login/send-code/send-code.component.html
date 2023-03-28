@@ -1,1 +1,37 @@
-<p>send-code works!</p>
+<form #formModel="ngForm">
+  <mat-form-field appearance="fill">
+    <mat-label>Email</mat-label>
+    <input
+      matInput
+      placeholder="pat@example.com"
+      type="email"
+      name="email"
+      autocomplete="email"
+      [(ngModel)]="form.email"
+      (ngModelChange)="changeFormValue()"
+      email
+      required
+    />
+    <mat-error *ngIf="getControl(formModel, 'email')">{{
+      getErrorMessage(formModel, "email")
+    }}</mat-error>
+  </mat-form-field>
+
+  <div class="form-actions">
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="!formModel.valid"
+      (click)="submit()"
+    >
+      Entrar
+    </button>
+  </div>
+
+  <div class="alternative-links">
+    <span>
+      Se lembra da sua senha?
+      <a (click)="goToSignIn()"> Entre agora </a>
+    </span>
+  </div>
+</form>

@@ -13,7 +13,9 @@ Para iniciar o seu projeto:
   cd <nome-do-projeto>
 ```
 
-E limpe o app.component.html, deixando apenas o `<router-outlet></router-outlet>`
+- Limpe o app.component.html, deixando apenas o `<router-outlet></router-outlet>`
+- No `index.html`, troque o icone e o title para o do projeto
+- No `index.html`, adicione uma nova classe no body, `mat-app-background`
 
 ## Configurar o Material Angular
 

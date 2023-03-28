@@ -3,23 +3,28 @@ import { CommonModule } from '@angular/common';
 
 import { LoginRoutingModule } from './login-routing.module';
 import { LoginComponent } from './login.component';
-import { SingInComponent } from './sing-in/sing-in.component';
-import { SingUpComponent } from './sing-up/sing-up.component';
+import { SignInComponent } from './sign-in/sign-in.component';
+import { SignUpComponent } from './sign-up/sign-up.component';
 import { SendCodeComponent } from './send-code/send-code.component';
 import { RecoverPasswordComponent } from './recover-password/recover-password.component';
+import { MaterialBundleModule } from 'src/app/core/material-bundle/material-bundle.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
   declarations: [
     LoginComponent,
-    SingInComponent,
-    SingUpComponent,
     SendCodeComponent,
-    RecoverPasswordComponent
+    RecoverPasswordComponent,
+    SignInComponent,
+    SignUpComponent
   ],
   imports: [
     CommonModule,
-    LoginRoutingModule
+    LoginRoutingModule,
+    MaterialBundleModule,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class LoginModule { }

@@ -1,0 +1,34 @@
+@use "src/functions.scss" as functions;
+
+main {
+  @include functions.flexbox($flex-direction: column);
+
+  .header {
+    @include functions.flexbox($justify-content: center, $flex-direction: column);
+    margin: 1em 0 1em 0;
+
+    text-align: center;
+  }
+
+  .form-modal {
+    @include functions.flexbox($flex-direction: column);
+    padding: 1em;
+
+    width: clamp(300px, 50%, 500px);
+    min-height: 100px;
+
+    background-color: functions.adjust-color(functions.get-theme-background(), 'l', 10%);
+
+    .img-logo {
+      width: 100%;
+      height: 100px;
+      object-fit: contain;
+    }
+
+    & > * {
+      width: 100%;
+    }
+  }
+}
+
+

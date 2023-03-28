@@ -2,14 +2,14 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 @Component({
-  selector: 'app-send-code',
-  templateUrl: './send-code.component.html',
+  selector: 'app-sign-in',
+  templateUrl: './sign-in.component.html',
   styleUrls: [
     './../../../core/shared/login-form-style.shared.scss',
-    './send-code.component.scss',
+    './sign-in.component.scss',
   ],
 })
-export class SendCodeComponent {
+export class SignInComponent {
   @Input() form: {
     email: string;
     password: string;
@@ -19,21 +19,31 @@ export class SendCodeComponent {
   } = {
     email: '',
     password: '',
-
     fullName: '',
-
     code: '',
     newPassword: '',
   };
   @Output() formChange: EventEmitter<any> = new EventEmitter<any>();
 
-  @Output() onGoToSignIn: EventEmitter<void> = new EventEmitter<void>();
+  @Output() onGoToSignUp: EventEmitter<void> = new EventEmitter<void>();
+  @Output() onGoToForgotPassword: EventEmitter<void> = new EventEmitter<void>();
   @Output() onSubmit: EventEmitter<void> = new EventEmitter<void>();
 
   passwordToogleVisibility = true;
+  constructor() {}
 
   getControl(ngForm: NgForm, control: string) {
     return ngForm.form.get(control);
+  }
+
+  resetForm() {
+    this.form = {
+      email: '',
+      password: '',
+      fullName: '',
+      code: '',
+      newPassword: '',
+    };
   }
 
   getErrorMessage(ngForm: NgForm, control: string) {
@@ -62,9 +72,15 @@ export class SendCodeComponent {
     this.formChange.emit(this.form);
   }
 
-  goToSignIn() {
+  goToSignUp() {
     console.log('goToSignUp');
-    this.onGoToSignIn.emit();
+    this.resetForm();
+    this.changeFormValue();
+    this.onGoToSignUp.emit();
+  }
+  goToForgotPassword() {
+    console.log('goToForgotPassword');
+    this.onGoToForgotPassword.emit();
   }
 
   submit() {

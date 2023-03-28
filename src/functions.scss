@@ -1,0 +1,51 @@
+@use "sass:map";
+@use "sass:color";
+
+@use "@angular/material" as mat;
+@use "src/styles.scss" as styles;
+
+// Theme Functions
+$theme: mat.get-color-config(styles.$activeTheme);
+
+// Color Functions
+
+@function get-theme-color($color, $type: "main") {
+  @return map.get(map.get($theme, $color), $type);
+}
+@function get-theme-background($type: "background") {
+  @return map.get(map.get($theme, "background"), $type);
+}
+
+// Common functions
+
+@mixin flexbox(
+  $justify-content: center,
+  $align-items: center,
+  $flex-direction: row,
+  $flex-wrap: nowrap
+) {
+  display: flex;
+  justify-content: $justify-content;
+  align-items: $align-items;
+  flex-direction: $flex-direction;
+  @if $flex-wrap {
+    flex-wrap: $flex-wrap;
+  }
+}
+
+@function adjust-color($color, $direction, $percentage) {
+  $adjusted-color: $color;
+
+  @if $direction == 'l' {
+    $adjusted-color: lighten($color, $percentage);
+  } @else if $direction == 'd' {
+    $adjusted-color: darken($color, $percentage);
+  } @else {
+    @warn "Invalid direction parameter. Use 'l' for lighter or 'd' for darker.";
+  }
+
+  @return $adjusted-color;
+}
+
+
+

@@ -2,14 +2,14 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 @Component({
-  selector: 'app-send-code',
-  templateUrl: './send-code.component.html',
+  selector: 'app-sign-up',
+  templateUrl: './sign-up.component.html',
   styleUrls: [
     './../../../core/shared/login-form-style.shared.scss',
-    './send-code.component.scss',
+    './sign-up.component.scss',
   ],
 })
-export class SendCodeComponent {
+export class SignUpComponent {
   @Input() form: {
     email: string;
     password: string;
@@ -32,8 +32,20 @@ export class SendCodeComponent {
 
   passwordToogleVisibility = true;
 
+  constructor() {}
+
   getControl(ngForm: NgForm, control: string) {
     return ngForm.form.get(control);
+  }
+
+  resetForm() {
+    this.form = {
+      email: '',
+      password: '',
+      fullName: '',
+      code: '',
+      newPassword: '',
+    };
   }
 
   getErrorMessage(ngForm: NgForm, control: string) {
@@ -64,6 +76,8 @@ export class SendCodeComponent {
 
   goToSignIn() {
     console.log('goToSignUp');
+    this.resetForm();
+    this.changeFormValue();
     this.onGoToSignIn.emit();
   }
 

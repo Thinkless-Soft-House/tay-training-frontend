@@ -1,1 +1,62 @@
-<p>login works!</p>
+<main>
+  <div class="form-modal mat-elevation-z2">
+    <img src="https://placehold.co/200" alt="Logo" class="img-logo" />
+    <div class="header">
+      <h1>
+        {{
+          atualView === loginType.LOGIN
+            ? "Entrar"
+            : atualView === loginType.REGISTER
+            ? "Cadastre-se"
+            : atualView === loginType.SEND_CODE
+            ? "Receber código"
+            : "Trocar senha"
+        }}
+      </h1>
+      <p>
+        {{
+          atualView === loginType.LOGIN
+            ? "Bem vindo de volta!"
+            : atualView === loginType.REGISTER
+            ? "Crie sua conta agora"
+            : atualView === loginType.SEND_CODE
+            ? "Coloque seu email para receber o código"
+            : "Troque sua senha usando o código recebido"
+        }}
+      </p>
+    </div>
+    <ng-container *ngIf="atualView === loginType.LOGIN">
+      <app-sign-in
+        [form]="form"
+        (formChange)="formChange($event)"
+        (onGoToForgotPassword)="changeView(loginType.SEND_CODE)"
+        (onGoToSignUp)="changeView(loginType.REGISTER)"
+        (onSubmit)="submitLogin()"
+      ></app-sign-in>
+    </ng-container>
+    <ng-container *ngIf="atualView === loginType.REGISTER">
+      <app-sign-up
+        [form]="form"
+        (formChange)="formChange($event)"
+        (onGoToSignIn)="changeView(loginType.LOGIN)"
+        (onSubmit)="submitLogin()"
+      ></app-sign-up>
+    </ng-container>
+    <ng-container *ngIf="atualView === loginType.SEND_CODE">
+      <app-send-code
+        [form]="form"
+        (formChange)="formChange($event)"
+        (onGoToSignIn)="changeView(loginType.LOGIN)"
+        (onSubmit)="submitLogin()"
+      ></app-send-code>
+    </ng-container>
+    <ng-container *ngIf="atualView === loginType.RESET_PASSWORD">
+      <app-recover-password
+        [form]="form"
+        (formChange)="formChange($event)"
+        (onGoToSignIn)="changeView(loginType.LOGIN)"
+        (onSubmit)="submitLogin()"
+      ></app-recover-password>
+    </ng-container>
+  </div>
+</main>

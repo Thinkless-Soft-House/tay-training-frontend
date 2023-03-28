@@ -1,31 +1,44 @@
 <form #formModel="ngForm">
   <mat-form-field appearance="fill">
-    <mat-label>Código</mat-label>
+    <mat-label>Email</mat-label>
     <input
       matInput
-      placeholder="Código recebido"
-      type="text"
-      name="code"
-      [(ngModel)]="form.code"
+      placeholder="pat@example.com"
+      type="email"
+      name="email"
+      [(ngModel)]="form.email"
       (ngModelChange)="changeFormValue()"
+      email
       required
     />
-    <mat-error *ngIf="getControl(formModel, 'code')">{{
-      getErrorMessage(formModel, "code")
+    <mat-error *ngIf="getControl(formModel, 'email')">{{
+      getErrorMessage(formModel, "email")
     }}</mat-error>
   </mat-form-field>
   <mat-form-field appearance="fill">
-    <mat-label>Nova Senha</mat-label>
+    <mat-label>Nome completo</mat-label>
+    <input
+      matInput
+      placeholder="Seu nome"
+      type="text"
+      name="fullName"
+      [(ngModel)]="form.fullName"
+      (ngModelChange)="changeFormValue()"
+      required
+    />
+    <mat-error *ngIf="getControl(formModel, 'fullName')">{{
+      getErrorMessage(formModel, "fullName")
+    }}</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Senha</mat-label>
     <input
       matInput
       [type]="passwordToogleVisibility ? 'password' : 'text'"
-      name="newPassword"
-      autocomplete="new-password"
-      [(ngModel)]="form.newPassword"
+      name="password"
+      [(ngModel)]="form.password"
       (ngModelChange)="changeFormValue()"
       required
-      [minlength]="6"
-      [maxlength]="20"
     />
     <button
       mat-icon-button
@@ -38,8 +51,8 @@
         passwordToogleVisibility ? "visibility_off" : "visibility"
       }}</mat-icon>
     </button>
-    <mat-error *ngIf="getControl(formModel, 'newPassword')">{{
-      getErrorMessage(formModel, "newPassword")
+    <mat-error *ngIf="getControl(formModel, 'email')">{{
+      getErrorMessage(formModel, "password")
     }}</mat-error>
   </mat-form-field>
 
@@ -56,7 +69,7 @@
 
   <div class="alternative-links">
     <span>
-      Se lembra da sua senha?
+      Já possui uma conta?
       <a (click)="goToSignIn()"> Entre agora </a>
     </span>
   </div>
