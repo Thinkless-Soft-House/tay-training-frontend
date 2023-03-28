@@ -28,6 +28,7 @@
     <ng-container *ngIf="atualView === loginType.LOGIN">
       <app-sign-in
         [form]="form"
+        [showSignIn]="showSignIn"
         (formChange)="formChange($event)"
         (onGoToForgotPassword)="changeView(loginType.SEND_CODE)"
         (onGoToSignUp)="changeView(loginType.REGISTER)"

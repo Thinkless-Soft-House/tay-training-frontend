@@ -58,7 +58,7 @@
     </button>
   </div>
 
-  <div class="alternative-links">
+  <div class="alternative-links" *ngIf="showSignIn">
     <span>
       Não tem uma conta?
       <a (click)="goToSignUp()"> Cadastre-se </a>

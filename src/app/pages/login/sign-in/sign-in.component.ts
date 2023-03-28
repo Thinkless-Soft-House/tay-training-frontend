@@ -23,6 +23,8 @@ export class SignInComponent {
     code: '',
     newPassword: '',
   };
+  @Input() showSignIn = true;
+
   @Output() formChange: EventEmitter<any> = new EventEmitter<any>();
 
   @Output() onGoToSignUp: EventEmitter<void> = new EventEmitter<void>();

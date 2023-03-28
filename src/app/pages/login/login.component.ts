@@ -17,6 +17,7 @@ enum LoginType {
 export class LoginComponent {
   loginType = LoginType;
   atualView = LoginType.LOGIN;
+  showSignIn = true;
 
   form = {
     email: '',
