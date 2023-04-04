@@ -4,10 +4,18 @@ import { NavigationEnd, Router } from '@angular/router';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'angular-15-with-material';
+  routesWithSideBar = ['/', '/home'];
+  pageTitles: { [id: string]: string } = {
+    '/': 'Home',
+    '/home': 'Home',
+  };
+
+  showSideBar = false;
+  headerTitle = 'Meu aplicativo';
+  atualRoute = '/';
 
   constructor(private router: Router) {
     this.monitoreRouteChanges();
@@ -17,7 +25,18 @@ export class AppComponent {
     this.router.events.subscribe((val) => {
       if (val instanceof NavigationEnd) {
         console.log('Rota alterada', val.url);
+        this.atualRoute = val.url;
+        this.showSideBar = this.routesWithSideBar.includes(val.url);
+        this.headerTitle = this.pageTitles[val.url];
       }
     });
+  }
+
+  goToProfile() {
+    console.log('Ir para o perfil');
+  }
+
+  logout() {
+    console.log('Fazer logout');
   }
 }

@@ -10,6 +10,14 @@ $theme: mat.get-color-config(styles.$activeTheme);
 // Color Functions
 
 @function get-theme-color($color, $type: "main") {
+  $allowed-types: "main", "lighter", "darker", "200", "text", "lighter-contrast",
+    "darker-contrast", "main-contrast";
+
+  @if not index($allowed-types, $type) {
+    @warn "Invalid type: #{$type}. Allowed types are: #{$allowed-types}. Using 'main' as default.";
+    $type: "main";
+  }
+
   @return map.get(map.get($theme, $color), $type);
 }
 @function get-theme-background($type: "background") {
@@ -36,9 +44,9 @@ $theme: mat.get-color-config(styles.$activeTheme);
 @function adjust-color($color, $direction, $percentage) {
   $adjusted-color: $color;
 
-  @if $direction == 'l' {
+  @if $direction == "l" {
     $adjusted-color: lighten($color, $percentage);
-  } @else if $direction == 'd' {
+  } @else if $direction == "d" {
     $adjusted-color: darken($color, $percentage);
   } @else {
     @warn "Invalid direction parameter. Use 'l' for lighter or 'd' for darker.";
@@ -47,5 +55,16 @@ $theme: mat.get-color-config(styles.$activeTheme);
   @return $adjusted-color;
 }
 
+@function yiq-color-contrast($background-color) {
+  $r: red($background-color);
+  $g: green($background-color);
+  $b: blue($background-color);
 
+  $yiq: (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
 
+  @if $yiq > 128 {
+    @return #000; // Preto
+  } @else {
+    @return #fff; // Branco
+  }
+}

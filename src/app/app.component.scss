@@ -1,0 +1,24 @@
+@use "../functions.scss" as functions;
+
+main {
+  @include functions.flexbox();
+  min-width: 100vw;
+  min-height: 100vh;
+  height: 100%;
+
+  .drawer-container {
+    width: 100%;
+    min-height: 100%;
+
+    mat-drawer {
+      height: 100%;
+
+      .side-menu {
+        min-width: 200px;
+      }
+    }
+    mat-drawer-content {
+      min-height: 100vh;
+    }
+  }
+}

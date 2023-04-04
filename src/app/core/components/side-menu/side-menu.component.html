@@ -1,0 +1,22 @@
+<div class="side-menu-content">
+  <div class="header">
+    <img
+      class="img-logo"
+      src="https://placehold.co/200"
+      alt="Logo da empresa"
+    />
+    <p class="company-name">{{ companyName }}</p>
+  </div>
+
+  <div class="menu">
+    <div
+      class="menu-item"
+      [class.active]="item.route === atualRoute"
+      *ngFor="let item of menuItems"
+    >
+      <mat-icon class="icon">{{ item.icon }}</mat-icon>
+      <p class="text">{{ item.name }}</p>
+      <div class="menu-spacer"></div>
+    </div>
+  </div>
+</div>
