@@ -1,3 +1,4 @@
+import { RouterModule } from '@angular/router';
 import { ComponentsModule } from './core/components/components.module';
 import { MaterialBundleModule } from './core/material-bundle/material-bundle.module';
 import { NgModule } from '@angular/core';
@@ -12,6 +13,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    RouterModule,
     BrowserAnimationsModule,
     MaterialBundleModule,
     ComponentsModule,

@@ -32,6 +32,10 @@
     min-height: 100px;
     .menu-item {
       box-sizing: border-box;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+
       height: 50px;
       width: 90%;
       @include functions.flexbox($justify-content: none, $flex-direction: row);
@@ -40,7 +44,7 @@
       padding: 0 0.5em;
       border-radius: 5px;
 
-      text-align: center;
+      transition: background-color 0.2s ease-in-out;
 
       .text {
         margin: 0 0 0 1em;
@@ -54,6 +58,11 @@
       &.active {
         $background-color: functions.get-theme-color("primary", "lighter");
         background-color: $background-color;
+        color: functions.yiq-color-contrast($background-color);
+      }
+      &:hover {
+        $background-color: functions.get-theme-color("primary", "lighter");
+        background-color: functions.adjust-color($background-color, "l", 10%);
         color: functions.yiq-color-contrast($background-color);
       }
     }

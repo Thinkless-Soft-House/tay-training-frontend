@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Component, Input } from '@angular/core';
 
 @Component({
@@ -20,6 +21,11 @@ export class SideMenuComponent {
       icon: 'list',
       route: '/master-details',
     },
-
   ];
+
+  constructor(private router: Router) {}
+
+  goTo(route: string) {
+    this.router.navigateByUrl(route);
+  }
 }

@@ -13,6 +13,8 @@
       class="menu-item"
       [class.active]="item.route === atualRoute"
       *ngFor="let item of menuItems"
+      (click)="goTo(item.route)"
+      routerLinkActive="active"
     >
       <mat-icon class="icon">{{ item.icon }}</mat-icon>
       <p class="text">{{ item.name }}</p>

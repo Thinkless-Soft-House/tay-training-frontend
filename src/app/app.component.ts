@@ -7,10 +7,11 @@ import { NavigationEnd, Router } from '@angular/router';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  routesWithSideBar = ['/', '/home'];
+  routesWithSideBar = ['/', '/home', '/master-details'];
   pageTitles: { [id: string]: string } = {
     '/': 'Home',
     '/home': 'Home',
+    '/master-details': 'Master/Details',
   };
 
   showSideBar = false;
