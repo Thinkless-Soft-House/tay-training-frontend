@@ -25,6 +25,7 @@
   <app-master-table
     [columns]="columns"
     [service]="serviceBackendItemService"
+    functionName="getByFilter"
     [filterChange$]="filterChange$"
     (edit$)="edit($event)"
     (delete$)="delete($event)"

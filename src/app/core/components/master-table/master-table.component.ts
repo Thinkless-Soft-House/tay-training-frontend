@@ -26,6 +26,7 @@ export class MasterTableComponent<T, Y> {
   @Input() filterChange$: BehaviorSubject<string> = new BehaviorSubject('');
   filterChangeToDataSource$: BehaviorSubject<string> = new BehaviorSubject('');
   @Input() service!: Y;
+  @Input() functionName: string = 'getAll';
 
   @Output() edit$: EventEmitter<T> = new EventEmitter();
   @Output() delete$: EventEmitter<T> = new EventEmitter();
@@ -54,7 +55,8 @@ export class MasterTableComponent<T, Y> {
     this.dataSource = new MasterTableDataSource(
       this.service,
       this.filterChangeToDataSource$.pipe(debounceTime(200)),
-      this.utilsService
+      this.utilsService,
+      this.functionName
     );
     console.log('service', this.service);
   }

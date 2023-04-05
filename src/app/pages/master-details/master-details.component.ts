@@ -30,7 +30,14 @@ export class MasterDetailsComponent {
     const value = filter.target!.value || '';
     this.filterChange$.next(value);
   }
-  edit(row: any) {}
-  delete(row: any) {}
-  changeTable(event: any) {}
+  edit(row: any) {
+    console.log('edit row', row);
+    // this.router.navigate(['/pages/master-details', row.id]);
+  }
+  delete(row: any) {
+    console.log('delete row', row);
+  }
+  changeTable(event: any) {
+    console.log('changeTable', event);
+  }
 }

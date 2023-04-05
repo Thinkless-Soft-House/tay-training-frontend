@@ -26,7 +26,8 @@ export class MasterTableDataSource<T, Y> extends DataSource<T> {
   constructor(
     private service: Y,
     private filter$: Observable<string>,
-    private utilsService: UtilsService
+    private utilsService: UtilsService,
+    private functionName: string
   ) {
     super();
     this.atualPagination = this.utilsService.createPaginationConfig(
