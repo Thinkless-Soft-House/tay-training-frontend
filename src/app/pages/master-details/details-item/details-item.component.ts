@@ -4,6 +4,7 @@ import { NgForm } from '@angular/forms';
 import { setDefaultOptions } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { ControlInput } from 'src/app/core/classes/Control.class';
+import { ActivatedRoute } from '@angular/router';
 
 setDefaultOptions({ locale: ptBR });
 
@@ -65,7 +66,6 @@ export class DetailsItemComponent {
         },
       },
     }),
-
     url: new ControlInput({
       label: 'Url',
       config: {
@@ -85,7 +85,6 @@ export class DetailsItemComponent {
         },
       },
     }),
-
     select: new ControlInput({
       label: 'Select',
       selectOptions: [
@@ -105,9 +104,32 @@ export class DetailsItemComponent {
   };
 
   @ViewChild('reactiveForm') formRef!: NgForm;
-  constructor(private utilsService: UtilsService) {}
+  constructor(
+    private utilsService: UtilsService,
+    private actRoute: ActivatedRoute
+  ) {
+    actRoute.params.subscribe((params) => {
+      console.log('params', params);
+    });
+  }
 
   ngOnInit(): void {}
+  ngAfterViewInit() {
+    this.actRoute.params.subscribe((params) => {
+      if (params['id'] !== 'new') {
+        // Load data...
+        setTimeout(() => {
+          this.formRef.setValue({
+            name: 'Teste',
+            cpf: '123.456.789-00',
+            simpleDate: new Date(),
+            url: 'https://www.google.com',
+            select: '1',
+          });
+        }, 200);
+      }
+    });
+  }
 
   getErrorText(control: ControlInput) {
     return this.utilsService.getErrorText(this.formRef, control);
