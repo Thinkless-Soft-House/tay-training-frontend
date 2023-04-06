@@ -7,7 +7,6 @@ export function urlValidator(): ValidatorFn {
       control.value === undefined ||
       control.value === ''
     ) {
-      console.log('on validator return null');
       return null;
     }
 

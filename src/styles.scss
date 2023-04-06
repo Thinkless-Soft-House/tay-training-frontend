@@ -299,6 +299,10 @@ main {
   min-height: 100vh;
 }
 
+.multiline-tooltip {
+  white-space: pre-line;
+}
+
 // My custom styles
 
 .spacer {
@@ -332,5 +336,24 @@ main {
     padding-right: 15px;
     padding-left: 15px;
     margin-bottom: 1em;
+  }
+}
+
+// Loading shade
+
+.loading-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 56px;
+  right: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.all {
+    bottom: 0;
   }
 }

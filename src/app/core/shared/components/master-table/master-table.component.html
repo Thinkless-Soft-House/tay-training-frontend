@@ -1,4 +1,7 @@
 <div class="mat-elevation-z8 full-width-table">
+  <div class="loading-shade" *ngIf="loadingService.loading">
+    <mat-spinner *ngIf="loadingService.loading"></mat-spinner>
+  </div>
   <table mat-table class="full-width-table" matSort aria-label="Elements">
     <!-- Id Column -->
 

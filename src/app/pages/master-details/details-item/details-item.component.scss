@@ -9,6 +9,8 @@
   box-sizing: border-box;
   padding: 1.5em;
   width: clamp(300px, 95%, 1200px);
+  min-width: 200px;
+  position: relative;
 
   @include functions.flexbox($flex-direction: column, $justify-content: center);
 
@@ -26,9 +28,21 @@
   }
 
   .submit-col {
-    @include functions.flexbox($flex-direction: row, $justify-content: flex-end);
+    @include functions.flexbox(
+      $flex-direction: row,
+      $justify-content: flex-end
+    );
     .submit-btn {
       text-align: center;
     }
+  }
+}
+
+.help-btn {
+  margin-left: 0.5em;
+  display: none;
+
+  &.show {
+    display: block;
   }
 }

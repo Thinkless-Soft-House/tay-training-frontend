@@ -7,14 +7,12 @@ export function cpfValidator(): ValidatorFn {
       control.value === undefined ||
       control.value === ''
     ) {
-      console.log('on validator return null');
       return null;
     }
 
     const cpf = control.value.replace(/\D/g, '');
 
     if (cpf.length !== 11 || cpf.match(/(\d)\1{10}/)) {
-      console.log('dont match 11 leng or match 11 same numbers');
       return { invalidCpf: true };
     }
 
@@ -32,7 +30,6 @@ export function cpfValidator(): ValidatorFn {
     }
 
     if (rest !== parseInt(cpf.substring(9, 10))) {
-      console.log('rest dont match 9th number');
       return { invalidCpf: true };
     }
 
@@ -49,11 +46,9 @@ export function cpfValidator(): ValidatorFn {
     }
 
     if (rest !== parseInt(cpf.substring(10, 11))) {
-      console.log('rest dont match 10th number');
       return { invalidCpf: true };
     }
 
-    console.log('on validator return null');
     return null;
   };
 }

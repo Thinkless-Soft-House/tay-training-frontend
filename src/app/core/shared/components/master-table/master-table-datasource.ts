@@ -3,7 +3,7 @@ import { PaginationConfig } from '../../../interfaces/pagination.interface';
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import {
   Observable,
   of as observableOf,
@@ -11,6 +11,7 @@ import {
   BehaviorSubject,
   firstValueFrom,
 } from 'rxjs';
+import { LoadingService } from 'src/app/services/loading.service';
 
 /**
  * Data source for the TableExample view. This class should
@@ -23,10 +24,13 @@ export class MasterTableDataSource<T, Y> extends DataSource<T> {
   sort: MatSort | undefined;
 
   atualPagination!: PaginationConfig;
+
+  hasErrorOnLoad = false;
   constructor(
     private service: Y,
     private filter$: Observable<string>,
     private utilsService: UtilsService,
+    private loadingService: LoadingService,
     private functionName: string
   ) {
     super();
@@ -55,7 +59,15 @@ export class MasterTableDataSource<T, Y> extends DataSource<T> {
         switchMap((e) => {
           // Filter data
 
-          return this.getPagedData();
+          return this.getPagedData().pipe(
+            catchError(() => {
+              this.hasErrorOnLoad = true;
+              return observableOf({
+                items: [],
+                total: 0,
+              });
+            })
+          );
         }),
         tap((e: any) => {
           this.paginator!.length = e.total;
@@ -63,6 +75,7 @@ export class MasterTableDataSource<T, Y> extends DataSource<T> {
           this.paginator!.pageSize = this.atualPagination.pageSize;
         }),
         map((e: any) => {
+          this.loadingService.deactiveLoading();
           return e.items;
         })
       );
@@ -84,6 +97,10 @@ export class MasterTableDataSource<T, Y> extends DataSource<T> {
    * this would be replaced by requesting the appropriate data from the server.
    */
   private getPagedData(): Observable<T[]> {
+    setTimeout(() => {
+      this.loadingService.activeLoading();
+      this.hasErrorOnLoad = false;
+    }, 20);
     return this.filter$.pipe(
       switchMap((e) => {
         this.atualPagination = this.utilsService.createPaginationConfig(
@@ -92,9 +109,9 @@ export class MasterTableDataSource<T, Y> extends DataSource<T> {
           e
         );
 
-        const ret: Observable<T[]> = (this.service as any)['getByFilter'](
-          this.atualPagination
-        );
+        const ret: Observable<T[]> = (this.service as any)[
+          this.functionName || 'getByFilter'
+        ](this.atualPagination);
         return ret;
       })
     );

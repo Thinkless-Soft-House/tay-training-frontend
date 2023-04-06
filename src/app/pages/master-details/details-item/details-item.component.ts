@@ -5,6 +5,7 @@ import { setDefaultOptions } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { ControlInput } from 'src/app/core/classes/Control.class';
 import { ActivatedRoute } from '@angular/router';
+import { LoadingService } from 'src/app/services/loading.service';
 
 setDefaultOptions({ locale: ptBR });
 
@@ -106,7 +107,8 @@ export class DetailsItemComponent {
   @ViewChild('reactiveForm') formRef!: NgForm;
   constructor(
     private utilsService: UtilsService,
-    private actRoute: ActivatedRoute
+    private actRoute: ActivatedRoute,
+    public loadingService: LoadingService
   ) {
     actRoute.params.subscribe((params) => {
       console.log('params', params);
@@ -118,6 +120,7 @@ export class DetailsItemComponent {
     this.actRoute.params.subscribe((params) => {
       if (params['id'] !== 'new') {
         // Load data...
+        this.loadingService.activeLoading();
         setTimeout(() => {
           this.formRef.setValue({
             name: 'Teste',
@@ -126,13 +129,31 @@ export class DetailsItemComponent {
             url: 'https://www.google.com',
             select: '1',
           });
-        }, 200);
+          this.loadingService.deactiveLoading();
+        }, 2000);
       }
     });
   }
 
   getErrorText(control: ControlInput) {
     return this.utilsService.getErrorText(this.formRef, control);
+  }
+
+  issueValues() {
+    if (!this.formRef || !this.formRef.form) {
+      return '';
+    }
+
+    const controls = this.formRef.form.controls;
+    const keys = Object.keys(controls);
+
+    let ret = '';
+    for (const key of keys) {
+      if (this.getErrorText(this.form[key]))
+        ret += `${this.form[key].label}: ${this.getErrorText(this.form[key])}\r\n`;
+    }
+
+    return ret;
   }
 
   maskFilled(control: ControlInput) {

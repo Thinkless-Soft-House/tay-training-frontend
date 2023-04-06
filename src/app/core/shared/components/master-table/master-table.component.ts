@@ -1,3 +1,4 @@
+import { LoadingService } from './../../../../services/loading.service';
 import { MasterTableDataSource } from './master-table-datasource';
 import {
   Component,
@@ -39,8 +40,10 @@ export class MasterTableComponent<T, Y> {
   dataSource!: MasterTableDataSource<T, Y>;
   itemColumns: { name: string; title: string }[] = [];
   displayedColumns: string[] = [];
-  constructor(private utilsService: UtilsService) {
-
+  constructor(
+    private utilsService: UtilsService,
+    public loadingService: LoadingService
+  ) {
     this.itemColumns = JSON.parse(JSON.stringify(this.columns));
 
     this.columns.push({
@@ -55,6 +58,7 @@ export class MasterTableComponent<T, Y> {
       this.service,
       this.filterChangeToDataSource$.pipe(debounceTime(200)),
       this.utilsService,
+      this.loadingService,
       this.functionName
     );
   }
