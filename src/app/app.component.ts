@@ -8,10 +8,14 @@ import { NavigationEnd, Router } from '@angular/router';
 })
 export class AppComponent {
   routesWithSideBar = ['/', '/home', '/master-details'];
-  pageTitles: { [id: string]: string } = {
-    '/': 'Home',
+  pageTitles: { [id: string]: string | { [id: string]: string } } = {
     '/home': 'Home',
-    '/master-details': 'Master/Details',
+    '/master-details': {
+      '/': 'Lista de itens',
+      '/new': 'Novo item',
+      default: 'Detalhes do item',
+    },
+    '/': 'Home',
   };
 
   showSideBar = false;
@@ -27,10 +31,40 @@ export class AppComponent {
       if (val instanceof NavigationEnd) {
         console.log('Rota alterada', val.url);
         this.atualRoute = val.url;
-        this.showSideBar = this.routesWithSideBar.includes(val.url);
-        this.headerTitle = this.pageTitles[val.url];
+
+        this.showSideBar =
+          this.routesWithSideBar.filter((e) => val.url.includes(e)).length > 0;
+
+        this.headerTitle = this.getHeaderTitle(val.url);
       }
     });
+  }
+
+  private getHeaderTitle(url: string) {
+    const titlePageSearched = Object.entries(this.pageTitles).find((e) =>
+      url.includes(e[0])
+    );
+    if (!titlePageSearched) {
+      return 'Meu App';
+    }
+    const [baseUrl, titles] = titlePageSearched;
+
+    if (titlePageSearched && typeof titles === 'string') {
+      return titles;
+    } else if (titlePageSearched && typeof titles === 'object') {
+      const atualUrlSplited = url.split(baseUrl);
+      const [_, id] = atualUrlSplited;
+
+      if (id === '') {
+        return titles['/'];
+      } else if (titles[id]) {
+        return titles[id];
+      } else {
+        return titles['default'];
+      }
+    } else {
+      return 'Meu App';
+    }
   }
 
   goToProfile() {

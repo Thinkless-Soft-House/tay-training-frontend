@@ -24,7 +24,9 @@ export class MasterDetailsComponent {
     public serviceBackendItemService: ServiceBackendItemService
   ) {}
 
-  add() {}
+  add() {
+    this.router.navigate(['/master-details', 'new']);
+  }
 
   changeFilter(filter: any) {
     const value = filter.target!.value || '';
@@ -32,7 +34,7 @@ export class MasterDetailsComponent {
   }
   edit(row: any) {
     console.log('edit row', row);
-    // this.router.navigate(['/pages/master-details', row.id]);
+    this.router.navigate(['/master-details', row.id]);
   }
   delete(row: any) {
     console.log('delete row', row);

@@ -1,0 +1,212 @@
+<section class="master mat-elevation-z2">
+  <form class="form" #reactiveForm="ngForm">
+    <div class="row">
+      <div class="col">
+        <mat-form-field>
+          <mat-label>{{ form["name"].label }}</mat-label>
+          <input
+            matInput
+            [type]="form['name'].config.type"
+            [name]="form['name'].config.name"
+            [(ngModel)]="form['name'].value"
+            [placeholder]="form['name'].config.placeholder"
+            [disabled]="form['name'].config.disabled"
+            [readonly]="form['name'].config.readonly"
+            [required]="form['name'].config.required"
+            [minlength]="form['name'].config.minlength"
+            [maxlength]="form['name'].config.maxlength"
+            [pattern]="form['name'].config.pattern"
+            [email]="form['name'].config.email"
+            [mask]="
+              form['name'].config.mask && form['name'].config.maskConfig.mask
+                ? form['name'].config.maskConfig.mask
+                : null
+            "
+            [dropSpecialCharacters]="
+              form['name'].config.mask &&
+              form['name'].config.maskConfig.dropSpecialCharacters
+                ? form['name'].config.maskConfig.dropSpecialCharacters
+                : true
+            "
+            [validation]="
+              form['name'].config.mask &&
+              form['name'].config.maskConfig.validation
+                ? form['name'].config.maskConfig.validation
+                : false
+            "
+          />
+          <mat-hint *ngIf="form['name'].config.hint">{{
+            form["name"].config.hint
+          }}</mat-hint>
+          <mat-error *ngIf="getErrorText(form['name'])">
+            {{ getErrorText(form["name"]) }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <mat-form-field>
+          <mat-label>{{ form["cpf"].label }}</mat-label>
+          <input
+            matInput
+            [(ngModel)]="form['cpf'].value"
+            [type]="form['cpf'].config.type"
+            [name]="form['cpf'].config.name"
+            [placeholder]="form['cpf'].config.placeholder"
+            [disabled]="form['cpf'].config.disabled"
+            [readonly]="form['cpf'].config.readonly"
+            [required]="form['cpf'].config.required"
+            [minlength]="form['cpf'].config.minlength"
+            [maxlength]="form['cpf'].config.maxlength"
+            [pattern]="form['cpf'].config.pattern"
+            [email]="form['cpf'].config.email"
+            [v-cpf-validator]="
+              !!form['cpf'].config.customValidators['cpfValidator']
+            "
+            [mask]="
+              form['cpf'].config.mask && form['cpf'].config.maskConfig.mask
+                ? form['cpf'].config.maskConfig.mask
+                : null
+            "
+            [dropSpecialCharacters]="
+              form['cpf'].config.mask &&
+              form['cpf'].config.maskConfig.dropSpecialCharacters
+                ? form['cpf'].config.maskConfig.dropSpecialCharacters
+                : true
+            "
+            [validation]="
+              form['cpf'].config.mask &&
+              form['cpf'].config.maskConfig.validation
+                ? form['cpf'].config.maskConfig.validation
+                : false
+            "
+          />
+          <mat-hint *ngIf="form['cpf'].config.hint">{{
+            form["cpf"].config.hint
+          }}</mat-hint>
+          <mat-error *ngIf="getErrorText(form['cpf'])">
+            {{ getErrorText(form["cpf"]) }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <mat-form-field appearance="fill">
+          <mat-label>{{ form["simpleDate"].label }}</mat-label>
+          <input
+            matInput
+            [matDatepicker]="simpleDate"
+            [(ngModel)]="form['simpleDate'].value"
+            [type]="form['simpleDate'].config.type"
+            [name]="form['simpleDate'].config.name"
+            [placeholder]="form['simpleDate'].config.placeholder"
+            [disabled]="form['simpleDate'].config.disabled"
+            [readonly]="form['simpleDate'].config.readonly"
+            [required]="form['simpleDate'].config.required"
+            [minlength]="form['simpleDate'].config.minlength"
+            [maxlength]="form['simpleDate'].config.maxlength"
+            [min]="
+              form['simpleDate'].config.dateConfig.minDate
+                ? form['simpleDate'].config.dateConfig.minDate
+                : '1900-01-01'
+            "
+            (dateChange)="dateEvents('change', $event.value)"
+          />
+          <mat-hint>{{ form["simpleDate"].config.hint }}</mat-hint>
+          <mat-error *ngIf="getErrorText(form['simpleDate'])">
+            {{ getErrorText(form["simpleDate"]) }}
+          </mat-error>
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="simpleDate"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #simpleDate></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <mat-form-field>
+          <mat-label>{{ form["url"].label }}</mat-label>
+          <input
+            matInput
+            [type]="form['url'].config.type"
+            [name]="form['url'].config.name"
+            [(ngModel)]="form['url'].value"
+            [placeholder]="form['url'].config.placeholder"
+            [disabled]="form['url'].config.disabled"
+            [readonly]="form['url'].config.readonly"
+            [required]="form['url'].config.required"
+            [minlength]="form['url'].config.minlength"
+            [maxlength]="form['url'].config.maxlength"
+            [pattern]="form['url'].config.pattern"
+            [email]="form['url'].config.email"
+            [v-url-validator]="
+              !!form['url'].config.customValidators['urlValidator']
+            "
+            [mask]="
+              form['url'].config.mask && form['url'].config.maskConfig.mask
+                ? form['url'].config.maskConfig.mask
+                : null
+            "
+            [dropSpecialCharacters]="
+              form['url'].config.mask &&
+              form['url'].config.maskConfig.dropSpecialCharacters
+                ? form['url'].config.maskConfig.dropSpecialCharacters
+                : true
+            "
+            [validation]="
+              form['url'].config.mask &&
+              form['url'].config.maskConfig.validation
+                ? form['url'].config.maskConfig.validation
+                : false
+            "
+          />
+          <mat-hint *ngIf="form['url'].config.hint">{{
+            form["url"].config.hint
+          }}</mat-hint>
+          <mat-error *ngIf="getErrorText(form['url'])">
+            {{ getErrorText(form["url"]) }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <mat-form-field appearance="fill">
+          <mat-label>{{ form["select"].label }}</mat-label>
+          <mat-select
+            [(ngModel)]="form['select'].value"
+            [name]="form['select'].config.name"
+            [placeholder]="form['select'].config.placeholder"
+            [disabled]="form['select'].config.disabled"
+            [required]="form['select'].config.required"
+          >
+            <mat-option
+              *ngFor="let item of form['select'].selectOptions"
+              [value]="item.value"
+            >
+              {{ item.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col"></div>
+    </div>
+
+    <div class="row">
+      <div class="col"></div>
+      <div class="col submit-col">
+        <button
+          class="submit-btn"
+          type="button"
+          mat-raised-button
+          color="accent"
+          (click)="onSubmit()"
+        >
+          Salvar
+        </button>
+      </div>
+    </div>
+  </form>
+</section>

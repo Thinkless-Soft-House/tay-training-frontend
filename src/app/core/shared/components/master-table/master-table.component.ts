@@ -40,7 +40,6 @@ export class MasterTableComponent<T, Y> {
   itemColumns: { name: string; title: string }[] = [];
   displayedColumns: string[] = [];
   constructor(private utilsService: UtilsService) {
-    console.log('service', this.service);
 
     this.itemColumns = JSON.parse(JSON.stringify(this.columns));
 
@@ -58,12 +57,10 @@ export class MasterTableComponent<T, Y> {
       this.utilsService,
       this.functionName
     );
-    console.log('service', this.service);
   }
 
   ngAfterViewInit(): void {
     this.filterChange$.pipe(debounceTime(500)).subscribe((value) => {
-      console.log('on master table', value);
       this.filterChangeToDataSource$.next(value);
     });
 

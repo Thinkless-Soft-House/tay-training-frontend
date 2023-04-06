@@ -5,7 +5,7 @@ import { NgForm } from '@angular/forms';
   selector: 'app-send-code',
   templateUrl: './send-code.component.html',
   styleUrls: [
-    './../../../core/shared/login-form-style.shared.scss',
+    './../../../core/shared/scss/login-form-style.shared.scss',
     './send-code.component.scss',
   ],
 })

@@ -5,7 +5,7 @@ import { NgForm } from '@angular/forms';
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
   styleUrls: [
-    './../../../core/shared/login-form-style.shared.scss',
+    './../../../core/shared/scss/login-form-style.shared.scss',
     './sign-in.component.scss',
   ],
 })

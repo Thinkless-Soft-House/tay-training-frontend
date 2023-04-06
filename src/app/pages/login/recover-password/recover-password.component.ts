@@ -5,7 +5,7 @@ import { NgForm } from '@angular/forms';
   selector: 'app-recover-password',
   templateUrl: './recover-password.component.html',
   styleUrls: [
-    './../../../core/shared/login-form-style.shared.scss',
+    './../../../core/shared/scss/login-form-style.shared.scss',
     './recover-password.component.scss',
   ],
 })

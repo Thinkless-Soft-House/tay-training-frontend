@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './header/header.component';
-import { MaterialBundleModule } from '../material-bundle/material-bundle.module';
+import { MaterialBundleModule } from '../../material-bundle/material-bundle.module';
 import { SideMenuComponent } from './side-menu/side-menu.component';
 import { MasterTableComponent } from './master-table/master-table.component';
 import { MatTableModule } from '@angular/material/table';

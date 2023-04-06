@@ -1,5 +1,5 @@
-import { UtilsService } from './../../../services/utils.service';
-import { PaginationConfig } from './../../interfaces/pagination.interface';
+import { UtilsService } from '../../../../services/utils.service';
+import { PaginationConfig } from '../../../interfaces/pagination.interface';
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -54,18 +54,15 @@ export class MasterTableDataSource<T, Y> extends DataSource<T> {
       ).pipe(
         switchMap((e) => {
           // Filter data
-          console.log('change datasource', e);
 
           return this.getPagedData();
         }),
         tap((e: any) => {
-          console.log('tap', e);
           this.paginator!.length = e.total;
           this.paginator!.pageIndex = this.atualPagination.page - 1;
           this.paginator!.pageSize = this.atualPagination.pageSize;
         }),
         map((e: any) => {
-          console.log('map', e);
           return e.items;
         })
       );
