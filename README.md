@@ -36,35 +36,59 @@ Abra o navegador e acesse a URL http://localhost:4200/. A aplicação será carr
 
 Se você estiver trabalhando em uma nova aplicação e quiser manter as alterações separadas do repositório original, você pode criar um novo repositório no GitHub para a nova aplicação e adicionar o repositório original como um repositório remoto. Para fazer isso, siga os seguintes passos:
 
-1. Crie um novo repositório no GitHub para a nova aplicação. Digamos que o nome do novo repositório seja minha-nova-aplicacao.
-2. Abra o terminal no seu computador e navegue até o diretório em que deseja clonar o novo repositório.
-3. Use o comando git clone seguido da URL do novo repositório para clonar o repositório na sua máquina local.
-
+1. Criar a pasta de destino da aplicação:
 ```bash
-git clone https://github.com/seu-usuario/minha-nova-aplicacao.git
+mkdir <nova-aplicacao> && cd <nova-aplicacao>/
 ```
 
-4. Agora, você precisa adicionar o repositório original como um repositório remoto. Para fazer isso, use o seguinte comando:
+Isso criará uma nova pasta com o nome <nova-aplicacao> e mudará para ela.
 
+2. Inicie o repositório Git na sua máquina e no próprio Github ou paralelo:
 ```bash
-git remote add upstream https://github.com/seu-usuario/seu-repositorio.git
+git init
 ```
+Isso criará um novo repositório Git vazio na pasta atual.
 
-Isso adicionará o repositório original como um repositório remoto com o nome upstream.
-
-5. Em seguida, você pode puxar as alterações do repositório original para o seu novo repositório usando o seguinte comando:
-
+3. Crie e entre na branch alvo das atualizações:
 ```bash
-git pull upstream main
+git checkout -b base
 ```
+Isso criará uma nova branch chamada base e mudará para ela.
 
-(Caso dê um erro de branch não encontrada, é provavel que sua branch padrão está configurada como `master` ainda. Nesse caso, troque o `main` do comando acima por master)
+4. Adicione a origem da aplicação base:
+```bash
+git remote add base https://github.com/Caio-Domingos/get-started-angular-15-with-material.git
+```
+Isso adicionará o repositório Caio-Domingos/get-started-angular-15-with-material como um remote chamado base.
 
-Isso puxará as alterações do ramo principal (main) do repositório original para o seu novo repositório.
+5. Puxe a aplicação base para a branch base:
+```bash
+git pull base master
+```
+Isso fará um pull das alterações do repositório Caio-Domingos/get-started-angular-15-with-material na branch master para a branch base do seu repositório local.
 
-Agora, você pode fazer as alterações necessárias na nova aplicação sem afetar o repositório original. Quando desejar puxar as alterações mais recentes do repositório original, basta executar o comando git pull upstream main novamente. E quando quiser enviar as alterações da nova aplicação para o seu novo repositório no GitHub, use os mesmos comandos que mencionei na minha resposta anterior.
+6. Crie a branch que será a origem da nossa aplicação:
+```bash
+git checkout -b main
+```
+Isso criará uma nova branch chamada main e mudará para ela.
 
-Lembre-se de personalizar os nomes do repositório, usuário e branch de acordo com a sua situação específica.
+7. Adicione a origem do repositório <nova-aplicacao>:
+```bash
+git remote add origin https://github.com/Caio-Domingos/<nova-aplicacao>.git
+```
+Isso adicionará o repositório <nova-aplicacao> como um remote chamado origin.
+
+8. Envie as duas novas branches para lá, já configurando o upstream:
+```bash
+git push --set-upstream origin main
+git push --set-upstream origin base
+```
+Isso enviará as branches main e base para o repositório remoto e configurará o upstream para elas.
+
+Extra:
+
+Caso tenham novas mudanças e melhorias na aplicação base, você pode fazer um novo pull para a branch base e depois mandar para a sua branch de trabalho usando o comando do passo 5 novamente.
 
 ## Recursos adicionais
 
