@@ -60,14 +60,6 @@ git pull upstream main
 
 (Caso dê um erro de branch não encontrada, é provavel que sua branch padrão está configurada como `master` ainda. Nesse caso, troque o `main` do comando acima por master)
 
-5.1. Caso apareca algum erro como esse `Your branch is based on 'origin/main', but the upstream is gone.` use o comando abaixo para limpa-lo do seu log
-
-```bash
-git branch --unset-upstream
-```
-
-
-
 Isso puxará as alterações do ramo principal (main) do repositório original para o seu novo repositório.
 
 Agora, você pode fazer as alterações necessárias na nova aplicação sem afetar o repositório original. Quando desejar puxar as alterações mais recentes do repositório original, basta executar o comando git pull upstream main novamente. E quando quiser enviar as alterações da nova aplicação para o seu novo repositório no GitHub, use os mesmos comandos que mencionei na minha resposta anterior.
