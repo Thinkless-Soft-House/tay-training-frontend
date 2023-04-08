@@ -112,5 +112,3 @@ Se você deseja contribuir com este projeto, siga os seguintes passos:
 ## Licença
 
 Este projeto está licenciado sob a licença MIT. Veja o arquivo LICENSE.md para mais detalhes.
-
-Espero que este README.md ajude a descrever o seu projeto de maneira clara e concisa. Se você precisar de mais ajuda ou tiver alguma dúvida, não hesite em perguntar!
