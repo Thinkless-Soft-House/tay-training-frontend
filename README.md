@@ -1,156 +1,90 @@
 # Get Started para Angular 15 + Material Angular 15
 
-Um projeto base para aplicações web baseadas em Angular e Material Angular como o estilizador
+Este é um projeto de exemplo que pode ser usado como ponto de partida para aplicações Angular 15 que utilizam o Material Angular 15.
 
-## Instalação
+## Como utilizar este projeto
 
-Para criar o seu projeto da mesma forma que este, primeiro verifique se a sua versao do `@angular/cli` instalado é da major `15.x.x`. Essa verificação pode ser feita com `ng version`.
+Para utilizar este projeto, siga os seguintes passos:
 
-Para iniciar o seu projeto:
-
-```bash
-  ng new <nome-do-projeto> --routing --style scss -S
-  cd <nome-do-projeto>
-```
-
-- Limpe o app.component.html, deixando apenas o `<router-outlet></router-outlet>`
-- No `index.html`, troque o icone e o title para o do projeto
-- No `index.html`, adicione uma nova classe no body, `mat-app-background`
-
-## Configurar o Material Angular
-
-Aqui vamos configurar todo o Material com um custom theme, aceitando tanto o dark quanto o light theme com um alternador de fácil uso. Tambem vamos configurar um modulo que exporta todos os componentes da lib para não precisar adivinhar qual ta faltando em cada componente
-
-### Configurando o Material Angular
+1. Clone o repositório na sua máquina local.
 
 ```bash
-  ng add @angular/material
+git clone https://github.com/seu-usuario/seu-repositorio.git
 ```
 
-- `y` para instalar as dependencias
-- Escolha um dos temas exceto o `Custom`
-- `y` Para configurar as tipagens da tipografia
-- `Include Animations` para ativar as animacoes do Angular Material
-
-### Configurando o Custom theme
-
-Todo ano eu troco qual deles eu utilizo, mas esse ano eu estou usando esse gerador de [temas do AM](https://materialtheme.arcsine.dev/). Escolha as 3 cores (Primário, Confirmação e Alerta) e clique em
-
-- View: SCSS
-- Version: +13
-- Export: SCSS
-
-Cole o que foi copiado no arquivo `styles.scss`
-Esse código veio com a configuração do Angular `Material@14` então a parte das fontes não está funcionando corretamente, vamos fazer algumas alterações no que foi colado.
-
-- `@use '@angular/material' as mat;` deve estar na linha 1 do arquivo `styles.scss`
-- As fontes não funcionam do jeito que o gerador de temas manda, precisa trocar a variavel `$fontConfig` para algo como:
-
-```sass
-$fonts: mat.define-typography-config(
-  $headline-1:
-    mat.define-typography-level(112px, 112px, 300, "Roboto", -0.0134em),
-  $headline-2:
-    mat.define-typography-level(56px, 56px, 400, "Roboto", -0.0089em),
-  $headline-3: mat.define-typography-level(45px, 48px, 400, "Roboto", 0em),
-  $headline-4:
-    mat.define-typography-level(34px, 40px, 400, "Roboto", 0.0074em),
-  $headline-5: mat.define-typography-level(24px, 32px, 400, "Roboto", 0em),
-  $headline-6:
-    mat.define-typography-level(20px, 32px, 500, "Roboto", 0.0075em),
-  $body-1: mat.define-typography-level(17px, 24px, 500, "Roboto", 0.0179em),
-  $body-2: mat.define-typography-level(15px, 20px, 400, "Roboto", 0.0179em),
-  $subtitle-1:
-    mat.define-typography-level(16px, 28px, 400, "Roboto", 0.0094em),
-  $subtitle-2:
-    mat.define-typography-level(14px, 24px, 500, "Roboto", 0.0067em),
-  $caption: mat.define-typography-level(13px, 14px, 500, "Roboto", 0.0893em),
-  $button: mat.define-typography-level(15px, 20px, 400, "Roboto", 0.0333em),
-  $overline:
-    mat.define-typography-level(10px, 20px, 400, "Roboto", 0.0333em),
-);
-```
-
-- Excluir a linha `@include mat.core($fontConfig);` porque a fonte não é mais configurada assim no AM 15.
-- Na configuração dos temas Light e Dark, substituir:
-
-```scss
-$theme: (
-  primary: $theme-primary,
-  accent: $theme-accent,
-  warn: $theme-warn,
-  is-dark: true,
-  foreground: $mat-dark-theme-foreground,
-  background: $mat-dark-theme-background,
-);
-$altTheme: (
-  primary: $theme-primary,
-  accent: $theme-accent,
-  warn: $theme-warn,
-  is-dark: false,
-  foreground: $mat-light-theme-foreground,
-  background: $mat-light-theme-background,
-);
-```
-
-por:
-
-```scss
-$altTheme: mat.define-light-theme(
-  (
-    color: (
-      primary: $theme-primary,
-      accent: $theme-accent,
-      warn: $theme-warn,
-    ),
-    typography: $fonts,
-    background: $mat-light-theme-background,
-    foreground: $mat-light-theme-foreground,
-  )
-);
-$theme: mat.define-dark-theme(
-  (
-    color: (
-      primary: $theme-primary,
-      accent: $theme-accent,
-      warn: $theme-warn,
-    ),
-    typography: $fonts,
-    background: $mat-dark-theme-background,
-    foreground: $mat-dark-theme-foreground,
-  )
-);
-```
-
-### Configuração do módulo de exports
-
-O Angular Material é orientado à componentes isolados que eles te falam, mas dependem uns dos outros as vezes. Isso faz com que quando se usa um, se você não importar o outro, ele fica bugado, por isso criamos um modulo de export geral, que sempre manda tudo de uma vez quando necessário.
-
-- Execute o comando para gerar o módulo
+2. Navegue até o diretório do projeto.
 
 ```bash
-ng generate module core/material-bundle
+cd seu-repositorio
 ```
 
-- No seu editor de texto navegue até o arquivo, vai estar na pasta `src/app/core/material-bundle`
-- Dentro do `NgModule`, crie uma entrada para o exports, assim:
+3. Instale as dependências do projeto.
 
-```ts
-@NgModule({
-  declarations: [],
-  imports: [CommonModule],
-  // Aqui
-  exports: [],
-})
+```bash
+npm install
 ```
 
-- Exporte todos os componentes, se quiser ver como, cheque nesse mesmo projeto.
+4. Inicie o servidor de desenvolvimento.
 
-## Configurações Extras
+```bash
+ng serve
+```
 
-- [Login Module](./how-to/login-module.md)
-- Interceptadores
-- Http Module
-- Master Details
-  - Master com tabela usando sort, pagination e filter
-  - Detail para new/edit com FormGroup para validações
+Abra o navegador e acesse a URL http://localhost:4200/. A aplicação será carregada automaticamente e estará pronta para uso.
+
+## Começando uma aplicação apartir dessa
+
+Se você estiver trabalhando em uma nova aplicação e quiser manter as alterações separadas do repositório original, você pode criar um novo repositório no GitHub para a nova aplicação e adicionar o repositório original como um repositório remoto. Para fazer isso, siga os seguintes passos:
+
+1. Crie um novo repositório no GitHub para a nova aplicação. Digamos que o nome do novo repositório seja minha-nova-aplicacao.
+2. Abra o terminal no seu computador e navegue até o diretório em que deseja clonar o novo repositório.
+3. Use o comando git clone seguido da URL do novo repositório para clonar o repositório na sua máquina local.
+
+```bash
+git clone https://github.com/seu-usuario/minha-nova-aplicacao.git
+```
+
+4. Agora, você precisa adicionar o repositório original como um repositório remoto. Para fazer isso, use o seguinte comando:
+
+```bash
+git remote add upstream https://github.com/seu-usuario/seu-repositorio.git
+```
+
+Isso adicionará o repositório original como um repositório remoto com o nome upstream.
+
+5. Em seguida, você pode puxar as alterações do repositório original para o seu novo repositório usando o seguinte comando:
+
+```bash
+git pull upstream main
+```
+
+Isso puxará as alterações do ramo principal (main) do repositório original para o seu novo repositório.
+
+Agora, você pode fazer as alterações necessárias na nova aplicação sem afetar o repositório original. Quando desejar puxar as alterações mais recentes do repositório original, basta executar o comando git pull upstream main novamente. E quando quiser enviar as alterações da nova aplicação para o seu novo repositório no GitHub, use os mesmos comandos que mencionei na minha resposta anterior.
+
+Lembre-se de personalizar os nomes do repositório, usuário e branch de acordo com a sua situação específica.
+
+## Recursos adicionais
+
+Além das bibliotecas padrão do Angular e Material Angular, esta aplicação utiliza as seguintes bibliotecas adicionais:
+
+- date-fns: uma biblioteca para lidar com datas no JavaScript, usada para formatar e manipular datas na aplicação.
+- ngx-mask: uma biblioteca para criação de máscaras de input no Angular, usada para fornecer uma formatação consistente de dados de entrada na aplicação.
+
+Essas bibliotecas foram escolhidas para complementar as funcionalidades padrão do Angular, visando aprimorar a experiência do usuário na utilização da aplicação.
+
+## Como contribuir
+
+Se você deseja contribuir com este projeto, siga os seguintes passos:
+
+1. Faça um fork do repositório.
+2. Clone o seu fork na sua máquina local.
+3. Crie um novo branch para a sua contribuição.
+4. Faça as alterações necessárias.
+5. Envie um pull request para o branch principal do repositório original.
+
+## Licença
+
+Este projeto está licenciado sob a licença MIT. Veja o arquivo LICENSE.md para mais detalhes.
+
+Espero que este README.md ajude a descrever o seu projeto de maneira clara e concisa. Se você precisar de mais ajuda ou tiver alguma dúvida, não hesite em perguntar!
