@@ -66,6 +66,8 @@ git pull upstream main
 git branch --unset-upstream
 ```
 
+
+
 Isso puxará as alterações do ramo principal (main) do repositório original para o seu novo repositório.
 
 Agora, você pode fazer as alterações necessárias na nova aplicação sem afetar o repositório original. Quando desejar puxar as alterações mais recentes do repositório original, basta executar o comando git pull upstream main novamente. E quando quiser enviar as alterações da nova aplicação para o seu novo repositório no GitHub, use os mesmos comandos que mencionei na minha resposta anterior.
