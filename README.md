@@ -58,7 +58,9 @@ Isso adicionará o repositório original como um repositório remoto com o nome 
 git pull upstream main
 ```
 
-(Caso dê um erro de branch não encontrada, é provavel que sua branch padrão está configurada como `master` ainda. Nesse caso, troque o `main` do comando acima por master) 
+(Caso dê um erro de branch não encontrada, é provavel que sua branch padrão está configurada como `master` ainda. Nesse caso, troque o `main` do comando acima por master)
+
+5.1. Caso apareca algum erro como esse `Your branch is based on 'origin/main', but the upstream is gone.` use o comando abaixo para limpa-lo do seu log
 
 ```bash
 git branch --unset-upstream
