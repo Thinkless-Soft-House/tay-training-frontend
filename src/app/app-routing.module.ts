@@ -18,6 +18,8 @@ const routes: Routes = [
       import('./pages/home/home.module').then((m) => m.HomeModule),
   },
   { path: 'master-details', loadChildren: () => import('./pages/master-details/master-details.module').then(m => m.MasterDetailsModule) },
+  { path: 'exercises', loadChildren: () => import('./pages/exercises/exercises.module').then(m => m.ExercisesModule) },
+  { path: 'workouts', loadChildren: () => import('./pages/workouts/workouts.module').then(m => m.WorkoutsModule) },
 ];
 
 @NgModule({

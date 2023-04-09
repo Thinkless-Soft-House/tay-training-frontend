@@ -9,6 +9,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { CpfValidatorDirective } from './core/shared/directives/cpf-validator.directive';
+import { ExercisesComponent } from './pages/exercises/exercises.component';
 
 @NgModule({
   declarations: [AppComponent],
