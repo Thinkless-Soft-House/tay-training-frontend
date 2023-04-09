@@ -152,18 +152,18 @@ $mat-dark-theme-background: (
 // Theme Config
 
 body {
-  --primary-color: #cc33ca;
-  --primary-lighter-color: #f0c2ef;
-  --primary-darker-color: #b920b7;
+  --primary-color: #fa1b31;
+  --primary-lighter-color: #f66d73;
+  --primary-darker-color: #cd0014;
   --text-primary-color: #{$light-primary-text};
   --text-primary-lighter-color: #{$dark-primary-text};
   --text-primary-darker-color: #{$light-primary-text};
 }
 $mat-primary: (
-  main: #cc33ca,
-  lighter: #f0c2ef,
-  darker: #b920b7,
-  200: #cc33ca,
+  main: #fa1b31,
+  lighter: #f66d73,
+  darker: #cd0014,
+  200: #fb979b,
   // For slide toggle,
   contrast:
     (
@@ -175,18 +175,18 @@ $mat-primary: (
 $theme-primary: mat.define-palette($mat-primary, main, lighter, darker);
 
 body {
-  --accent-color: #797979;
-  --accent-lighter-color: #d7d7d7;
-  --accent-darker-color: #5c5c5c;
+  --accent-color: #1bfae4;
+  --accent-lighter-color: #d9fefa;
+  --accent-darker-color: #00bd95;
   --text-accent-color: #{$light-primary-text};
   --text-accent-lighter-color: #{$dark-primary-text};
   --text-accent-darker-color: #{$light-primary-text};
 }
 $mat-accent: (
-  main: #797979,
-  lighter: #d7d7d7,
-  darker: #5c5c5c,
-  200: #797979,
+  main: #1bfae4,
+  lighter: #d9fefa,
+  darker: #00bd95,
+  200: #1bfae4,
   // For slide toggle,
   contrast:
     (
@@ -219,7 +219,7 @@ $mat-warn: (
     ),
 );
 $theme-warn: mat.define-palette($mat-warn, main, lighter, darker);
-$altTheme: mat.define-light-theme(
+$light-theme: mat.define-light-theme(
   (
     color: (
       primary: $theme-primary,
@@ -231,7 +231,7 @@ $altTheme: mat.define-light-theme(
     foreground: $mat-light-theme-foreground,
   )
 );
-$theme: mat.define-dark-theme(
+$dark-theme: mat.define-dark-theme(
   (
     color: (
       primary: $theme-primary,
@@ -244,13 +244,13 @@ $theme: mat.define-dark-theme(
   )
 );
 
-$activeTheme: $theme;
+$activeTheme: $dark-theme;
 // Theme Init
-@include mat.all-component-themes($theme);
+@include mat.all-component-themes($dark-theme);
 
 .theme-alternate {
-  $activeTheme: $altTheme;
-  @include mat.all-component-colors($altTheme);
+  $activeTheme: $light-theme;
+  @include mat.all-component-colors($light-theme);
 }
 
 // Specific component overrides, pieces that are not in line with the general theming
@@ -299,11 +299,11 @@ main {
   min-height: 100vh;
 }
 
+// My custom styles
+
 .multiline-tooltip {
   white-space: pre-line;
 }
-
-// My custom styles
 
 .spacer {
   flex: 1 1 auto;
