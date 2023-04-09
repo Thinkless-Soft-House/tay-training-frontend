@@ -32,9 +32,10 @@ export class AppComponent {
         console.log("Rota alterada", val.url);
         this.atualRoute = val.url;
 
-        this.routesWithSideBar
-          .filter((e) => e !== "/")
-          .filter((e) => val.url.includes(e)).length > 0 ||
+        this.showSideBar =
+          this.routesWithSideBar
+            .filter((e) => e !== "/")
+            .filter((e) => val.url.includes(e)).length > 0 ||
           this.routesWithSideBar.includes(val.url);
 
         this.headerTitle = this.getHeaderTitle(val.url);
