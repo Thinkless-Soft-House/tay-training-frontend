@@ -20,6 +20,8 @@ const routes: Routes = [
   { path: 'master-details', loadChildren: () => import('./pages/master-details/master-details.module').then(m => m.MasterDetailsModule) },
   { path: 'exercises', loadChildren: () => import('./pages/exercises/exercises.module').then(m => m.ExercisesModule) },
   { path: 'workouts', loadChildren: () => import('./pages/workouts/workouts.module').then(m => m.WorkoutsModule) },
+  { path: 'methods', loadChildren: () => import('./pages/methods/methods.module').then(m => m.MethodsModule) },
+  { path: 'exercise-set', loadChildren: () => import('./pages/exercise-set/exercise-set.module').then(m => m.ExerciseSetModule) },
 ];
 
 @NgModule({
