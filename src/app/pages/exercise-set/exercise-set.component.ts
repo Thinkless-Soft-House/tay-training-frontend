@@ -25,7 +25,7 @@ export class ExerciseSetComponent extends MasterTable<ServiceBackendItemService>
         { name: 'name', title: 'Name' },
         // { name: 'description', title: 'Description' },
       ],
-      path: '/exercises',
+      path: '/exercise-set',
     };
     super(router, serviceBackendItemService, data);
   }

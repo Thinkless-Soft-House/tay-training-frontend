@@ -21,6 +21,10 @@
   form {
     box-sizing: border-box;
     width: 100%;
+    @include functions.flexbox(
+      $flex-direction: column,
+      $justify-content: center
+    );
   }
 
   mat-form-field {

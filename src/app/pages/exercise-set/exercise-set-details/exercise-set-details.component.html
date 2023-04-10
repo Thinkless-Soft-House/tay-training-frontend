@@ -1,1 +1,345 @@
-<p>exercise-set-details works!</p>
+<section class="master mat-elevation-z2">
+  <div class="loading-shade all" *ngIf="loadingService.loading">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <form class="form" #reactiveForm="ngForm">
+    <div class="row">
+      <div class="col">
+        <!-- Nome -->
+        <mat-form-field>
+          <mat-label>{{ form["name"].label }}</mat-label>
+          <input
+            matInput
+            [type]="form['name'].config.type"
+            [name]="form['name'].config.name"
+            [(ngModel)]="form['name'].value"
+            [placeholder]="form['name'].config.placeholder"
+            [disabled]="form['name'].config.disabled"
+            [readonly]="form['name'].config.readonly"
+            [required]="form['name'].config.required"
+            [minlength]="form['name'].config.minlength"
+            [maxlength]="form['name'].config.maxlength"
+            [pattern]="form['name'].config.pattern"
+            [email]="form['name'].config.email"
+            [mask]="
+              form['name'].config.mask && form['name'].config.maskConfig.mask
+                ? form['name'].config.maskConfig.mask
+                : null
+            "
+            [dropSpecialCharacters]="
+              form['name'].config.mask &&
+              form['name'].config.maskConfig.dropSpecialCharacters
+                ? form['name'].config.maskConfig.dropSpecialCharacters
+                : true
+            "
+            [validation]="
+              form['name'].config.mask &&
+              form['name'].config.maskConfig.validation
+                ? form['name'].config.maskConfig.validation
+                : false
+            "
+          />
+          <mat-hint *ngIf="form['name'].config.hint">{{
+            form["name"].config.hint
+          }}</mat-hint>
+          <mat-error *ngIf="getErrorText(form['name'])">
+            {{ getErrorText(form["name"]) }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <!-- Categoria do conjunto -->
+        <mat-form-field appearance="fill">
+          <mat-label>{{ form["setCategories"].label }}</mat-label>
+          <mat-select
+            [(ngModel)]="form['setCategories'].value"
+            [name]="form['setCategories'].config.name"
+            [placeholder]="form['setCategories'].config.placeholder"
+            [disabled]="form['setCategories'].config.disabled"
+            [required]="form['setCategories'].config.required"
+          >
+            <mat-option
+              *ngFor="let item of form['setCategories'].selectOptions"
+              [value]="item.value"
+            >
+              {{ item.name }}
+            </mat-option>
+          </mat-select>
+          <mat-hint *ngIf="form['setCategories'].config.hint">{{
+            form["url"].config.hint
+          }}</mat-hint>
+          <mat-error *ngIf="getErrorText(form['setCategories'])">
+            {{ getErrorText(form["setCategories"]) }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row mat-elevation-z2 workouts">
+      <div class="col">
+        <h2>Treinos</h2>
+
+        <ng-container *ngIf="exercicies.length > 0">
+          <h3>Treinos Salvos</h3>
+
+          <table
+            mat-table
+            class="full-width-table exercises-table"
+            [dataSource]="exercicies"
+            matSort
+            aria-label="Elements"
+          >
+            <!-- Id Column -->
+
+            <ng-container matColumnDef="exercise">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Treino</th>
+              <td mat-cell *matCellDef="let row">
+                {{ getExercise(row.exercise) }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="method">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Método</th>
+              <td mat-cell *matCellDef="let row">
+                {{ getMethod(row.method) }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="series">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Séries</th>
+              <td mat-cell *matCellDef="let row">{{ row.series }}</td>
+            </ng-container>
+            <ng-container matColumnDef="sleepTime">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Tempo de descanso
+              </th>
+              <td mat-cell *matCellDef="let row">
+                {{ row.sleepTime }} segundos
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="repetitions">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Repetições
+              </th>
+              <td mat-cell *matCellDef="let row">{{ row.repetitions }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+              <td mat-cell *matCellDef="let row" class="actions">
+                <button mat-icon-button (click)="editExercise(row)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button (click)="removeExercise(row)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="columnsDisplay"></tr>
+            <tr mat-row *matRowDef="let row; columns: columnsDisplay"></tr>
+          </table>
+        </ng-container>
+
+        <h3>Adicionar novo</h3>
+
+        <div class="row">
+          <div class="col">
+            <!-- Treino -->
+            <mat-form-field appearance="fill">
+              <mat-label>{{ newExercise["exercise"].label }}</mat-label>
+              <mat-select
+                [(ngModel)]="newExercise['exercise'].value"
+                [name]="newExercise['exercise'].config.name"
+                [placeholder]="newExercise['exercise'].config.placeholder"
+                [disabled]="newExercise['exercise'].config.disabled"
+                [required]="newExercise['exercise'].config.required"
+              >
+                <mat-option
+                  *ngFor="let item of newExercise['exercise'].selectOptions"
+                  [value]="item.value"
+                >
+                  {{ item.name }}
+                </mat-option>
+              </mat-select>
+              <mat-hint *ngIf="newExercise['exercise'].config.hint">{{
+                newExercise["exercise"].config.hint
+              }}</mat-hint>
+              <mat-error *ngIf="getErrorText(newExercise['exercise'])">
+                {{ getErrorText(newExercise["exercise"]) }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col">
+            <!-- Método de treino* -->
+            <ng-container *ngIf="newExercise.method">
+              <mat-form-field appearance="fill">
+                <mat-label>{{ newExercise["method"].label }}</mat-label>
+                <mat-select
+                  [(ngModel)]="newExercise['method'].value"
+                  [name]="newExercise['method'].config.name"
+                  [placeholder]="newExercise['method'].config.placeholder"
+                  [disabled]="newExercise['method'].config.disabled"
+                  [required]="newExercise['method'].config.required"
+                >
+                  <mat-option
+                    *ngFor="let item of newExercise['method'].selectOptions"
+                    [value]="item.value"
+                  >
+                    {{ item.name }}
+                  </mat-option>
+                </mat-select>
+                <mat-hint *ngIf="newExercise['method'].config.hint">{{
+                  newExercise["method"].config.hint
+                }}</mat-hint>
+                <mat-error *ngIf="getErrorText(newExercise['method'])">
+                  {{ getErrorText(newExercise["method"]) }}
+                </mat-error>
+              </mat-form-field>
+            </ng-container>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <!-- Séries -->
+            <mat-form-field>
+              <mat-label>{{ newExercise["series"].label }}</mat-label>
+              <input
+                matInput
+                [name]="newExercise['series'].config.name"
+                [type]="newExercise['series'].config.type"
+                [(ngModel)]="newExercise['series'].value"
+                [placeholder]="newExercise['series'].config.placeholder"
+                [disabled]="newExercise['series'].config.disabled"
+                [readonly]="newExercise['series'].config.readonly"
+              />
+              <mat-hint *ngIf="newExercise['series'].config.hint">{{
+                newExercise["series"].config.hint
+              }}</mat-hint>
+              <mat-error *ngIf="getErrorText(newExercise['series'])">
+                {{ getErrorText(newExercise["series"]) }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col">
+            <!-- Repetição -->
+            <mat-form-field>
+              <mat-label>{{ newExercise["sleepTime"].label }}</mat-label>
+              <input
+                matInput
+                [type]="newExercise['sleepTime'].config.type"
+                [name]="newExercise['sleepTime'].config.name"
+                [(ngModel)]="newExercise['sleepTime'].value"
+                [placeholder]="newExercise['sleepTime'].config.placeholder"
+                [disabled]="newExercise['sleepTime'].config.disabled"
+                [readonly]="newExercise['sleepTime'].config.readonly"
+                [required]="newExercise['sleepTime'].config.required"
+                [minlength]="newExercise['sleepTime'].config.minlength"
+                [maxlength]="newExercise['sleepTime'].config.maxlength"
+                [pattern]="newExercise['sleepTime'].config.pattern"
+                [email]="newExercise['sleepTime'].config.email"
+              />
+              <mat-hint *ngIf="newExercise['sleepTime'].config.hint">{{
+                newExercise["sleepTime"].config.hint
+              }}</mat-hint>
+              <mat-error *ngIf="getErrorText(newExercise['sleepTime'])">
+                {{ getErrorText(newExercise["sleepTime"]) }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <!-- Tempo de descanso -->
+            <mat-form-field>
+              <mat-label>{{ newExercise["repetitions"].label }}</mat-label>
+              <input
+                matInput
+                [type]="newExercise['repetitions'].config.type"
+                [name]="newExercise['repetitions'].config.name"
+                [(ngModel)]="newExercise['repetitions'].value"
+                [placeholder]="newExercise['repetitions'].config.placeholder"
+                [disabled]="newExercise['repetitions'].config.disabled"
+                [readonly]="newExercise['repetitions'].config.readonly"
+                [required]="newExercise['repetitions'].config.required"
+                [minlength]="newExercise['repetitions'].config.minlength"
+                [maxlength]="newExercise['repetitions'].config.maxlength"
+                [pattern]="newExercise['repetitions'].config.pattern"
+                [email]="newExercise['repetitions'].config.email"
+              />
+              <mat-hint *ngIf="newExercise['repetitions'].config.hint">{{
+                newExercise["repetitions"].config.hint
+              }}</mat-hint>
+              <mat-error *ngIf="getErrorText(newExercise['repetitions'])">
+                {{ getErrorText(newExercise["repetitions"]) }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col"></div>
+        </div>
+        <div class="row">
+          <div class="col"></div>
+          <div class="col submit-col">
+            <button
+              class="submit-btn"
+              type="button"
+              mat-raised-button
+              color="accent"
+              [disabled]="
+                !newExercise['exercise'].value ||
+                !newExercise['series'].value ||
+                !newExercise['sleepTime'].value ||
+                !newExercise['repetitions'].value
+              "
+              (click)="addExercise()"
+            >
+              Salvar treino
+            </button>
+            <button
+              mat-icon-button
+              aria-label="Help Form Button"
+              type="button"
+              class="help-btn"
+              [class.show]="
+                !newExercise['exercise'].value ||
+                !newExercise['series'].value ||
+                !newExercise['sleepTime'].value ||
+                !newExercise['repetitions'].value
+              "
+              [matTooltip]="issueValuesNewExercise()"
+              matTooltipClass="multiline-tooltip"
+            >
+              <mat-icon>help</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col"></div>
+      <div class="col submit-col">
+        <button
+          class="submit-btn"
+          type="button"
+          mat-raised-button
+          color="accent"
+          [disabled]="reactiveForm.invalid"
+          (click)="onSubmit()"
+        >
+          Salvar
+        </button>
+        <button
+          mat-icon-button
+          aria-label="Help Form Button"
+          type="button"
+          class="help-btn"
+          [class.show]="reactiveForm.invalid"
+          [matTooltip]="issueValues()"
+          matTooltipClass="multiline-tooltip"
+        >
+          <mat-icon>help</mat-icon>
+        </button>
+      </div>
+    </div>
+  </form>
+</section>

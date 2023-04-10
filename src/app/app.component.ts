@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { LoadingService } from './services/loading.service';
 
 @Component({
   selector: 'app-root',
@@ -50,7 +51,7 @@ export class AppComponent {
   headerTitle = 'Meu aplicativo';
   atualRoute = '/';
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private loadingService: LoadingService) {
     this.monitoreRouteChanges();
   }
 
@@ -58,6 +59,8 @@ export class AppComponent {
     this.router.events.subscribe((val) => {
       if (val instanceof NavigationEnd) {
         console.log('Rota alterada', val.url);
+        this.loadingService.deactiveLoading();
+
         this.atualRoute = val.url;
 
         this.showSideBar =
