@@ -7,7 +7,15 @@ import { NavigationEnd, Router } from '@angular/router';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  routesWithSideBar = ['/', '/home', '/master-details', '/exercises'];
+  routesWithSideBar = [
+    '/',
+    '/home',
+    '/master-details',
+    '/exercises',
+    '/workouts',
+    '/methods',
+    '/exercise-set',
+  ];
   pageTitles: { [id: string]: string | { [id: string]: string } } = {
     '/home': 'Home',
     '/master-details': {
@@ -19,6 +27,21 @@ export class AppComponent {
       '/': 'Lista de Exercícios',
       '/new': 'Novo exercício',
       default: 'Detalhes do exercício',
+    },
+    '/workouts': {
+      '/': 'Lista de Treinos',
+      '/new': 'Novo treino',
+      default: 'Detalhes do treino',
+    },
+    '/methods': {
+      '/': 'Lista de Métodos',
+      '/new': 'Novo método',
+      default: 'Detalhes do método',
+    },
+    '/exercise-set': {
+      '/': 'Lista de Conj. de Exercícios',
+      '/new': 'Novo conj. de exercícios',
+      default: 'Detalhes do conj. de exercícios',
     },
     '/': 'Home',
   };

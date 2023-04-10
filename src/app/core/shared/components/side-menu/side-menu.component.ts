@@ -26,6 +26,21 @@ export class SideMenuComponent {
       icon: 'list',
       route: '/exercises',
     },
+    {
+      name: 'Métodos',
+      icon: 'list',
+      route: '/methods',
+    },
+    {
+      name: 'Conj. de Exercícios',
+      icon: 'list',
+      route: '/exercise-set',
+    },
+    {
+      name: 'Exercícios',
+      icon: 'list',
+      route: '/workouts',
+    },
   ];
 
   constructor(private router: Router) {}
