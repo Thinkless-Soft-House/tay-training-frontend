@@ -16,7 +16,7 @@ export class MasterDetailsComponent extends MasterTable<ServiceBackendItemServic
     public serviceBackendItemService: ServiceBackendItemService
   ) {
     const data: DataMasterTable = {
-      title: 'Exercises',
+      title: 'Master/Details',
       targetFilters: ['Name', 'Description'],
       columns: [
         { name: 'id', title: 'ID' },

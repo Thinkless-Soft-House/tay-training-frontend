@@ -1,1 +1,34 @@
-<p>workouts works!</p>
+<section class="master mat-elevation-z2">
+  <div class="header-content">
+    <h2 class="title">{{ title }}</h2>
+    <button mat-raised-button color="accent" (click)="add()">
+      <mat-icon class="mat-24">add</mat-icon>
+      Add
+    </button>
+  </div>
+
+  <div class="filter-content">
+    <mat-form-field appearance="outline">
+      <mat-label>Filtrar</mat-label>
+      <input
+        matInput
+        placeholder="Filtre aqui"
+        (input)="changeFilter($event)"
+      />
+
+      <mat-icon matPrefix>search</mat-icon>
+      <mat-hint>Filtre por {{ targetFilters.join(", ") }}</mat-hint>
+    </mat-form-field>
+  </div>
+
+  <!-- Table -->
+  <app-master-table
+    [columns]="columns"
+    [service]="serviceBackendItemService"
+    functionName="getByFilter"
+    [filterChange$]="filterChange$"
+    (edit$)="edit($event)"
+    (delete$)="delete($event)"
+    (changeTable$)="changeTable($event)"
+  ></app-master-table>
+</section>

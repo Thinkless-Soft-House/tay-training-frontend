@@ -17,11 +17,6 @@ export class SideMenuComponent {
       route: '/home',
     },
     {
-      name: 'Master/Details',
-      icon: 'list',
-      route: '/master-details',
-    },
-    {
       name: 'Exercícios',
       icon: 'list',
       route: '/exercises',
