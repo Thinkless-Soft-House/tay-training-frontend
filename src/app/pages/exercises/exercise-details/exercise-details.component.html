@@ -1,1 +1,137 @@
-<p>exercise-details works!</p>
+<section class="master mat-elevation-z2">
+  <div class="loading-shade all" *ngIf="loadingService.loading">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <form class="form" #reactiveForm="ngForm">
+    <div class="row">
+      <div class="col">
+        <mat-form-field>
+          <mat-label>{{ form["name"].label }}</mat-label>
+          <input
+            matInput
+            [type]="form['name'].config.type"
+            [name]="form['name'].config.name"
+            [(ngModel)]="form['name'].value"
+            [placeholder]="form['name'].config.placeholder"
+            [disabled]="form['name'].config.disabled"
+            [readonly]="form['name'].config.readonly"
+            [required]="form['name'].config.required"
+            [minlength]="form['name'].config.minlength"
+            [maxlength]="form['name'].config.maxlength"
+            [pattern]="form['name'].config.pattern"
+            [email]="form['name'].config.email"
+            [mask]="
+              form['name'].config.mask && form['name'].config.maskConfig.mask
+                ? form['name'].config.maskConfig.mask
+                : null
+            "
+            [dropSpecialCharacters]="
+              form['name'].config.mask &&
+              form['name'].config.maskConfig.dropSpecialCharacters
+                ? form['name'].config.maskConfig.dropSpecialCharacters
+                : true
+            "
+            [validation]="
+              form['name'].config.mask &&
+              form['name'].config.maskConfig.validation
+                ? form['name'].config.maskConfig.validation
+                : false
+            "
+          />
+          <mat-hint *ngIf="form['name'].config.hint">{{
+            form["name"].config.hint
+          }}</mat-hint>
+          <mat-error *ngIf="getErrorText(form['name'])">
+            {{ getErrorText(form["name"]) }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <mat-form-field>
+          <mat-label>{{ form["url"].label }}</mat-label>
+          <input
+            matInput
+            [type]="form['url'].config.type"
+            [name]="form['url'].config.name"
+            [(ngModel)]="form['url'].value"
+            [placeholder]="form['url'].config.placeholder"
+            [disabled]="form['url'].config.disabled"
+            [readonly]="form['url'].config.readonly"
+            [required]="form['url'].config.required"
+            [minlength]="form['url'].config.minlength"
+            [maxlength]="form['url'].config.maxlength"
+            [pattern]="form['url'].config.pattern"
+            [email]="form['url'].config.email"
+            [v-url-validator]="
+              !!form['url'].config.customValidators['urlValidator']
+            "
+            [mask]="
+              form['url'].config.mask && form['url'].config.maskConfig.mask
+                ? form['url'].config.maskConfig.mask
+                : null
+            "
+            [dropSpecialCharacters]="
+              form['url'].config.mask &&
+              form['url'].config.maskConfig.dropSpecialCharacters
+                ? form['url'].config.maskConfig.dropSpecialCharacters
+                : true
+            "
+            [validation]="
+              form['url'].config.mask &&
+              form['url'].config.maskConfig.validation
+                ? form['url'].config.maskConfig.validation
+                : false
+            "
+          />
+          <mat-hint *ngIf="form['url'].config.hint">{{
+            form["url"].config.hint
+          }}</mat-hint>
+          <mat-error *ngIf="getErrorText(form['url'])">
+            {{ getErrorText(form["url"]) }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <mat-checkbox
+          [name]="form['hasMethod'].config.name"
+          [(ngModel)]="form['hasMethod'].value"
+          [disabled]="form['hasMethod'].config.disabled"
+        >
+          {{ form["hasMethod"].label }}
+        </mat-checkbox>
+      </div>
+      <div class="col"></div>
+    </div>
+
+    <div class="row">
+      <div class="col"></div>
+      <div class="col submit-col">
+        <button
+          class="submit-btn"
+          type="button"
+          mat-raised-button
+          color="accent"
+          [disabled]="reactiveForm.invalid"
+          (click)="onSubmit()"
+        >
+          Salvar
+        </button>
+        <button
+          mat-icon-button
+          aria-label="Help Form Button"
+          type="button"
+          class="help-btn"
+          [class.show]="reactiveForm.invalid"
+          [matTooltip]="issueValues()"
+          matTooltipClass="multiline-tooltip"
+        >
+          <mat-icon>help</mat-icon>
+        </button>
+      </div>
+    </div>
+  </form>
+</section>

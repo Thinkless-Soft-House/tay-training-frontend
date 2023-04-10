@@ -21,6 +21,11 @@ export class SideMenuComponent {
       icon: 'list',
       route: '/master-details',
     },
+    {
+      name: 'Exercícios',
+      icon: 'list',
+      route: '/exercises',
+    },
   ];
 
   constructor(private router: Router) {}

@@ -2,44 +2,35 @@ import { ServiceBackendItemService } from './../../services/service-backend-item
 import { Router } from '@angular/router';
 import { Component } from '@angular/core';
 import { BehaviorSubject, debounceTime } from 'rxjs';
+import { DataMasterTable } from 'src/app/core/interfaces/data-master-table.interface';
+import { MasterTable } from 'src/app/core/classes/master-table.class';
 
 @Component({
   selector: 'app-master-details',
   templateUrl: './master-details.component.html',
-  styleUrls: ['./master-details.component.scss'],
+  styleUrls: ['../../core/shared/scss/master-details.shared.scss'],
 })
-export class MasterDetailsComponent {
-  title: string = 'Master Details Example';
-  targetFilters: string[] = ['Nome', 'Email', 'Telefone', 'CPF'];
-
-  columns = [
-    { name: 'id', title: 'ID' },
-    { name: 'name', title: 'Name' },
-  ];
-
-  filterChange$: BehaviorSubject<string> = new BehaviorSubject('');
-
+export class MasterDetailsComponent extends MasterTable<ServiceBackendItemService> {
   constructor(
-    private router: Router,
+    router: Router,
     public serviceBackendItemService: ServiceBackendItemService
-  ) {}
-
-  add() {
-    this.router.navigate(['/master-details', 'new']);
+  ) {
+    const data: DataMasterTable = {
+      title: 'Exercises',
+      targetFilters: ['Name', 'Description'],
+      columns: [
+        { name: 'id', title: 'ID' },
+        { name: 'name', title: 'Name' },
+        // { name: 'description', title: 'Description' },
+      ],
+      path: '/master-details',
+    };
+    super(router, serviceBackendItemService, data);
   }
 
-  changeFilter(filter: any) {
-    const value = filter.target!.value || '';
-    this.filterChange$.next(value);
-  }
-  edit(row: any) {
-    console.log('edit row', row);
-    this.router.navigate(['/master-details', row.id]);
-  }
-  delete(row: any) {
-    console.log('delete row', row);
-  }
-  changeTable(event: any) {
-    console.log('changeTable', event);
-  }
+  // add()
+  // changeFilter(filter: any)
+  // edit(row: any)
+  // delete(row: any)
+  // changeTable(event: any)
 }

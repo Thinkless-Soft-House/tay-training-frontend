@@ -1,5 +1,5 @@
 interface Control {
-  value?: string | Date;
+  value?: string | Date | boolean;
   label?: string;
 
   selectOptions?: { name: string; value: any }[];
@@ -42,7 +42,7 @@ interface Control {
 }
 
 export class ControlInput implements Control {
-  value: string | Date;
+  value: string | Date | boolean;
   label: string;
   selectOptions: { name: string; value: any }[];
 

@@ -1,26 +1,31 @@
-import { Component } from "@angular/core";
-import { NavigationEnd, Router } from "@angular/router";
+import { Component } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
-  selector: "app-root",
-  templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.scss"],
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  routesWithSideBar = ["/", "/home", "/master-details"];
+  routesWithSideBar = ['/', '/home', '/master-details', '/exercises'];
   pageTitles: { [id: string]: string | { [id: string]: string } } = {
-    "/home": "Home",
-    "/master-details": {
-      "/": "Lista de itens",
-      "/new": "Novo item",
-      default: "Detalhes do item",
+    '/home': 'Home',
+    '/master-details': {
+      '/': 'Lista de itens',
+      '/new': 'Novo item',
+      default: 'Detalhes do item',
     },
-    "/": "Home",
+    '/exercises': {
+      '/': 'Lista de Exercícios',
+      '/new': 'Novo exercício',
+      default: 'Detalhes do exercício',
+    },
+    '/': 'Home',
   };
 
   showSideBar = false;
-  headerTitle = "Meu aplicativo";
-  atualRoute = "/";
+  headerTitle = 'Meu aplicativo';
+  atualRoute = '/';
 
   constructor(private router: Router) {
     this.monitoreRouteChanges();
@@ -29,12 +34,12 @@ export class AppComponent {
   monitoreRouteChanges() {
     this.router.events.subscribe((val) => {
       if (val instanceof NavigationEnd) {
-        console.log("Rota alterada", val.url);
+        console.log('Rota alterada', val.url);
         this.atualRoute = val.url;
 
         this.showSideBar =
           this.routesWithSideBar
-            .filter((e) => e !== "/")
+            .filter((e) => e !== '/')
             .filter((e) => val.url.includes(e)).length > 0 ||
           this.routesWithSideBar.includes(val.url);
 
@@ -48,33 +53,33 @@ export class AppComponent {
       url.includes(e[0])
     );
     if (!titlePageSearched) {
-      return "Meu App";
+      return 'Meu App';
     }
     const [baseUrl, titles] = titlePageSearched;
 
-    if (titlePageSearched && typeof titles === "string") {
+    if (titlePageSearched && typeof titles === 'string') {
       return titles;
-    } else if (titlePageSearched && typeof titles === "object") {
+    } else if (titlePageSearched && typeof titles === 'object') {
       const atualUrlSplited = url.split(baseUrl);
       const [_, id] = atualUrlSplited;
 
-      if (id === "") {
-        return titles["/"];
+      if (id === '') {
+        return titles['/'];
       } else if (titles[id]) {
         return titles[id];
       } else {
-        return titles["default"];
+        return titles['default'];
       }
     } else {
-      return "Meu App";
+      return 'Meu App';
     }
   }
 
   goToProfile() {
-    console.log("Ir para o perfil");
+    console.log('Ir para o perfil');
   }
 
   logout() {
-    console.log("Fazer logout");
+    console.log('Fazer logout');
   }
 }

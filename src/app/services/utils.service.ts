@@ -2,8 +2,8 @@ import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { Injectable } from '@angular/core';
 import { PaginationConfig } from '../core/interfaces/pagination.interface';
-import { ControlInput } from '../core/classes/Control.class';
 import { NgForm } from '@angular/forms';
+import { ControlInput } from '../core/classes/control.class';
 
 @Injectable({
   providedIn: 'root',

@@ -3,7 +3,7 @@ import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { setDefaultOptions } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { ControlInput } from 'src/app/core/classes/Control.class';
+import { ControlInput } from 'src/app/core/classes/control.class';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingService } from 'src/app/services/loading.service';
 
@@ -12,7 +12,7 @@ setDefaultOptions({ locale: ptBR });
 @Component({
   selector: 'app-details-item',
   templateUrl: './details-item.component.html',
-  styleUrls: ['./details-item.component.scss'],
+  styleUrls: ['../../../core/shared/scss/master-details.shared.scss'],
 })
 export class DetailsItemComponent {
   form: { [id: string]: ControlInput } = {
