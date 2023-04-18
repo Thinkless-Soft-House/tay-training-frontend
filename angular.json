@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "angular-15-with-material": {
+    "tay-training-frontend": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -39,7 +39,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/angular-15-with-material",
+            "outputPath": "dist/tay-training-frontend",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -62,13 +62,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "1500kb",
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "1500kb",
+                  "maximumError": "2mb"
                 }
               ],
               "outputHashing": "all"
@@ -94,10 +94,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "angular-15-with-material:build:production"
+              "browserTarget": "tay-training-frontend:build:production"
             },
             "development": {
-              "browserTarget": "angular-15-with-material:build:development"
+              "browserTarget": "tay-training-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -105,7 +105,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "angular-15-with-material:build"
+            "browserTarget": "tay-training-frontend:build"
           }
         },
         "test": {
