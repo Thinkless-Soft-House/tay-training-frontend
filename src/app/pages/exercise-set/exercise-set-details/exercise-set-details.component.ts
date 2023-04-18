@@ -45,10 +45,13 @@ export class ExerciseSetDetailsComponent {
 
   newExercise: {
     exercise: ControlInput;
+    exercise2: ControlInput;
+    exercise3: ControlInput;
     method?: ControlInput;
     series: ControlInput;
     sleepTime: ControlInput;
     repetitions: ControlInput;
+    manyExercises: ControlInput;
   } = {
     exercise: new ControlInput({
       label: 'Exercício',
@@ -60,6 +63,36 @@ export class ExerciseSetDetailsComponent {
       ],
       config: {
         name: 'exercise',
+        errors: {
+          required: 'Campo obrigatório',
+        },
+      },
+    }),
+    exercise2: new ControlInput({
+      label: 'Exercício 2',
+      selectOptions: [
+        { name: 'Opção 0', value: 0 },
+        { name: 'Opção 1', value: 1 },
+        { name: 'Opção 2', value: 2 },
+        { name: 'Opção 3', value: 3 },
+      ],
+      config: {
+        name: 'exercise2',
+        errors: {
+          required: 'Campo obrigatório',
+        },
+      },
+    }),
+    exercise3: new ControlInput({
+      label: 'Exercício 3',
+      selectOptions: [
+        { name: 'Opção 0', value: 0 },
+        { name: 'Opção 1', value: 1 },
+        { name: 'Opção 2', value: 2 },
+        { name: 'Opção 3', value: 3 },
+      ],
+      config: {
+        name: 'exercise3',
         errors: {
           required: 'Campo obrigatório',
         },
@@ -108,6 +141,16 @@ export class ExerciseSetDetailsComponent {
         },
       },
     }),
+    manyExercises: new ControlInput({
+      label: 'Exercícios por série',
+      value: 1,
+      config: {
+        name: 'manyExercises',
+        errors: {
+          required: 'Campo obrigatório',
+        },
+      },
+    }),
   };
 
   exercicies: {
@@ -116,6 +159,7 @@ export class ExerciseSetDetailsComponent {
     series: number;
     sleepTime: number;
     repetitions: number;
+    manyExercises: number;
   }[] = [];
 
   allExercises = [
@@ -132,6 +176,11 @@ export class ExerciseSetDetailsComponent {
     { name: 'Método 3', value: 3 },
   ];
 
+  manyExercises = [
+    { name: 'One Set', value: 1 },
+    { name: 'Bi Set', value: 2 },
+    { name: 'Tri Set', value: 3 },
+  ];
   // Exercises table Configurations
 
   columns = [
@@ -149,6 +198,9 @@ export class ExerciseSetDetailsComponent {
     'repetitions',
     'actions',
   ];
+
+  showBiSet = false;
+  showTriSet = false;
 
   @ViewChild('reactiveForm') formRef!: NgForm;
   constructor(
@@ -178,6 +230,7 @@ export class ExerciseSetDetailsComponent {
               series: 4,
               sleepTime: 30,
               repetitions: 2,
+              manyExercises: 1,
             },
             {
               exercise: 3,
@@ -185,6 +238,7 @@ export class ExerciseSetDetailsComponent {
               series: 4,
               sleepTime: 30,
               repetitions: 2,
+              manyExercises: 1,
             },
           ];
           this.loadingService.deactiveLoading();
@@ -247,6 +301,7 @@ export class ExerciseSetDetailsComponent {
       series: this.newExercise.series.value as number,
       sleepTime: this.newExercise.sleepTime.value as number,
       repetitions: this.newExercise.repetitions.value as number,
+      manyExercises: this.newExercise.manyExercises.value as number,
     });
 
     this.newExercise.exercise.value = 0;
@@ -254,6 +309,7 @@ export class ExerciseSetDetailsComponent {
     this.newExercise.series.value = 0;
     this.newExercise.sleepTime.value = 0;
     this.newExercise.repetitions.value = 0;
+    this.newExercise.manyExercises.value = 1;
 
     console.log(this.exercicies);
   }
@@ -264,6 +320,7 @@ export class ExerciseSetDetailsComponent {
     series: number;
     sleepTime: number;
     repetitions: number;
+    manyExercises: number;
   }) {
     const index = this.exercicies.indexOf(exercise);
     if (index > -1) {
@@ -277,6 +334,7 @@ export class ExerciseSetDetailsComponent {
     series: number;
     sleepTime: number;
     repetitions: number;
+    manyExercises: number;
   }) {
     this.newExercise.exercise.value = exercise.exercise;
     if (this.newExercise.method)
@@ -284,8 +342,24 @@ export class ExerciseSetDetailsComponent {
     this.newExercise.series.value = exercise.series;
     this.newExercise.sleepTime.value = exercise.sleepTime;
     this.newExercise.repetitions.value = exercise.repetitions;
+    this.newExercise.manyExercises.value = exercise.manyExercises;
 
     this.removeExercise(exercise);
+  }
+
+  changeManyExercises() {
+    console.log(this.newExercise.manyExercises.value);
+
+    if (this.newExercise.manyExercises.value === 1) {
+      this.showBiSet = false;
+      this.showTriSet = false;
+    } else if (this.newExercise.manyExercises.value === 2) {
+      this.showBiSet = true;
+      this.showTriSet = false;
+    } else if (this.newExercise.manyExercises.value === 3) {
+      this.showBiSet = true;
+      this.showTriSet = true;
+    }
   }
 
   maskFilled(control: ControlInput) {

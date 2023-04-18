@@ -144,6 +144,79 @@
 
         <div class="row">
           <div class="col">
+            <span> {{ newExercise["manyExercises"].label }} </span>
+            <mat-radio-group
+              [(ngModel)]="newExercise['manyExercises'].value"
+              [name]="newExercise['manyExercises'].config.name"
+              (ngModelChange)="changeManyExercises()"
+            >
+              <mat-radio-button
+                *ngFor="let item of manyExercises"
+                [value]="item.value"
+              >
+                {{ item.name }}
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <!-- Treino -->
+            <mat-form-field appearance="fill" *ngIf="showBiSet">
+              <mat-label>{{ newExercise["exercise2"].label }}</mat-label>
+              <mat-select
+                [(ngModel)]="newExercise['exercise2'].value"
+                [name]="newExercise['exercise2'].config.name"
+                [placeholder]="newExercise['exercise2'].config.placeholder"
+                [disabled]="newExercise['exercise2'].config.disabled"
+                [required]="newExercise['exercise2'].config.required"
+              >
+                <mat-option
+                  *ngFor="let item of newExercise['exercise2'].selectOptions"
+                  [value]="item.value"
+                >
+                  {{ item.name }}
+                </mat-option>
+              </mat-select>
+              <mat-hint *ngIf="newExercise['exercise2'].config.hint">{{
+                newExercise["exercise2"].config.hint
+              }}</mat-hint>
+              <mat-error *ngIf="getErrorText(newExercise['exercise2'])">
+                {{ getErrorText(newExercise["exercise2"]) }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col">
+            <!-- Método de treino* -->
+            <ng-container *ngIf="showTriSet">
+              <mat-form-field appearance="fill">
+                <mat-label>{{ newExercise["exercise3"].label }}</mat-label>
+                <mat-select
+                  [(ngModel)]="newExercise['exercise3'].value"
+                  [name]="newExercise['exercise3'].config.name"
+                  [placeholder]="newExercise['exercise3'].config.placeholder"
+                  [disabled]="newExercise['exercise3'].config.disabled"
+                  [required]="newExercise['exercise3'].config.required"
+                >
+                  <mat-option
+                    *ngFor="let item of newExercise['exercise3'].selectOptions"
+                    [value]="item.value"
+                  >
+                    {{ item.name }}
+                  </mat-option>
+                </mat-select>
+                <mat-hint *ngIf="newExercise['exercise3'].config.hint">{{
+                  newExercise["exercise3"].config.hint
+                }}</mat-hint>
+                <mat-error *ngIf="getErrorText(newExercise['exercise3'])">
+                  {{ getErrorText(newExercise["exercise3"]) }}
+                </mat-error>
+              </mat-form-field>
+            </ng-container>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
             <!-- Treino -->
             <mat-form-field appearance="fill">
               <mat-label>{{ newExercise["exercise"].label }}</mat-label>
