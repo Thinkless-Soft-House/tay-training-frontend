@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { MasterTable } from 'src/app/core/classes/master-table.class';
 import { DataMasterTable } from 'src/app/core/interfaces/data-master-table.interface';
 import { ServiceBackendItemService } from 'src/app/services/service-backend-item.service';
+import { WorkoutsService } from 'src/app/services/workouts.service';
 
 @Component({
   selector: 'app-workouts',
@@ -12,14 +13,14 @@ import { ServiceBackendItemService } from 'src/app/services/service-backend-item
     './workouts.component.scss',
   ],
 })
-export class WorkoutsComponent extends MasterTable<ServiceBackendItemService> {
+export class WorkoutsComponent extends MasterTable<WorkoutsService> {
   constructor(
     router: Router,
-    public serviceBackendItemService: ServiceBackendItemService
+    public workoutsService: WorkoutsService
   ) {
     const data: DataMasterTable = {
       title: 'Treinos',
-      targetFilters: ['Name', 'Description'],
+      targetFilters: ['Name'],
       columns: [
         { name: 'id', title: 'ID' },
         { name: 'name', title: 'Name' },
@@ -27,7 +28,7 @@ export class WorkoutsComponent extends MasterTable<ServiceBackendItemService> {
       ],
       path: '/workouts',
     };
-    super(router, serviceBackendItemService, data);
+    super(router, workoutsService, data);
   }
 
   // add()

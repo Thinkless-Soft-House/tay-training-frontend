@@ -20,10 +20,7 @@ import { UtilsService } from 'src/app/services/utils.service';
   styleUrls: ['./master-table.component.scss'],
 })
 export class MasterTableComponent<T, Y> {
-  @Input() columns: { name: string; title: string }[] = [
-    { name: 'id', title: 'ID' },
-    { name: 'name', title: 'Name' },
-  ];
+  @Input() columns: { name: string; title: string }[] = [];
   @Input() filterChange$: BehaviorSubject<string> = new BehaviorSubject('');
   filterChangeToDataSource$: BehaviorSubject<string> = new BehaviorSubject('');
   @Input() service!: Y;
@@ -43,7 +40,10 @@ export class MasterTableComponent<T, Y> {
   constructor(
     private utilsService: UtilsService,
     public loadingService: LoadingService
-  ) {
+  ) {}
+
+  private createColumns() {
+    console.log(this.columns);
     this.itemColumns = JSON.parse(JSON.stringify(this.columns));
 
     this.columns.push({
@@ -51,9 +51,11 @@ export class MasterTableComponent<T, Y> {
       title: 'Actions',
     });
     this.displayedColumns = this.columns.map((c) => c.name);
+    console.log(this.displayedColumns);
   }
 
   ngOnInit() {
+    this.createColumns();
     this.dataSource = new MasterTableDataSource(
       this.service,
       this.filterChangeToDataSource$.pipe(debounceTime(200)),

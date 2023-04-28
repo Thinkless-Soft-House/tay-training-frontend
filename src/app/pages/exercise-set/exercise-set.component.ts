@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { MasterTable } from 'src/app/core/classes/master-table.class';
 import { DataMasterTable } from 'src/app/core/interfaces/data-master-table.interface';
+import { ExerciseSetService } from 'src/app/services/exercise-set.service';
 import { ServiceBackendItemService } from 'src/app/services/service-backend-item.service';
 
 @Component({
@@ -12,22 +13,23 @@ import { ServiceBackendItemService } from 'src/app/services/service-backend-item
     './exercise-set.component.scss',
   ],
 })
-export class ExerciseSetComponent extends MasterTable<ServiceBackendItemService> {
+export class ExerciseSetComponent extends MasterTable<ExerciseSetService> {
   constructor(
     router: Router,
-    public serviceBackendItemService: ServiceBackendItemService
+    public exerciseSetService: ExerciseSetService
   ) {
     const data: DataMasterTable = {
-      title: 'Exercises',
-      targetFilters: ['Name', 'Description'],
+      title: 'Exercise Set',
+      targetFilters: ['Name', 'Category'],
       columns: [
         { name: 'id', title: 'ID' },
         { name: 'name', title: 'Name' },
+        { name: 'category', title: 'Category' },
         // { name: 'description', title: 'Description' },
       ],
       path: '/exercise-set',
     };
-    super(router, serviceBackendItemService, data);
+    super(router, exerciseSetService, data);
   }
 
   // add()

@@ -32,7 +32,7 @@ export class SideMenuComponent {
       route: '/exercise-set',
     },
     {
-      name: 'Exercícios',
+      name: 'Treinos',
       icon: 'list',
       route: '/workouts',
     },

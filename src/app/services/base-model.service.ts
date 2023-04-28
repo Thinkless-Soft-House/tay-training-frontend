@@ -49,8 +49,8 @@ export class BaseModelService {
       ''
     );
     const req = this.http.get(`${this.path}/filter?${filterQuery}`);
-    // return this.request(req);
-    return this.request(this.mockupRequest());
+    return this.request(req);
+    // return this.request(this.mockupRequest());
   }
 
   getById(id: number) {

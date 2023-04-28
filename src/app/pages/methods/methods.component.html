@@ -24,7 +24,7 @@
   <!-- Table -->
   <app-master-table
     [columns]="columns"
-    [service]="serviceBackendItemService"
+    [service]="methodsService"
     functionName="getByFilter"
     [filterChange$]="filterChange$"
     (edit$)="edit($event)"

@@ -1,7 +1,7 @@
 export interface PaginationConfig {
-  page: number;
-  pageSize: number;
-  orderBy: string;
-  orderDirection: string;
+  take?: number;
+  skip?: number;
+  orderColumn?: string;
+  order: 'ASC' | 'DESC';
   filter: string;
 }

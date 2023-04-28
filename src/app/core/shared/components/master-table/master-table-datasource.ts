@@ -71,8 +71,19 @@ export class MasterTableDataSource<T, Y> extends DataSource<T> {
         }),
         tap((e: any) => {
           this.paginator!.length = e.total;
-          this.paginator!.pageIndex = this.atualPagination.page - 1;
-          this.paginator!.pageSize = this.atualPagination.pageSize;
+          // Transform atualPagination.take in paginator.pageIndex
+          this.paginator!.pageIndex = Math.floor(
+            this.atualPagination.skip! / this.atualPagination.take!
+          );
+          // Transform atualPagination.skip in paginator.pageSize
+          this.paginator!.pageSize = this.atualPagination.take!;
+        }),
+        map((e: any) => {
+          console.log('e', e);
+          return {
+            items: e.data,
+            total: e.count,
+          };
         }),
         map((e: any) => {
           this.loadingService.deactiveLoading();

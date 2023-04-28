@@ -27,19 +27,25 @@ export class UtilsService {
     const pagination: any = {};
 
     if (paginator) {
-      pagination['page'] = paginator.pageIndex + 1;
-      pagination['pageSize'] = paginator.pageSize;
+      // Fill Take and Skip
+      pagination['take'] = paginator.pageSize;
+      pagination['skip'] = paginator.pageIndex * paginator.pageSize;
     } else {
-      pagination['page'] = 1;
-      pagination['pageSize'] = 10;
+      // Start in first page with 10 items
+      pagination['take'] = 10;
+      pagination['skip'] = 0;
     }
 
     if (sort) {
-      pagination['orderBy'] = sort.active;
-      pagination['orderDirection'] = sort.direction;
+      // Fill order (asc or desc) and OrderColumn (column name)
+      pagination['order'] = sort.direction
+        ? (sort.direction.toUpperCase() as 'ASC' | 'DESC')
+        : 'ASC';
+      pagination['orderColumn'] = sort.active ? sort.active : 'id';
     } else {
-      pagination['orderBy'] = 'id';
-      pagination['orderDirection'] = 'asc';
+      // Order by id asc
+      pagination['order'] = 'ASC';
+      pagination['orderColumn'] = 'id';
     }
 
     if (filter) {
