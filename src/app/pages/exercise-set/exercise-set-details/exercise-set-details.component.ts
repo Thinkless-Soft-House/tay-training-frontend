@@ -1,9 +1,48 @@
+import { ExercisesService } from 'src/app/services/exercises.service';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate,
+} from '@angular/animations';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { MatTable } from '@angular/material/table';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ControlInput } from 'src/app/core/classes/control.class';
 import { LoadingService } from 'src/app/services/loading.service';
 import { UtilsService } from 'src/app/services/utils.service';
+import { ExerciseSetService } from 'src/app/services/exercise-set.service';
+import { MethodsService } from 'src/app/services/methods.service';
+import { ExerciseMethodService } from 'src/app/services/exercise-method.service';
+import { ExerciseConfigurationService } from 'src/app/services/exercise-configuration.service';
+
+export interface ExerciseSet {
+  id?: number;
+  name: string;
+  category: string;
+
+  exerciseMethods?: ExerciseMethod[];
+}
+
+export interface ExerciseConfiguration {
+  id?: number;
+  series: string;
+  reps: string;
+  rest: string;
+  exerciseMethodId?: number;
+  exerciseId: number;
+  methodId: number;
+}
+
+export interface ExerciseMethod {
+  id?: number;
+  type: string;
+  exerciseGroupId?: number;
+  exerciseConfigurations?: ExerciseConfiguration[];
+}
 
 @Component({
   selector: 'app-exercise-set-details',
@@ -11,6 +50,16 @@ import { UtilsService } from 'src/app/services/utils.service';
   styleUrls: [
     '../../../core/shared/scss/details-item.shared.scss',
     './exercise-set-details.component.scss',
+  ],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition(
+        'expanded <=> collapsed',
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
+      ),
+    ]),
   ],
 })
 export class ExerciseSetDetailsComponent {
@@ -28,10 +77,10 @@ export class ExerciseSetDetailsComponent {
     setCategories: new ControlInput({
       label: 'Categoria do treino',
       selectOptions: [
-        { name: 'Opção 0', value: 0 },
-        { name: 'Opção 1', value: 1 },
-        { name: 'Opção 2', value: 2 },
-        { name: 'Opção 3', value: 3 },
+        { name: 'Opção 0', value: '0' },
+        { name: 'Opção 1', value: '1' },
+        { name: 'Opção 2', value: '2' },
+        { name: 'Opção 3', value: '3' },
       ],
       config: {
         name: 'setCategories',
@@ -43,107 +92,10 @@ export class ExerciseSetDetailsComponent {
     }),
   };
 
-  newExercise: {
-    exercise: ControlInput;
-    exercise2: ControlInput;
-    exercise3: ControlInput;
-    method?: ControlInput;
-    series: ControlInput;
-    sleepTime: ControlInput;
-    repetitions: ControlInput;
-    manyExercises: ControlInput;
-  } = {
-    exercise: new ControlInput({
-      label: 'Exercício',
-      selectOptions: [
-        { name: 'Opção 0', value: 0 },
-        { name: 'Opção 1', value: 1 },
-        { name: 'Opção 2', value: 2 },
-        { name: 'Opção 3', value: 3 },
-      ],
-      config: {
-        name: 'exercise',
-        errors: {
-          required: 'Campo obrigatório',
-        },
-      },
-    }),
-    exercise2: new ControlInput({
-      label: 'Exercício 2',
-      selectOptions: [
-        { name: 'Opção 0', value: 0 },
-        { name: 'Opção 1', value: 1 },
-        { name: 'Opção 2', value: 2 },
-        { name: 'Opção 3', value: 3 },
-      ],
-      config: {
-        name: 'exercise2',
-        errors: {
-          required: 'Campo obrigatório',
-        },
-      },
-    }),
-    exercise3: new ControlInput({
-      label: 'Exercício 3',
-      selectOptions: [
-        { name: 'Opção 0', value: 0 },
-        { name: 'Opção 1', value: 1 },
-        { name: 'Opção 2', value: 2 },
-        { name: 'Opção 3', value: 3 },
-      ],
-      config: {
-        name: 'exercise3',
-        errors: {
-          required: 'Campo obrigatório',
-        },
-      },
-    }),
-    method: new ControlInput({
-      label: 'Método',
-      selectOptions: [
-        { name: 'Opção 0', value: 0 },
-        { name: 'Opção 1', value: 1 },
-        { name: 'Opção 2', value: 2 },
-        { name: 'Opção 3', value: 3 },
-      ],
-      config: {
-        name: 'method',
-        errors: {
-          required: 'Campo obrigatório',
-        },
-      },
-    }),
-    series: new ControlInput({
-      label: 'Séries',
-      config: {
-        name: 'series',
-        type: 'number',
-        errors: {
-          required: 'Campo obrigatório',
-        },
-      },
-    }),
-    sleepTime: new ControlInput({
-      label: 'Tempo de descanso',
-      config: {
-        name: 'sleepTime',
-        errors: {
-          required: 'Campo obrigatório',
-        },
-      },
-    }),
-    repetitions: new ControlInput({
-      label: 'Repetições',
-      config: {
-        name: 'repetitions',
-        errors: {
-          required: 'Campo obrigatório',
-        },
-      },
-    }),
+  exerciseMethodController: { manyExercises: ControlInput } = {
     manyExercises: new ControlInput({
       label: 'Exercícios por série',
-      value: 1,
+      value: 'ONESET',
       config: {
         name: 'manyExercises',
         errors: {
@@ -153,14 +105,29 @@ export class ExerciseSetDetailsComponent {
     }),
   };
 
-  exercicies: {
-    exercise: number;
-    method?: number;
-    series: number;
-    sleepTime: number;
-    repetitions: number;
-    manyExercises: number;
-  }[] = [];
+  oneSetExercise: {
+    exercise: ControlInput;
+    method?: ControlInput;
+    series: ControlInput;
+    sleepTime: ControlInput;
+    repetitions: ControlInput;
+  };
+  biSetExercise: {
+    exercise: ControlInput;
+    method?: ControlInput;
+    series: ControlInput;
+    sleepTime: ControlInput;
+    repetitions: ControlInput;
+  };
+  triSetExercise: {
+    exercise: ControlInput;
+    method?: ControlInput;
+    series: ControlInput;
+    sleepTime: ControlInput;
+    repetitions: ControlInput;
+  };
+
+  exercicies: ExerciseMethod[] = [];
 
   allExercises = [
     { name: 'Treino 0', value: 0 },
@@ -176,84 +143,106 @@ export class ExerciseSetDetailsComponent {
     { name: 'Método 3', value: 3 },
   ];
 
-  manyExercises = [
-    { name: 'One Set', value: 1 },
-    { name: 'Bi Set', value: 2 },
-    { name: 'Tri Set', value: 3 },
+  typeExercise = [
+    { name: 'One Set', value: 'ONESET' },
+    { name: 'Bi Set', value: 'BISET' },
+    { name: 'Tri Set', value: 'TRISET' },
   ];
   // Exercises table Configurations
 
-  columns = [
-    { name: 'exercise', title: 'Exercício' },
-    { name: 'method', title: 'Método' },
-    { name: 'series', title: 'Séries' },
-    { name: 'sleepTime', title: 'Tempo de descanso' },
-    { name: 'repetitions', title: 'Repetições' },
-  ];
-  columnsDisplay = [
-    'exercise',
-    'method',
-    'series',
-    'sleepTime',
-    'repetitions',
-    'actions',
-  ];
-
-  showBiSet = false;
-  showTriSet = false;
+  // columns = [
+  //   { name: 'exercise', title: 'Exercício' },
+  //   { name: 'method', title: 'Método' },
+  //   { name: 'series', title: 'Séries' },
+  //   { name: 'sleepTime', title: 'Tempo de descanso' },
+  //   { name: 'repetitions', title: 'Repetições' },
+  // ];
+  columnsDisplay = ['type', 'countExercicies', 'actions'];
+  expandedExercise: ExerciseMethod | null = null;
 
   @ViewChild('reactiveForm') formRef!: NgForm;
+  @ViewChild('tableExercisies') table!: MatTable<any> | null;
+
+  isEdit = false;
+  editId: number | null = null;
+  exerciseMethodSaved: ExerciseMethod[] = [];
+
   constructor(
     private utilsService: UtilsService,
     private actRoute: ActivatedRoute,
-    public loadingService: LoadingService
+    public loadingService: LoadingService,
+    private router: Router,
+    private exercisesService: ExercisesService,
+    private methodsService: MethodsService,
+    private exerciseSetService: ExerciseSetService,
+    private exerciseMethodsService: ExerciseMethodService,
+    private exerciseConfigurationService: ExerciseConfigurationService
   ) {
-    console.log(this.newExercise);
+    this.oneSetExercise = this.initOneBiAndTriSetForms('oneSetExercise');
+    this.biSetExercise = this.initOneBiAndTriSetForms('biSetExercise');
+    this.triSetExercise = this.initOneBiAndTriSetForms('triSetExercise');
   }
 
-  ngOnInit(): void {}
+  async ngOnInit() {
+    this.allExercises = (await this.exercisesService.getAll()).map((e: any) => {
+      return { name: e.name, value: e.id };
+    });
+    this.allMethods = (await this.methodsService.getAll()).map((e: any) => {
+      return { name: e.name, value: e.id };
+    });
+
+    console.log('exercise', this.allExercises);
+    console.log('methods', this.allMethods);
+
+    this.oneSetExercise.exercise.selectOptions = this.allExercises;
+    this.biSetExercise.exercise.selectOptions = this.allExercises;
+    this.triSetExercise.exercise.selectOptions = this.allExercises;
+
+    this.oneSetExercise.method!.selectOptions = this.allMethods;
+    this.biSetExercise.method!.selectOptions = this.allMethods;
+    this.triSetExercise.method!.selectOptions = this.allMethods;
+  }
   ngAfterViewInit() {
-    this.actRoute.params.subscribe((params) => {
+    this.actRoute.params.subscribe(async (params) => {
       if (params['id'] !== 'new') {
-        // Load data...
         setTimeout(() => {
           this.loadingService.activeLoading();
         }, 50);
-        setTimeout(() => {
-          this.formRef.controls['name'].setValue('Treino 1');
-          this.formRef.controls['setCategories'].setValue(1);
+        // Load data...
+        this.isEdit = true;
+        this.editId = params['id'];
 
-          this.exercicies = [
-            {
-              exercise: 2,
-              method: 1,
-              series: 4,
-              sleepTime: 30,
-              repetitions: 2,
-              manyExercises: 1,
-            },
-            {
-              exercise: 3,
-              method: 2,
-              series: 4,
-              sleepTime: 30,
-              repetitions: 2,
-              manyExercises: 1,
-            },
-          ];
+        const exerciseGroup: ExerciseSet =
+          await this.exerciseSetService.getById(this.editId!, [
+            'exerciseMethods',
+            'exerciseMethods.exerciseConfigurations',
+          ]);
+
+        console.log('exerciseGroup', exerciseGroup);
+
+        this.formRef.controls['name'].setValue(exerciseGroup.name);
+        this.formRef.controls['setCategories'].setValue(exerciseGroup.category);
+
+        this.exercicies = exerciseGroup.exerciseMethods!;
+        this.exerciseMethodSaved = JSON.parse(JSON.stringify(this.exercicies));
+
+        setTimeout(() => {
           this.loadingService.deactiveLoading();
-        }, 2000);
+        }, 50);
       }
     });
   }
 
   getExercise(exercise: number) {
-    return this.allExercises.find((x) => x.value === exercise)?.name;
+    return !!this.allExercises.find((x) => x.value === exercise)
+      ? this.allExercises.find((x) => x.value === exercise)!.name
+      : '';
   }
 
   getMethod(method: number) {
-    return this.allMethods.find((x) => x.value === method)?.name;
-  }
+    return !!this.allMethods.find((x) => x.value === method)
+      ? this.allMethods.find((x) => x.value === method)!.name
+      : '';  }
 
   getErrorText(control: ControlInput) {
     return this.utilsService.getErrorText(this.formRef, control);
@@ -278,89 +267,222 @@ export class ExerciseSetDetailsComponent {
 
     return ret;
   }
+
+  // Init new exercise methods
+
+  // dragdropEvent(event: CdkDragDrop<string[]>) {
+  //   moveItemInArray(this.exercicies, event.previousIndex, event.currentIndex);
+  // }
+
+  private initOneBiAndTriSetForms(
+    prefix: 'oneSetExercise' | 'biSetExercise' | 'triSetExercise'
+  ) {
+    const model = {
+      exercise: new ControlInput({
+        label: 'Exercício',
+        selectOptions: [
+          { name: 'Opção 0', value: 0 },
+          { name: 'Opção 1', value: 1 },
+          { name: 'Opção 2', value: 2 },
+          { name: 'Opção 3', value: 3 },
+        ],
+        config: {
+          name: 'exercise',
+          errors: {
+            required: 'Campo obrigatório',
+          },
+        },
+      }),
+      method: new ControlInput({
+        label: 'Método',
+        selectOptions: [
+          { name: 'Opção 0', value: 0 },
+          { name: 'Opção 1', value: 1 },
+          { name: 'Opção 2', value: 2 },
+          { name: 'Opção 3', value: 3 },
+        ],
+        config: {
+          name: 'method',
+          errors: {
+            required: 'Campo obrigatório',
+          },
+        },
+      }),
+      series: new ControlInput({
+        label: 'Séries',
+        config: {
+          name: 'series',
+          type: 'text',
+          errors: {
+            required: 'Campo obrigatório',
+          },
+        },
+      }),
+      sleepTime: new ControlInput({
+        label: 'Tempo de descanso',
+        config: {
+          name: 'sleepTime',
+          errors: {
+            required: 'Campo obrigatório',
+          },
+        },
+      }),
+      repetitions: new ControlInput({
+        label: 'Repetições',
+        config: {
+          name: 'repetitions',
+          errors: {
+            required: 'Campo obrigatório',
+          },
+        },
+      }),
+    };
+
+    model.exercise.config.name = `${prefix}_exercise`;
+    model.method.config.name = `${prefix}_method`;
+    model.series.config.name = `${prefix}_series`;
+    model.sleepTime.config.name = `${prefix}_repetitions`;
+    model.repetitions.config.name = `${prefix}_sleepTime`;
+
+    return model;
+  }
+  private extractOneBiAndTriSetForms(
+    set: 'oneSetExercise' | 'biSetExercise' | 'triSetExercise'
+  ): ExerciseConfiguration {
+    return {
+      exerciseId: this.formRef.form.controls[`${set}_exercise`].value,
+      methodId: this.formRef.form.controls[`${set}_method`].value,
+      series: this.formRef.form.controls[`${set}_series`].value,
+      reps: this.formRef.form.controls[`${set}_repetitions`].value,
+      rest: this.formRef.form.controls[`${set}_sleepTime`].value,
+    };
+  }
+  private populateOneBiAndTriSetForms(
+    set: 'oneSetExercise' | 'biSetExercise' | 'triSetExercise',
+    config: ExerciseConfiguration
+  ): void {
+    this.formRef.form.controls[`${set}_exercise`].setValue(config.exerciseId);
+    this.formRef.form.controls[`${set}_method`].setValue(config.methodId);
+    this.formRef.form.controls[`${set}_series`].setValue(config.series);
+    this.formRef.form.controls[`${set}_repetitions`].setValue(config.reps);
+    this.formRef.form.controls[`${set}_sleepTime`].setValue(config.rest);
+  }
+  private populateSetForms(exercise: ExerciseMethod): void {
+    this.resetAllSetForms();
+
+    if (exercise.exerciseConfigurations![0]) {
+      this.populateOneBiAndTriSetForms(
+        'oneSetExercise',
+        exercise.exerciseConfigurations![0] as ExerciseConfiguration
+      );
+    }
+    if (exercise.exerciseConfigurations![1]) {
+      this.populateOneBiAndTriSetForms(
+        'biSetExercise',
+        exercise.exerciseConfigurations![1] as ExerciseConfiguration
+      );
+    }
+    if (exercise.exerciseConfigurations![2]) {
+      this.populateOneBiAndTriSetForms(
+        'triSetExercise',
+        exercise.exerciseConfigurations![2] as ExerciseConfiguration
+      );
+    }
+  }
+  private resetOneBiAndTriSetForms(
+    set: 'oneSetExercise' | 'biSetExercise' | 'triSetExercise'
+  ): void {
+    console.log('set', set);
+    console.log('form', this.formRef);
+    this.formRef.form.controls[`${set}_exercise`].reset();
+    this.formRef.form.controls[`${set}_method`].reset();
+    this.formRef.form.controls[`${set}_series`].reset();
+    this.formRef.form.controls[`${set}_repetitions`].reset();
+    this.formRef.form.controls[`${set}_sleepTime`].reset();
+  }
+  private resetAllSetForms(): void {
+    this.resetOneBiAndTriSetForms('oneSetExercise');
+    if (this.exerciseMethodController.manyExercises.value !== 'ONESET')
+      this.resetOneBiAndTriSetForms('biSetExercise');
+    if (this.exerciseMethodController.manyExercises.value === 'TRISET')
+      this.resetOneBiAndTriSetForms('triSetExercise');
+  }
+
   issueValuesNewExercise() {
     let ret = '';
 
-    if (!this.newExercise.exercise.value)
-      ret += `Exercício: Campo obrigatório \r\n`;
-    if (this.newExercise.method && !this.newExercise.method.value)
-      ret += `Método: Campo obrigatório \r\n`;
-    if (!this.newExercise.series.value) ret += `Séries: Campo obrigatório \r\n`;
-    if (!this.newExercise.sleepTime.value)
-      ret += `Tempo de descanso: Campo obrigatório\r\n`;
-    if (!this.newExercise.repetitions.value)
-      ret += `Repetições: Campo obrigatório`;
+    // if (!this.newExercise.exercise.value)
+    //   ret += `Exercício: Campo obrigatório \r\n`;
+    // if (this.newExercise.method && !this.newExercise.method.value)
+    //   ret += `Método: Campo obrigatório \r\n`;
+    // if (!this.newExercise.series.value) ret += `Séries: Campo obrigatório \r\n`;
+    // if (!this.newExercise.sleepTime.value)
+    //   ret += `Tempo de descanso: Campo obrigatório\r\n`;
+    // if (!this.newExercise.repetitions.value)
+    //   ret += `Repetições: Campo obrigatório`;
 
     return ret;
   }
 
   addExercise() {
-    this.exercicies.push({
-      exercise: this.newExercise.exercise.value as number,
-      method: this.newExercise.method?.value as number,
-      series: this.newExercise.series.value as number,
-      sleepTime: this.newExercise.sleepTime.value as number,
-      repetitions: this.newExercise.repetitions.value as number,
-      manyExercises: this.newExercise.manyExercises.value as number,
-    });
+    // Check the Exercise type betwenn one, bi or tri set
+    const configExercises = [];
+    if (this.exerciseMethodController.manyExercises.value === 'ONESET') {
+      // Fill one Config Exercise and push to array
 
-    this.newExercise.exercise.value = 0;
-    if (this.newExercise.method) this.newExercise.method.value = 0;
-    this.newExercise.series.value = 0;
-    this.newExercise.sleepTime.value = 0;
-    this.newExercise.repetitions.value = 0;
-    this.newExercise.manyExercises.value = 1;
+      const oneSet: ExerciseConfiguration =
+        this.extractOneBiAndTriSetForms('oneSetExercise');
+      configExercises.push(oneSet);
+    } else if (this.exerciseMethodController.manyExercises.value === 'BISET') {
+      const oneSet: ExerciseConfiguration =
+        this.extractOneBiAndTriSetForms('oneSetExercise');
+      const biSet: ExerciseConfiguration =
+        this.extractOneBiAndTriSetForms('biSetExercise');
+      configExercises.push(oneSet);
+      configExercises.push(biSet);
+    } else if (this.exerciseMethodController.manyExercises.value === 'TRISET') {
+      const oneSet: ExerciseConfiguration =
+        this.extractOneBiAndTriSetForms('oneSetExercise');
+      const biSet: ExerciseConfiguration =
+        this.extractOneBiAndTriSetForms('biSetExercise');
+      const triSet: ExerciseConfiguration =
+        this.extractOneBiAndTriSetForms('triSetExercise');
+      configExercises.push(oneSet);
+      configExercises.push(biSet);
+      configExercises.push(triSet);
+    }
+
+    const exercise: ExerciseMethod = {
+      type: this.exerciseMethodController.manyExercises.value as string,
+      exerciseConfigurations: configExercises,
+    };
+    this.exercicies.push(exercise);
+    this.table?.renderRows();
 
     console.log(this.exercicies);
+    this.resetAllSetForms();
   }
 
-  removeExercise(exercise: {
-    exercise: number;
-    method?: number | undefined;
-    series: number;
-    sleepTime: number;
-    repetitions: number;
-    manyExercises: number;
-  }) {
-    const index = this.exercicies.indexOf(exercise);
-    if (index > -1) {
-      this.exercicies.splice(index, 1);
-    }
+  removeExercise(event: any, index: number) {
+    event.stopPropagation();
+    console.log('index', index);
+    this.exercicies.splice(index, 1);
+    this.table?.renderRows();
+
+    console.log('exercisies', this.exercicies);
   }
 
-  editExercise(exercise: {
-    exercise: number;
-    method?: number | undefined;
-    series: number;
-    sleepTime: number;
-    repetitions: number;
-    manyExercises: number;
-  }) {
-    this.newExercise.exercise.value = exercise.exercise;
-    if (this.newExercise.method)
-      this.newExercise.method.value = exercise.method!;
-    this.newExercise.series.value = exercise.series;
-    this.newExercise.sleepTime.value = exercise.sleepTime;
-    this.newExercise.repetitions.value = exercise.repetitions;
-    this.newExercise.manyExercises.value = exercise.manyExercises;
+  editExercise(event: any, index: number) {
+    event.stopPropagation();
+    const exercise = this.exercicies[index];
 
-    this.removeExercise(exercise);
+    this.formRef.form.controls[`manyExercises`].setValue(exercise.type);
+    this.populateSetForms(exercise);
+
+    this.removeExercise(event, index);
   }
 
-  changeManyExercises() {
-    console.log(this.newExercise.manyExercises.value);
-
-    if (this.newExercise.manyExercises.value === 1) {
-      this.showBiSet = false;
-      this.showTriSet = false;
-    } else if (this.newExercise.manyExercises.value === 2) {
-      this.showBiSet = true;
-      this.showTriSet = false;
-    } else if (this.newExercise.manyExercises.value === 3) {
-      this.showBiSet = true;
-      this.showTriSet = true;
-    }
-  }
+  // End new exercise methods
 
   maskFilled(control: ControlInput) {
     console.log('maskFilled');
@@ -370,7 +492,95 @@ export class ExerciseSetDetailsComponent {
     console.log('dateEvents', name, event);
   }
 
-  onSubmit() {
-    console.log('onSubmit', this.formRef);
+  async onSubmit() {
+    console.log('Iniciando o submit');
+    const data = this.formRef.value;
+
+    try {
+      // Create Exercise Groups (Exercise Set)
+      console.log('Criando o grupo de exercícios');
+      const exerciseSet: ExerciseSet = {
+        name: data.name,
+        category: data.setCategories,
+      };
+
+      console.log('Salvando/Atualizando o grupo de exercícios');
+      const exerciseSetCreated = !this.isEdit
+        ? await this.exerciseSetService.create(exerciseSet)
+        : await this.exerciseSetService.update(this.editId!, exerciseSet);
+
+      console.log('Grupo salvo/atualizado com sucesso');
+      console.log('Criando os métodos de exercícios');
+      // Create Exercise Methods
+      const queryToSave = this.exercicies.map(async (e, i) => {
+        console.log('Map index', i);
+        const toSave = {
+          id: e.id ? e.id : undefined,
+          type: e.type,
+          exerciseGroupId: exerciseSetCreated.id,
+        };
+
+        console.log('Para salvar => ', toSave);
+        const exerciseMethodCreated = !toSave.id
+          ? await this.exerciseMethodsService.create(toSave)
+          : await this.exerciseMethodsService.update(toSave.id, toSave);
+
+        console.log('Método de exercício salvo/atualizado com sucesso');
+        console.log('Criando as configurações de exercícios');
+        const exerciseConfigurations: ExerciseConfiguration[] =
+          e.exerciseConfigurations!.map((exerciseConfiguration) => {
+            return {
+              ...exerciseConfiguration,
+              exerciseMethodId: exerciseMethodCreated.id,
+            };
+          });
+
+        console.log(
+          'Configurações de exercícios montadas para salvar/editar',
+          exerciseConfigurations
+        );
+        const exerciseConfigurationCreated = !this.isEdit
+          ? await this.exerciseConfigurationService.createMany(
+              exerciseConfigurations
+            )
+          : await this.exerciseConfigurationService.updateListExerciseMethod(
+              exerciseConfigurations
+            );
+
+        console.log('Configurações de exercicios salvas com sucesso');
+        const ret = {
+          exerciseSetId: exerciseSetCreated.id,
+          exerciseMethodId: exerciseMethodCreated.id,
+          exerciseConfigurationIds: exerciseConfigurationCreated,
+        };
+
+        console.log('Rerutn final');
+        return ret;
+      });
+
+      await Promise.all(queryToSave);
+      if (this.isEdit) await this.checkExerciseMethodsCreated();
+      // Create Exercise Configurations
+
+      this.router.navigate(['exercise-set']);
+    } catch (error) {
+      console.log('error on create', error);
+    }
+  }
+
+  private async checkExerciseMethodsCreated() {
+    const deletedOnes = this.exerciseMethodSaved.filter(
+      (em) =>
+        !this.exercicies
+          .filter((e) => e.id)
+          .map((e) => e.id)
+          .includes(em.id)
+    );
+
+    const d$ = deletedOnes.map((em) =>
+      this.exerciseMethodsService.delete(em.id!)
+    );
+    const d = await Promise.all(d$);
+    return d;
   }
 }

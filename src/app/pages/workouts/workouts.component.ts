@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { MasterTable } from 'src/app/core/classes/master-table.class';
 import { DataMasterTable } from 'src/app/core/interfaces/data-master-table.interface';
+import { LoadingService } from 'src/app/services/loading.service';
 import { ServiceBackendItemService } from 'src/app/services/service-backend-item.service';
 import { WorkoutsService } from 'src/app/services/workouts.service';
 
@@ -16,7 +17,8 @@ import { WorkoutsService } from 'src/app/services/workouts.service';
 export class WorkoutsComponent extends MasterTable<WorkoutsService> {
   constructor(
     router: Router,
-    public workoutsService: WorkoutsService
+    public workoutsService: WorkoutsService,
+    loadingService: LoadingService
   ) {
     const data: DataMasterTable = {
       title: 'Treinos',
@@ -28,7 +30,7 @@ export class WorkoutsComponent extends MasterTable<WorkoutsService> {
       ],
       path: '/workouts',
     };
-    super(router, workoutsService, data);
+    super(router, workoutsService, data, loadingService);
   }
 
   // add()

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { MasterTable } from 'src/app/core/classes/master-table.class';
 import { DataMasterTable } from 'src/app/core/interfaces/data-master-table.interface';
+import { LoadingService } from 'src/app/services/loading.service';
 import { MethodsService } from 'src/app/services/methods.service';
 import { ServiceBackendItemService } from 'src/app/services/service-backend-item.service';
 
@@ -14,7 +15,11 @@ import { ServiceBackendItemService } from 'src/app/services/service-backend-item
   ],
 })
 export class MethodsComponent extends MasterTable<ServiceBackendItemService> {
-  constructor(router: Router, public methodsService: MethodsService) {
+  constructor(
+    router: Router,
+    public methodsService: MethodsService,
+    loadingService: LoadingService
+  ) {
     const data: DataMasterTable = {
       title: 'Métodos',
       targetFilters: ['Name', 'Description'],
@@ -25,7 +30,7 @@ export class MethodsComponent extends MasterTable<ServiceBackendItemService> {
       ],
       path: '/methods',
     };
-    super(router, methodsService, data);
+    super(router, methodsService, data, loadingService);
   }
 
   // add()

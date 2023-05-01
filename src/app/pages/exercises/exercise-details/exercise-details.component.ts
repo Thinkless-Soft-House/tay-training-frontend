@@ -1,6 +1,7 @@
+import { ExercisesService } from './../../../services/exercises.service';
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ControlInput } from 'src/app/core/classes/control.class';
 import { LoadingService } from 'src/app/services/loading.service';
 import { UtilsService } from 'src/app/services/utils.service';
@@ -26,6 +27,16 @@ export class ExerciseDetailsComponent {
         },
       },
     }),
+    description: new ControlInput({
+      label: 'Descrição',
+      config: {
+        name: 'description',
+        required: true,
+        errors: {
+          required: 'Campo obrigatório',
+        },
+      },
+    }),
     hasMethod: new ControlInput({
       label: 'Tem método?',
       value: true,
@@ -33,10 +44,10 @@ export class ExerciseDetailsComponent {
         name: 'hasMethod',
       },
     }),
-    url: new ControlInput({
+    videoUrl: new ControlInput({
       label: 'Link do treino',
       config: {
-        name: 'url',
+        name: 'videoUrl',
 
         required: true,
         maxlength: 100,
@@ -55,10 +66,15 @@ export class ExerciseDetailsComponent {
   };
 
   @ViewChild('reactiveForm') formRef!: NgForm;
+
+  isEdit = false;
+  editId: number | null = null;
   constructor(
     private utilsService: UtilsService,
     private actRoute: ActivatedRoute,
-    public loadingService: LoadingService
+    private router: Router,
+    public loadingService: LoadingService,
+    private exercisesService: ExercisesService
   ) {
     actRoute.params.subscribe((params) => {
       console.log('params', params);
@@ -67,20 +83,39 @@ export class ExerciseDetailsComponent {
 
   ngOnInit(): void {}
   ngAfterViewInit() {
-    this.actRoute.params.subscribe((params) => {
+    this.actRoute.params.subscribe(async (params) => {
       if (params['id'] !== 'new') {
+        this.isEdit = true;
+        this.editId = +params['id'];
         // Load data...
         setTimeout(() => {
           this.loadingService.activeLoading();
         }, 50);
-        setTimeout(() => {
+        // setTimeout(() => {
+        //   this.formRef.setValue({
+        //     name: 'Teste',
+        //     description: 'Mais um teste',
+        //   });
+        //   this.loadingService.deactiveLoading();
+        // }, 2000);
+
+        // Get data from API
+        try {
+          const data = await this.exercisesService.getById(+params['id']);
+          console.log('data', data);
           this.formRef.setValue({
-            name: 'Teste',
-            hasMethod: true,
-            url: 'https://www.google.com',
+            name: data.name,
+            description: data.description,
+            videoUrl: data.videoUrl,
+            hasMethod: data.hasMethod,
           });
-          this.loadingService.deactiveLoading();
-        }, 2000);
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setTimeout(() => {
+            this.loadingService.deactiveLoading();
+          }, 200);
+        }
       }
     });
   }
@@ -116,7 +151,28 @@ export class ExerciseDetailsComponent {
     console.log('dateEvents', name, event);
   }
 
-  onSubmit() {
+  async onSubmit() {
     console.log('onSubmit', this.formRef);
+    const data = this.formRef.value;
+    console.log('form value', data);
+
+    if (this.isEdit) {
+      // Update
+
+      try {
+        await this.exercisesService.update(this.editId!, data);
+        this.router.navigate(['exercises']);
+      } catch (error) {
+        console.log('error on update', error);
+      }
+    } else {
+      // Create
+      try {
+        await this.exercisesService.create(data);
+        this.router.navigate(['exercises']);
+      } catch (error) {
+        console.log('error on create', error);
+      }
+    }
   }
 }

@@ -1,14 +1,67 @@
+@use "src/functions.scss" as functions;
+
 .actions {
   width: 150px;
 }
 
 .workouts {
-  padding: .5em !important;
+  padding: 0.5em !important;
   margin-bottom: 1em;
   // text-align: center;
-
 }
 
 .exercises-table {
   margin: 1em 0;
+}
+
+// Collapse Table
+
+tr.exercise-detail-row {
+  height: 0 !important;
+}
+
+tr.exercise-table-row:not(.example-expanded-row):active {
+  background: #efefef;
+}
+
+.exercise-table-row td {
+  border-bottom-width: 0;
+}
+
+.content-exercise-details {
+  overflow: hidden;
+  display: flex;
+}
+
+.exepanded-details {
+  padding: 0em;
+}
+
+.mat-column-expandedDetail {
+  padding: 0;
+}
+
+.config {
+  width: 100%;
+  padding: 0.5em;
+  margin: 0.5em;
+  $background-color: functions.get-theme-background();
+  background-color: functions.adjust-color($background-color, "l", 10%);
+
+  .col {
+    text-align: center;
+    &.subtitle {
+      text-align: left;
+    }
+    &.exerciseId {
+    }
+    &.methodId {
+    }
+    &.series {
+    }
+    &.reps {
+    }
+    &.rest {
+    }
+  }
 }

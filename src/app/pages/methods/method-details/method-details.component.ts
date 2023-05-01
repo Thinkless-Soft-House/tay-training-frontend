@@ -1,8 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ControlInput } from 'src/app/core/classes/control.class';
 import { LoadingService } from 'src/app/services/loading.service';
+import { MethodsService } from 'src/app/services/methods.service';
 import { UtilsService } from 'src/app/services/utils.service';
 
 @Component({
@@ -40,10 +41,15 @@ export class MethodDetailsComponent {
   };
 
   @ViewChild('reactiveForm') formRef!: NgForm;
+
+  isEdit = false;
+  editId?: string;
   constructor(
     private utilsService: UtilsService,
     private actRoute: ActivatedRoute,
-    public loadingService: LoadingService
+    public loadingService: LoadingService,
+    private methodsService: MethodsService,
+    private router: Router
   ) {
     actRoute.params.subscribe((params) => {
       console.log('params', params);
@@ -52,20 +58,37 @@ export class MethodDetailsComponent {
 
   ngOnInit(): void {}
   ngAfterViewInit() {
-    this.actRoute.params.subscribe((params) => {
+    this.actRoute.params.subscribe(async (params) => {
       if (params['id'] !== 'new') {
+        this.isEdit = true;
+        this.editId = params['id'];
         // Load data...
         setTimeout(() => {
           this.loadingService.activeLoading();
         }, 50);
-        setTimeout(() => {
+        // setTimeout(() => {
+        //   this.formRef.setValue({
+        //     name: 'Teste',
+        //     description: 'Mais um teste',
+        //   });
+        //   this.loadingService.deactiveLoading();
+        // }, 2000);
+
+        // Get data from API
+        try {
+          const data = await this.methodsService.getById(+params['id']);
+          console.log('data', data);
           this.formRef.setValue({
-            name: 'Teste',
-            hasMethod: true,
-            url: 'https://www.google.com',
+            name: data.name,
+            description: data.description,
           });
-          this.loadingService.deactiveLoading();
-        }, 2000);
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setTimeout(() => {
+            this.loadingService.deactiveLoading();
+          }, 200);
+        }
       }
     });
   }
@@ -101,7 +124,28 @@ export class MethodDetailsComponent {
     console.log('dateEvents', name, event);
   }
 
-  onSubmit() {
+  async onSubmit() {
     console.log('onSubmit', this.formRef);
+    const data = this.formRef.value;
+    console.log('form value', data);
+
+    if (this.isEdit) {
+      // Update
+
+      try {
+        await this.methodsService.update(+this.editId!, data);
+        this.router.navigate(['methods']);
+      } catch (error) {
+        console.log('error on update', error);
+      }
+    } else {
+      // Create
+      try {
+        await this.methodsService.create(data);
+        this.router.navigate(['methods']);
+      } catch (error) {
+        console.log('error on create', error);
+      }
+    }
   }
 }

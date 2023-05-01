@@ -8,7 +8,7 @@ export class BaseModelService {
     this.path = `${environment.apiUrl}${subPath}`;
   }
 
-  private async request(req: Observable<any>) {
+  public async request(req: Observable<any>) {
     return firstValueFrom(req);
   }
 
@@ -53,8 +53,9 @@ export class BaseModelService {
     // return this.request(this.mockupRequest());
   }
 
-  getById(id: number) {
-    const req = this.http.get(`${this.path}/${id}`);
+  getById(id: number, relations?: string[]) {
+    const rel = relations ? relations.join(',') : '';
+    const req = this.http.get(`${this.path}/${id}?relations=${rel}`);
     return this.request(req);
   }
 
@@ -62,9 +63,17 @@ export class BaseModelService {
     const req = this.http.post(this.path, item);
     return this.request(req);
   }
+  createMany(item: any[]) {
+    const req = this.http.post(`${this.path}/many/`, item);
+    return this.request(req);
+  }
 
-  update(item: any) {
-    const req = this.http.put(`${this.path}/${item.id}`, item);
+  update(id: number, item: any) {
+    const req = this.http.patch(`${this.path}/single/${id}`, item);
+    return this.request(req);
+  }
+  updateMany(id: number, item: any[]) {
+    const req = this.http.patch(`${this.path}/many`, item);
     return this.request(req);
   }
 

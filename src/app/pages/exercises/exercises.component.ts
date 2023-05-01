@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { MasterTable } from 'src/app/core/classes/master-table.class';
 import { DataMasterTable } from 'src/app/core/interfaces/data-master-table.interface';
 import { ExercisesService } from 'src/app/services/exercises.service';
+import { LoadingService } from 'src/app/services/loading.service';
 import { ServiceBackendItemService } from 'src/app/services/service-backend-item.service';
 
 @Component({
@@ -16,7 +17,8 @@ import { ServiceBackendItemService } from 'src/app/services/service-backend-item
 export class ExercisesComponent extends MasterTable<ServiceBackendItemService> {
   constructor(
     router: Router,
-    public exercisesService: ExercisesService
+    public exercisesService: ExercisesService,
+    loadingService: LoadingService
   ) {
     const data: DataMasterTable = {
       title: 'Exercises',
@@ -28,12 +30,14 @@ export class ExercisesComponent extends MasterTable<ServiceBackendItemService> {
       ],
       path: '/exercises',
     };
-    super(router, exercisesService, data);
+    super(router, exercisesService, data, loadingService);
   }
 
   // add()
   // changeFilter(filter: any)
   // edit(row: any)
-  // delete(row: any)
+  deleteOne(row: any) {
+    console.log('deleteOne', row);
+  }
   // changeTable(event: any)
 }

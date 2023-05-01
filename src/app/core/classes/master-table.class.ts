@@ -2,8 +2,13 @@ import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { ServiceBackendItemService } from 'src/app/services/service-backend-item.service';
 import { DataMasterTable } from '../interfaces/data-master-table.interface';
+import { LoadingService } from 'src/app/services/loading.service';
 
-export class MasterTable<T> {
+interface IsService {
+  delete: (id: number) => Promise<void>;
+}
+
+export class MasterTable<T extends IsService> {
   title: string;
   targetFilters: string[];
   columns: { name: string; title: string }[];
@@ -12,7 +17,12 @@ export class MasterTable<T> {
 
   filterChange$: BehaviorSubject<string> = new BehaviorSubject('');
 
-  constructor(public router: Router, public service: T, data: DataMasterTable) {
+  constructor(
+    public router: Router,
+    public service: T,
+    data: DataMasterTable,
+    public loadingService: LoadingService
+  ) {
     this.title = data.title || 'Master Details Example';
     this.targetFilters = data.targetFilters || [
       'Nome',
@@ -39,8 +49,11 @@ export class MasterTable<T> {
     console.log('edit row', row);
     this.router.navigate([this.path, row.id]);
   }
-  delete(row: any) {
+  async delete(row: any) {
     console.log('delete row', row);
+    await this.service.delete(row.id);
+    // console.log('render table',z this.table);
+    this.loadingService.activeLoading();
   }
   changeTable(event: any) {
     console.log('changeTable', event);

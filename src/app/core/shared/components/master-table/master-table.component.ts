@@ -37,6 +37,8 @@ export class MasterTableComponent<T, Y> {
   dataSource!: MasterTableDataSource<T, Y>;
   itemColumns: { name: string; title: string }[] = [];
   displayedColumns: string[] = [];
+
+  filterValue: string = '';
   constructor(
     private utilsService: UtilsService,
     public loadingService: LoadingService
@@ -67,6 +69,7 @@ export class MasterTableComponent<T, Y> {
 
   ngAfterViewInit(): void {
     this.filterChange$.pipe(debounceTime(500)).subscribe((value) => {
+      this.filterValue = value;
       this.filterChangeToDataSource$.next(value);
     });
 
@@ -81,5 +84,8 @@ export class MasterTableComponent<T, Y> {
 
   delete(row: T) {
     this.delete$.emit(row);
+    setTimeout(() => {
+      this.filterChangeToDataSource$.next(this.filterValue);
+    }, 500);
   }
 }

@@ -49,49 +49,96 @@
       </div>
       <div class="col">
         <mat-form-field>
-          <mat-label>{{ form["url"].label }}</mat-label>
+          <mat-label>{{ form["description"].label }}</mat-label>
           <input
             matInput
-            [type]="form['url'].config.type"
-            [name]="form['url'].config.name"
-            [(ngModel)]="form['url'].value"
-            [placeholder]="form['url'].config.placeholder"
-            [disabled]="form['url'].config.disabled"
-            [readonly]="form['url'].config.readonly"
-            [required]="form['url'].config.required"
-            [minlength]="form['url'].config.minlength"
-            [maxlength]="form['url'].config.maxlength"
-            [pattern]="form['url'].config.pattern"
-            [email]="form['url'].config.email"
-            [v-url-validator]="
-              !!form['url'].config.customValidators['urlValidator']
-            "
+            [type]="form['description'].config.type"
+            [name]="form['description'].config.name"
+            [(ngModel)]="form['description'].value"
+            [placeholder]="form['description'].config.placeholder"
+            [disabled]="form['description'].config.disabled"
+            [readonly]="form['description'].config.readonly"
+            [required]="form['description'].config.required"
+            [minlength]="form['description'].config.minlength"
+            [maxlength]="form['description'].config.maxlength"
+            [pattern]="form['description'].config.pattern"
+            [email]="form['description'].config.email"
             [mask]="
-              form['url'].config.mask && form['url'].config.maskConfig.mask
-                ? form['url'].config.maskConfig.mask
+              form['description'].config.mask &&
+              form['description'].config.maskConfig.mask
+                ? form['description'].config.maskConfig.mask
                 : null
             "
             [dropSpecialCharacters]="
-              form['url'].config.mask &&
-              form['url'].config.maskConfig.dropSpecialCharacters
-                ? form['url'].config.maskConfig.dropSpecialCharacters
+              form['description'].config.mask &&
+              form['description'].config.maskConfig.dropSpecialCharacters
+                ? form['description'].config.maskConfig.dropSpecialCharacters
                 : true
             "
             [validation]="
-              form['url'].config.mask &&
-              form['url'].config.maskConfig.validation
-                ? form['url'].config.maskConfig.validation
+              form['description'].config.mask &&
+              form['description'].config.maskConfig.validation
+                ? form['description'].config.maskConfig.validation
                 : false
             "
           />
-          <mat-hint *ngIf="form['url'].config.hint">{{
-            form["url"].config.hint
+          <mat-hint *ngIf="form['description'].config.hint">{{
+            form["description"].config.hint
           }}</mat-hint>
-          <mat-error *ngIf="getErrorText(form['url'])">
-            {{ getErrorText(form["url"]) }}
+          <mat-error *ngIf="getErrorText(form['description'])">
+            {{ getErrorText(form["description"]) }}
           </mat-error>
         </mat-form-field>
       </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <mat-form-field>
+          <mat-label>{{ form["videoUrl"].label }}</mat-label>
+          <input
+            matInput
+            [type]="form['videoUrl'].config.type"
+            [name]="form['videoUrl'].config.name"
+            [(ngModel)]="form['videoUrl'].value"
+            [placeholder]="form['videoUrl'].config.placeholder"
+            [disabled]="form['videoUrl'].config.disabled"
+            [readonly]="form['videoUrl'].config.readonly"
+            [required]="form['videoUrl'].config.required"
+            [minlength]="form['videoUrl'].config.minlength"
+            [maxlength]="form['videoUrl'].config.maxlength"
+            [pattern]="form['videoUrl'].config.pattern"
+            [email]="form['videoUrl'].config.email"
+            [v-url-validator]="
+              !!form['videoUrl'].config.customValidators['urlValidator']
+            "
+            [mask]="
+              form['videoUrl'].config.mask && form['videoUrl'].config.maskConfig.mask
+                ? form['videoUrl'].config.maskConfig.mask
+                : null
+            "
+            [dropSpecialCharacters]="
+              form['videoUrl'].config.mask &&
+              form['videoUrl'].config.maskConfig.dropSpecialCharacters
+                ? form['videoUrl'].config.maskConfig.dropSpecialCharacters
+                : true
+            "
+            [validation]="
+              form['videoUrl'].config.mask &&
+              form['videoUrl'].config.maskConfig.validation
+                ? form['videoUrl'].config.maskConfig.validation
+                : false
+            "
+          />
+          <mat-hint *ngIf="form['videoUrl'].config.hint">{{
+            form["videoUrl"].config.hint
+          }}</mat-hint>
+          <mat-error *ngIf="getErrorText(form['videoUrl'])">
+            {{ getErrorText(form["videoUrl"]) }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col"></div>
     </div>
 
     <div class="row">

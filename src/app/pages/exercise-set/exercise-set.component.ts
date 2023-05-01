@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { MasterTable } from 'src/app/core/classes/master-table.class';
 import { DataMasterTable } from 'src/app/core/interfaces/data-master-table.interface';
 import { ExerciseSetService } from 'src/app/services/exercise-set.service';
+import { LoadingService } from 'src/app/services/loading.service';
 import { ServiceBackendItemService } from 'src/app/services/service-backend-item.service';
 
 @Component({
@@ -14,9 +15,11 @@ import { ServiceBackendItemService } from 'src/app/services/service-backend-item
   ],
 })
 export class ExerciseSetComponent extends MasterTable<ExerciseSetService> {
+  @ViewChild('masterTable') masterTable: any;
   constructor(
     router: Router,
-    public exerciseSetService: ExerciseSetService
+    public exerciseSetService: ExerciseSetService,
+    loadingService: LoadingService
   ) {
     const data: DataMasterTable = {
       title: 'Exercise Set',
@@ -29,12 +32,12 @@ export class ExerciseSetComponent extends MasterTable<ExerciseSetService> {
       ],
       path: '/exercise-set',
     };
-    super(router, exerciseSetService, data);
+    super(router, exerciseSetService, data, loadingService);
   }
 
   // add()
   // changeFilter(filter: any)
   // edit(row: any)
-  // delete(row: any)
+
   // changeTable(event: any)
 }
