@@ -9,7 +9,7 @@ RUN npm i && npm run build
 FROM nginx
 COPY nginx.conf /etc/nginx/conf.d/configfile.template
 
-COPY --from=frontend-build /api/dist/tay-training-frontend /usr/share/nginx/html
+COPY --from=frontend-build /app/dist/tay-training-frontend /usr/share/nginx/html
 
 ENV PORT 8080
 ENV HOST 0.0.0.0
