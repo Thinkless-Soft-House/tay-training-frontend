@@ -12,25 +12,25 @@ export class BaseModelService {
     return firstValueFrom(req);
   }
 
-  private mockupRequest() {
-    return this.http
-      .get('https://binaryjazz.us/wp-json/genrenator/v1/genre/10 ')
-      .pipe(
-        map((res: any) => {
-          const ret = {
-            items: res.map((item: any, index: number) => {
-              return {
-                id: index,
-                name: item,
-              };
-            }),
-            total: res.length,
-          };
+  // private mockupRequest() {
+  //   return this.http
+  //     .get('https://binaryjazz.us/wp-json/genrenator/v1/genre/10 ')
+  //     .pipe(
+  //       map((res: any) => {
+  //         const ret = {
+  //           items: res.map((item: any, index: number) => {
+  //             return {
+  //               id: index,
+  //               name: item,
+  //             };
+  //           }),
+  //           total: res.length,
+  //         };
 
-          return ret;
-        })
-      );
-  }
+  //         return ret;
+  //       })
+  //     );
+  // }
 
   getAll() {
     console.log('Get All', this.path);
