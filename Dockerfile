@@ -1,7 +1,15 @@
+# Stage 1 - Build
+FROM node:18.12.1-alpine3.17 AS frontend-build
+
+WORKDIR /app
+COPY . .
+RUN npm i && npm run build
+
+# Stage 2 - Run
 FROM nginx
 COPY nginx.conf /etc/nginx/conf.d/configfile.template
 
-COPY /dist/tay-training-frontend /usr/share/nginx/html
+COPY --from=frontend-build /api/dist/tay-training-frontend /usr/share/nginx/html
 
 ENV PORT 8080
 ENV HOST 0.0.0.0
