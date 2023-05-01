@@ -1,0 +1,23 @@
+@use "src/functions.scss" as functions;
+
+.day-card {
+  width: 80%;
+  margin: 0 auto;
+  mat-card-content {
+    padding: 0 0.5em;
+    padding-top: 1.3em;
+
+
+    @include functions.flexbox(
+      $flex-direction: row,
+      $justify-content: space-between,
+      $align-items: stretch
+    );
+
+    h4 {
+      margin: 0;
+      margin-bottom: 1.1em;
+      @include functions.flexbox();
+    }
+  }
+}
