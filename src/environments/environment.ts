@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:5500',
+  apiUrl: 'http://tay-frontend.thinkless.com.br:5500',
 };
