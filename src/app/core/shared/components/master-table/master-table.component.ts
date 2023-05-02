@@ -86,6 +86,7 @@ export class MasterTableComponent<T, Y> {
     this.delete$.emit(row);
     setTimeout(() => {
       this.filterChangeToDataSource$.next(this.filterValue);
+      this.loadingService.deactiveLoading();
     }, 500);
   }
 }

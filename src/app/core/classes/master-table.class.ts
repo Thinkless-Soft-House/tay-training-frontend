@@ -50,10 +50,10 @@ export class MasterTable<T extends IsService> {
     this.router.navigate([this.path, row.id]);
   }
   async delete(row: any) {
+    this.loadingService.activeLoading();
     console.log('delete row', row);
     await this.service.delete(row.id);
     // console.log('render table',z this.table);
-    this.loadingService.activeLoading();
   }
   changeTable(event: any) {
     console.log('changeTable', event);
