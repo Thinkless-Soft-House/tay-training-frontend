@@ -18,6 +18,7 @@ import { ExerciseSetService } from 'src/app/services/exercise-set.service';
 import { MethodsService } from 'src/app/services/methods.service';
 import { ExerciseMethodService } from 'src/app/services/exercise-method.service';
 import { ExerciseConfigurationService } from 'src/app/services/exercise-configuration.service';
+import { SetCategoriesService } from 'src/app/services/set-categories.service';
 
 export interface ExerciseSet {
   id?: number;
@@ -176,7 +177,8 @@ export class ExerciseSetDetailsComponent {
     private methodsService: MethodsService,
     private exerciseSetService: ExerciseSetService,
     private exerciseMethodsService: ExerciseMethodService,
-    private exerciseConfigurationService: ExerciseConfigurationService
+    private exerciseConfigurationService: ExerciseConfigurationService,
+    private categoriesService: SetCategoriesService
   ) {
     this.oneSetExercise = this.initOneBiAndTriSetForms('oneSetExercise');
     this.biSetExercise = this.initOneBiAndTriSetForms('biSetExercise');
@@ -184,10 +186,25 @@ export class ExerciseSetDetailsComponent {
   }
 
   async ngOnInit() {
-    this.allExercises = (await this.exercisesService.getAll()).map((e: any) => {
+    const prom1 = this.exercisesService.getAll();
+    const prom2 = this.methodsService.getAll();
+    const prom3 = this.categoriesService.getAll();
+
+    const [exercises, methods, setCategories] = await Promise.all([
+      prom1,
+      prom2,
+      prom3,
+    ]);
+
+    this.allExercises = exercises.map((e: any) => {
       return { name: e.name, value: e.id };
     });
-    this.allMethods = (await this.methodsService.getAll()).map((e: any) => {
+
+    this.allMethods = methods.map((e: any) => {
+      return { name: e.name, value: e.id };
+    });
+
+    this.form['setCategories'].selectOptions = setCategories.map((e: any) => {
       return { name: e.name, value: e.id };
     });
 
@@ -242,7 +259,8 @@ export class ExerciseSetDetailsComponent {
   getMethod(method: number) {
     return !!this.allMethods.find((x) => x.value === method)
       ? this.allMethods.find((x) => x.value === method)!.name
-      : '';  }
+      : '';
+  }
 
   getErrorText(control: ControlInput) {
     return this.utilsService.getErrorText(this.formRef, control);
