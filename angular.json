@@ -110,6 +110,9 @@
             "production": {
               "browserTarget": "tay-training-frontend:build:production"
             },
+            "internal-docker": {
+              "browserTarget": "tay-training-frontend:build:internal-docker"
+            },
             "development": {
               "browserTarget": "tay-training-frontend:build:development"
             }

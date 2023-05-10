@@ -21,11 +21,11 @@ export class ExercisesComponent extends MasterTable<ServiceBackendItemService> {
     loadingService: LoadingService
   ) {
     const data: DataMasterTable = {
-      title: 'Exercises',
-      targetFilters: ['Name', 'Description'],
+      title: 'Exercícios',
+      targetFilters: ['Nome', 'Descrição'],
       columns: [
         { name: 'id', title: 'ID' },
-        { name: 'name', title: 'Name' },
+        { name: 'name', title: 'Nome' },
         // { name: 'description', title: 'Description' },
       ],
       path: '/exercises',

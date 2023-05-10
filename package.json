@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start:dev": "ng serve -c development",
+    "start:docker": "ng serve -c internal-docker",
+    "start:prod": "ng serve -c production",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "watch:prod": "ng build --watch",
