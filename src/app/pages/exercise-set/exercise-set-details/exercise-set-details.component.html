@@ -144,45 +144,56 @@
                   [class.exepanded-details]="element == expandedExercise"
                 >
                   <!-- Dados de cada uma das configs -->
-
-                  <ng-container
-                    *ngFor="
-                      let exerciseConfiguration of element.exerciseConfigurations;
-                      let i = index
-                    "
-                  >
-                    <div class="config">
-                      <div class="row">
-                        <div class="col subtitle">
-                          <h4>Exercicio {{ i + 1 }}</h4>
-                        </div>
-                      </div>
-                      <div
-                        class="row"
-                        *ngIf="allExercises.length > 0 && allMethods.length > 0"
-                      >
-                        <div class="col exerciseId">
-                          Exercicio:
-                          {{ getExercise(exerciseConfiguration.exerciseId) }}
-                        </div>
-                        <div class="col methodId">
-                          Método:
-                          {{ getMethod(exerciseConfiguration.methodId) }}
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col series">
-                          Séries: {{ exerciseConfiguration.series }}
-                        </div>
-                        <div class="col reps">
-                          Repetições: {{ exerciseConfiguration.reps }}
-                        </div>
-                        <div class="col rest">
-                          Tempo de descanso: {{ exerciseConfiguration.rest }}
-                        </div>
-                      </div>
+                  <div class="row">
+                    <div class="col rest">
+                      Tempo de descanso da combinação:
+                      {{ element.rest }} segundos
                     </div>
-                  </ng-container>
+                  </div>
+
+                  <div class="cards">
+                    <ng-container
+                      *ngFor="
+                        let exerciseConfiguration of element.exerciseConfigurations;
+                        let i = index
+                      "
+                    >
+                      <mat-card class="config">
+                        <mat-card-content>
+                          <div class="row">
+                            <div class="col subtitle">
+                              <h4>Exercicio {{ i + 1 }}</h4>
+                            </div>
+                          </div>
+                          <div
+                            class="row"
+                            *ngIf="
+                              allExercises.length > 0 && allMethods.length > 0
+                            "
+                          >
+                            <div class="col exerciseId">
+                              Exercicio:
+                              {{
+                                getExercise(exerciseConfiguration.exerciseId)
+                              }}
+                            </div>
+                            <div class="col methodId">
+                              Método:
+                              {{ getMethod(exerciseConfiguration.methodId) }}
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col series">
+                              Séries: {{ exerciseConfiguration.series }}
+                            </div>
+                            <div class="col reps">
+                              Repetições: {{ exerciseConfiguration.reps }}
+                            </div>
+                          </div>
+                        </mat-card-content>
+                      </mat-card>
+                    </ng-container>
+                  </div>
                 </div>
               </td>
             </ng-container>
@@ -226,15 +237,59 @@
               </mat-radio-button>
             </mat-radio-group>
           </div>
+          <div class="col">
+            <mat-form-field>
+              <mat-label>{{
+                exerciseMethodController["restTime"].label
+              }}</mat-label>
+              <input
+                matInput
+                [type]="exerciseMethodController['restTime'].config.type"
+                [name]="exerciseMethodController['restTime'].config.name"
+                [(ngModel)]="exerciseMethodController['restTime'].value"
+                [placeholder]="
+                  exerciseMethodController['restTime'].config.placeholder
+                "
+                [disabled]="
+                  exerciseMethodController['restTime'].config.disabled
+                "
+                [readonly]="
+                  exerciseMethodController['restTime'].config.readonly
+                "
+                [required]="
+                  exerciseMethodController['restTime'].config.required
+                "
+                [minlength]="
+                  exerciseMethodController['restTime'].config.minlength
+                "
+                [maxlength]="
+                  exerciseMethodController['restTime'].config.maxlength
+                "
+                [pattern]="exerciseMethodController['restTime'].config.pattern"
+                [email]="exerciseMethodController['restTime'].config.email"
+              />
+              <mat-hint
+                *ngIf="exerciseMethodController['restTime'].config.hint"
+                >{{
+                  exerciseMethodController["restTime"].config.hint
+                }}</mat-hint
+              >
+              <mat-error
+                *ngIf="getErrorText(exerciseMethodController['restTime'])"
+              >
+                {{ getErrorText(exerciseMethodController["restTime"]) }}
+              </mat-error>
+            </mat-form-field>
+          </div>
         </div>
 
+        <!-- Exercise One Set -->
         <ng-container>
           <h4
             *ngIf="exerciseMethodController['manyExercises'].value !== 'ONESET'"
           >
             Configurações do Exercício 1
           </h4>
-          <!-- Exercise One Set -->
 
           <div class="row">
             <!-- One set Exercise -->
@@ -325,37 +380,6 @@
             </div>
             <!-- One Set Reps -->
             <div class="col">
-              <!-- Repetição -->
-              <mat-form-field>
-                <mat-label>{{ oneSetExercise["sleepTime"].label }}</mat-label>
-                <input
-                  matInput
-                  [type]="oneSetExercise['sleepTime'].config.type"
-                  [name]="oneSetExercise['sleepTime'].config.name"
-                  [(ngModel)]="oneSetExercise['sleepTime'].value"
-                  [placeholder]="oneSetExercise['sleepTime'].config.placeholder"
-                  [disabled]="oneSetExercise['sleepTime'].config.disabled"
-                  [readonly]="oneSetExercise['sleepTime'].config.readonly"
-                  [required]="oneSetExercise['sleepTime'].config.required"
-                  [minlength]="oneSetExercise['sleepTime'].config.minlength"
-                  [maxlength]="oneSetExercise['sleepTime'].config.maxlength"
-                  [pattern]="oneSetExercise['sleepTime'].config.pattern"
-                  [email]="oneSetExercise['sleepTime'].config.email"
-                />
-                <mat-hint *ngIf="oneSetExercise['sleepTime'].config.hint">{{
-                  oneSetExercise["sleepTime"].config.hint
-                }}</mat-hint>
-                <mat-error *ngIf="getErrorText(oneSetExercise['sleepTime'])">
-                  {{ getErrorText(oneSetExercise["sleepTime"]) }}
-                </mat-error>
-              </mat-form-field>
-            </div>
-          </div>
-
-          <div class="row">
-            <!-- One Set Sleep -->
-            <div class="col">
-              <!-- Tempo de descanso -->
               <mat-form-field>
                 <mat-label>{{ oneSetExercise["repetitions"].label }}</mat-label>
                 <input
@@ -382,7 +406,6 @@
                 </mat-error>
               </mat-form-field>
             </div>
-            <div class="col"></div>
           </div>
         </ng-container>
 
@@ -476,36 +499,6 @@
             </div>
             <!-- One Set Reps -->
             <div class="col">
-              <!-- Repetição -->
-              <mat-form-field>
-                <mat-label>{{ biSetExercise["sleepTime"].label }}</mat-label>
-                <input
-                  matInput
-                  [type]="biSetExercise['sleepTime'].config.type"
-                  [name]="biSetExercise['sleepTime'].config.name"
-                  [(ngModel)]="biSetExercise['sleepTime'].value"
-                  [placeholder]="biSetExercise['sleepTime'].config.placeholder"
-                  [disabled]="biSetExercise['sleepTime'].config.disabled"
-                  [readonly]="biSetExercise['sleepTime'].config.readonly"
-                  [required]="biSetExercise['sleepTime'].config.required"
-                  [minlength]="biSetExercise['sleepTime'].config.minlength"
-                  [maxlength]="biSetExercise['sleepTime'].config.maxlength"
-                  [pattern]="biSetExercise['sleepTime'].config.pattern"
-                  [email]="biSetExercise['sleepTime'].config.email"
-                />
-                <mat-hint *ngIf="biSetExercise['sleepTime'].config.hint">{{
-                  biSetExercise["sleepTime"].config.hint
-                }}</mat-hint>
-                <mat-error *ngIf="getErrorText(biSetExercise['sleepTime'])">
-                  {{ getErrorText(biSetExercise["sleepTime"]) }}
-                </mat-error>
-              </mat-form-field>
-            </div>
-          </div>
-
-          <div class="row">
-            <!-- One Set Sleep -->
-            <div class="col">
               <!-- Tempo de descanso -->
               <mat-form-field>
                 <mat-label>{{ biSetExercise["repetitions"].label }}</mat-label>
@@ -533,7 +526,6 @@
                 </mat-error>
               </mat-form-field>
             </div>
-            <div class="col"></div>
           </div>
         </ng-container>
 
@@ -631,36 +623,6 @@
             </div>
             <!-- One Set Reps -->
             <div class="col">
-              <!-- Repetição -->
-              <mat-form-field>
-                <mat-label>{{ triSetExercise["sleepTime"].label }}</mat-label>
-                <input
-                  matInput
-                  [type]="triSetExercise['sleepTime'].config.type"
-                  [name]="triSetExercise['sleepTime'].config.name"
-                  [(ngModel)]="triSetExercise['sleepTime'].value"
-                  [placeholder]="triSetExercise['sleepTime'].config.placeholder"
-                  [disabled]="triSetExercise['sleepTime'].config.disabled"
-                  [readonly]="triSetExercise['sleepTime'].config.readonly"
-                  [required]="triSetExercise['sleepTime'].config.required"
-                  [minlength]="triSetExercise['sleepTime'].config.minlength"
-                  [maxlength]="triSetExercise['sleepTime'].config.maxlength"
-                  [pattern]="triSetExercise['sleepTime'].config.pattern"
-                  [email]="triSetExercise['sleepTime'].config.email"
-                />
-                <mat-hint *ngIf="triSetExercise['sleepTime'].config.hint">{{
-                  triSetExercise["sleepTime"].config.hint
-                }}</mat-hint>
-                <mat-error *ngIf="getErrorText(triSetExercise['sleepTime'])">
-                  {{ getErrorText(triSetExercise["sleepTime"]) }}
-                </mat-error>
-              </mat-form-field>
-            </div>
-          </div>
-
-          <div class="row">
-            <!-- One Set Sleep -->
-            <div class="col">
               <!-- Tempo de descanso -->
               <mat-form-field>
                 <mat-label>{{ triSetExercise["repetitions"].label }}</mat-label>
@@ -688,7 +650,6 @@
                 </mat-error>
               </mat-form-field>
             </div>
-            <div class="col"></div>
           </div>
         </ng-container>
 

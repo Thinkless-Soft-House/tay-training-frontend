@@ -40,9 +40,9 @@ export class AppComponent {
       default: 'Detalhes do método',
     },
     '/exercise-set': {
-      '/': 'Lista de Conj. de Exercícios',
-      '/new': 'Novo conj. de exercícios',
-      default: 'Detalhes do conj. de exercícios',
+      '/': 'Lista de Treinos',
+      '/new': 'Novo Treinos',
+      default: 'Detalhes do Treinos',
     },
     '/': 'Home',
   };

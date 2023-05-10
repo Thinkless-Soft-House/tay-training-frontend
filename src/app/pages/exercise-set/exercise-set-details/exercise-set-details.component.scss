@@ -33,35 +33,51 @@ tr.exercise-table-row:not(.example-expanded-row):active {
   display: flex;
 }
 
-.exepanded-details {
-  padding: 0em;
-}
-
 .mat-column-expandedDetail {
   padding: 0;
 }
 
-.config {
-  width: 100%;
-  padding: 0.5em;
-  margin: 0.5em;
+.content-exercise-details {
+  @include functions.flexbox($flex-direction: column);
   $background-color: functions.get-theme-background();
   background-color: functions.adjust-color($background-color, "l", 10%);
 
-  .col {
-    text-align: center;
-    &.subtitle {
-      text-align: left;
+  &.exepanded-details {
+    padding: 0.5em;
+  }
+
+  .cards {
+    @include functions.flexbox(
+      $flex-direction: row,
+      $justify-content: space-evenly
+    );
+    width: clamp(300px, 100%, 900px);
+
+    .config {
+      width: clamp(300px, 100%, 500px);
+      padding: 0.5em;
+      margin: 0.5em;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .col {
+        text-align: center;
+        &.subtitle {
+          text-align: left;
+        }
+        // &.exerciseId {
+        // }
+        // &.methodId {
+        // }
+        // &.series {
+        // }
+        // &.reps {
+        // }
+        // &.rest {
+        // }
+      }
     }
-    // &.exerciseId {
-    // }
-    // &.methodId {
-    // }
-    // &.series {
-    // }
-    // &.reps {
-    // }
-    // &.rest {
-    // }
   }
 }

@@ -32,7 +32,6 @@ export interface ExerciseConfiguration {
   id?: number;
   series: string;
   reps: string;
-  rest: string;
   exerciseMethodId?: number;
   exerciseId: number;
   methodId: number;
@@ -41,6 +40,7 @@ export interface ExerciseConfiguration {
 export interface ExerciseMethod {
   id?: number;
   type: string;
+  rest: string;
   exerciseGroupId?: number;
   exerciseConfigurations?: ExerciseConfiguration[];
 }
@@ -93,12 +93,24 @@ export class ExerciseSetDetailsComponent {
     }),
   };
 
-  exerciseMethodController: { manyExercises: ControlInput } = {
+  exerciseMethodController: {
+    manyExercises: ControlInput;
+    restTime: ControlInput;
+  } = {
     manyExercises: new ControlInput({
       label: 'Exercícios por série',
       value: 'ONESET',
       config: {
         name: 'manyExercises',
+        errors: {
+          required: 'Campo obrigatório',
+        },
+      },
+    }),
+    restTime: new ControlInput({
+      label: 'Tempo de descanso',
+      config: {
+        name: 'restTime',
         errors: {
           required: 'Campo obrigatório',
         },
@@ -110,21 +122,18 @@ export class ExerciseSetDetailsComponent {
     exercise: ControlInput;
     method?: ControlInput;
     series: ControlInput;
-    sleepTime: ControlInput;
     repetitions: ControlInput;
   };
   biSetExercise: {
     exercise: ControlInput;
     method?: ControlInput;
     series: ControlInput;
-    sleepTime: ControlInput;
     repetitions: ControlInput;
   };
   triSetExercise: {
     exercise: ControlInput;
     method?: ControlInput;
     series: ControlInput;
-    sleepTime: ControlInput;
     repetitions: ControlInput;
   };
 
@@ -336,15 +345,6 @@ export class ExerciseSetDetailsComponent {
           },
         },
       }),
-      sleepTime: new ControlInput({
-        label: 'Tempo de descanso',
-        config: {
-          name: 'sleepTime',
-          errors: {
-            required: 'Campo obrigatório',
-          },
-        },
-      }),
       repetitions: new ControlInput({
         label: 'Repetições',
         config: {
@@ -359,8 +359,7 @@ export class ExerciseSetDetailsComponent {
     model.exercise.config.name = `${prefix}_exercise`;
     model.method.config.name = `${prefix}_method`;
     model.series.config.name = `${prefix}_series`;
-    model.sleepTime.config.name = `${prefix}_repetitions`;
-    model.repetitions.config.name = `${prefix}_sleepTime`;
+    model.repetitions.config.name = `${prefix}_repetitions`;
 
     return model;
   }
@@ -372,7 +371,6 @@ export class ExerciseSetDetailsComponent {
       methodId: this.formRef.form.controls[`${set}_method`].value,
       series: this.formRef.form.controls[`${set}_series`].value,
       reps: this.formRef.form.controls[`${set}_repetitions`].value,
-      rest: this.formRef.form.controls[`${set}_sleepTime`].value,
     };
   }
   private populateOneBiAndTriSetForms(
@@ -383,7 +381,6 @@ export class ExerciseSetDetailsComponent {
     this.formRef.form.controls[`${set}_method`].setValue(config.methodId);
     this.formRef.form.controls[`${set}_series`].setValue(config.series);
     this.formRef.form.controls[`${set}_repetitions`].setValue(config.reps);
-    this.formRef.form.controls[`${set}_sleepTime`].setValue(config.rest);
   }
   private populateSetForms(exercise: ExerciseMethod): void {
     this.resetAllSetForms();
@@ -416,7 +413,6 @@ export class ExerciseSetDetailsComponent {
     this.formRef.form.controls[`${set}_method`].reset();
     this.formRef.form.controls[`${set}_series`].reset();
     this.formRef.form.controls[`${set}_repetitions`].reset();
-    this.formRef.form.controls[`${set}_sleepTime`].reset();
   }
   private resetAllSetForms(): void {
     this.resetOneBiAndTriSetForms('oneSetExercise');
@@ -472,6 +468,7 @@ export class ExerciseSetDetailsComponent {
 
     const exercise: ExerciseMethod = {
       type: this.exerciseMethodController.manyExercises.value as string,
+      rest: this.exerciseMethodController.restTime.value as string,
       exerciseConfigurations: configExercises,
     };
     this.exercicies.push(exercise);
@@ -535,6 +532,7 @@ export class ExerciseSetDetailsComponent {
         const toSave = {
           id: e.id ? e.id : undefined,
           type: e.type,
+          rest: e.rest,
           exerciseGroupId: exerciseSetCreated.id,
         };
 

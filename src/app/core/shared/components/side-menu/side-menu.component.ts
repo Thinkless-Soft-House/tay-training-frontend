@@ -27,12 +27,12 @@ export class SideMenuComponent {
       route: '/methods',
     },
     {
-      name: 'Conj. de Exercícios',
+      name: 'Treinos',
       icon: 'list',
       route: '/exercise-set',
     },
     {
-      name: 'Treinos',
+      name: 'Agrup. de Treinos',
       icon: 'list',
       route: '/workouts',
     },
