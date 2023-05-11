@@ -81,3 +81,12 @@ tr.exercise-table-row:not(.example-expanded-row):active {
     }
   }
 }
+
+.exercises {
+  margin: 1em auto;
+  padding: 1.5em;
+  border-radius: 7px;
+
+  $background-color: functions.get-theme-background();
+  background-color: functions.adjust-color($background-color, "l", 7%);
+}
