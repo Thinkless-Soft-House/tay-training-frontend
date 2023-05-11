@@ -11,18 +11,19 @@ import { WorkoutsService } from 'src/app/services/workouts.service';
 import { ExerciseSet } from '../../exercise-set/exercise-set-details/exercise-set-details.component';
 
 enum WeekingDays {
-  Sunday = 0,
-  Monday = 1,
-  Tuesday = 2,
-  Wednesday = 3,
-  Thursday = 4,
-  Friday = 5,
-  Saturday = 6,
+  Sunday = 1,
+  Monday = 2,
+  Tuesday = 3,
+  Wednesday = 4,
+  Thursday = 5,
+  Friday = 6,
+  Saturday = 7,
 }
 
 export interface TrainingSheet {
   id?: number;
   name: string;
+  publicName: string;
   trainingDays: TrainingDay[];
 }
 export interface TrainingDay {
@@ -46,11 +47,16 @@ export class WorkoutDetailsComponent {
       label: 'Nome',
       config: {
         name: 'name',
-        hint: 'Nome do usuário',
         required: true,
         errors: {
           required: 'Campo obrigatório',
         },
+      },
+    }),
+    publicName: new ControlInput({
+      label: 'Nome Publico',
+      config: {
+        name: 'publicName',
       },
     }),
   };
@@ -72,6 +78,9 @@ export class WorkoutDetailsComponent {
 
   isEdit = false;
   editId: number | null = null;
+
+  step = 0;
+
   constructor(
     private utilsService: UtilsService,
     private actRoute: ActivatedRoute,
@@ -82,6 +91,18 @@ export class WorkoutDetailsComponent {
     private exersiceSetService: ExerciseSetService
   ) {
     this.createTrainingDaysControllers();
+  }
+
+  setStep(index: number) {
+    this.step = index;
+  }
+
+  nextStep() {
+    this.step++;
+  }
+
+  prevStep() {
+    this.step--;
   }
 
   ngOnInit(): void {}
@@ -104,6 +125,7 @@ export class WorkoutDetailsComponent {
           ]);
           console.log('data', data);
           this.formRef.controls['name'].setValue(data.name);
+          this.formRef.controls['publicName'].setValue(data.publicName);
           this.fillTrainingDays(data);
         } catch (error) {
           console.error(error);
@@ -117,20 +139,41 @@ export class WorkoutDetailsComponent {
   }
 
   private createTrainingDaysControllers() {
-    this.trainingDays = this.weekDays.map((day) => {
-      return new ControlInput({
-        label: day.name,
-        selectOptions: [{ name: 'Sem treino', value: -1 }],
-        value: -1,
-        config: {
-          name: `td_${day.id.toString()}`,
-          required: true,
-          errors: {
-            required: 'Campo obrigatório',
-          },
-        },
-      });
-    });
+    for (let index = 0; index < 4; index++) {
+      for (let index2 = 0; index2 < this.weekDays.length; index2++) {
+        const element = this.weekDays[index2];
+
+        let value = index === 0 ? element.id : index * 7 + element.id;
+        this.trainingDays.push(
+          new ControlInput({
+            label: element.name,
+            selectOptions: [{ name: 'Sem treino', value: -1 }],
+            value: -1,
+            config: {
+              name: `td_${value}`,
+              required: true,
+              errors: {
+                required: 'Campo obrigatório',
+              },
+            },
+          })
+        );
+      }
+    }
+    // this.trainingDays = this.weekDays.map((day) => {
+    //   return new ControlInput({
+    //     label: day.name,
+    //     selectOptions: [{ name: 'Sem treino', value: -1 }],
+    //     value: -1,
+    //     config: {
+    //       name: `td_${day.id.toString()}`,
+    //       required: true,
+    //       errors: {
+    //         required: 'Campo obrigatório',
+    //       },
+    //     },
+    //   });
+    // });
   }
 
   private insertSets() {
@@ -195,6 +238,7 @@ export class WorkoutDetailsComponent {
 
     const sheet = {
       name: data.name,
+      publicName: data.publicName,
       trainingDays: this.trainingDays
         .filter((e) => e.value !== -1)
         .map((e) => {
@@ -211,6 +255,7 @@ export class WorkoutDetailsComponent {
       try {
         const sheetCreated = await this.workoutService.update(this.editId!, {
           name: sheet.name,
+          publicName: sheet.publicName,
         });
 
         // update list Days

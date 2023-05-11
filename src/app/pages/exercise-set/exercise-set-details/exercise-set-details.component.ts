@@ -23,6 +23,7 @@ import { SetCategoriesService } from 'src/app/services/set-categories.service';
 export interface ExerciseSet {
   id?: number;
   name: string;
+  publicName: string;
   category_id: string;
 
   exerciseMethods?: ExerciseMethod[];
@@ -71,6 +72,16 @@ export class ExerciseSetDetailsComponent {
       label: 'Nome',
       config: {
         name: 'name',
+        required: true,
+        errors: {
+          required: 'Campo obrigatório',
+        },
+      },
+    }),
+    publicName: new ControlInput({
+      label: 'Nome Publico',
+      config: {
+        name: 'publicName',
         required: true,
         errors: {
           required: 'Campo obrigatório',
@@ -252,7 +263,9 @@ export class ExerciseSetDetailsComponent {
         console.log('exerciseGroup', exerciseGroup);
 
         this.formRef.controls['name'].setValue(exerciseGroup.name);
-        this.formRef.controls['setCategories'].setValue(exerciseGroup.category_id);
+        this.formRef.controls['setCategories'].setValue(
+          exerciseGroup.category_id
+        );
 
         this.exercicies = exerciseGroup.exerciseMethods!;
         this.exerciseMethodSaved = JSON.parse(JSON.stringify(this.exercicies));
@@ -539,6 +552,7 @@ export class ExerciseSetDetailsComponent {
       const exerciseSet: ExerciseSet = {
         name: data.name,
         category_id: data.setCategories,
+        publicName: data.publicName,
       };
 
       console.log('Salvando/Atualizando o grupo de exercícios');

@@ -47,7 +47,48 @@
           </mat-error>
         </mat-form-field>
       </div>
-      <div class="col"></div>
+      <div class="col">
+        <mat-form-field>
+          <mat-label>{{ form["publicName"].label }}</mat-label>
+          <input
+            matInput
+            [type]="form['publicName'].config.type"
+            [name]="form['publicName'].config.name"
+            [(ngModel)]="form['publicName'].value"
+            [placeholder]="form['publicName'].config.placeholder"
+            [disabled]="form['publicName'].config.disabled"
+            [readonly]="form['publicName'].config.readonly"
+            [required]="form['publicName'].config.required"
+            [minlength]="form['publicName'].config.minlength"
+            [maxlength]="form['publicName'].config.maxlength"
+            [pattern]="form['publicName'].config.pattern"
+            [email]="form['publicName'].config.email"
+            [mask]="
+              form['publicName'].config.mask && form['publicName'].config.maskConfig.mask
+                ? form['publicName'].config.maskConfig.mask
+                : null
+            "
+            [dropSpecialCharacters]="
+              form['publicName'].config.mask &&
+              form['publicName'].config.maskConfig.dropSpecialCharacters
+                ? form['publicName'].config.maskConfig.dropSpecialCharacters
+                : true
+            "
+            [validation]="
+              form['publicName'].config.mask &&
+              form['publicName'].config.maskConfig.validation
+                ? form['publicName'].config.maskConfig.validation
+                : false
+            "
+          />
+          <mat-hint *ngIf="form['publicName'].config.hint">{{
+            form["publicName"].config.hint
+          }}</mat-hint>
+          <mat-error *ngIf="getErrorText(form['publicName'])">
+            {{ getErrorText(form["publicName"]) }}
+          </mat-error>
+        </mat-form-field>
+      </div>
     </div>
 
     <div class="row">
@@ -55,39 +96,179 @@
         <h4>Dias da semana</h4>
       </div>
     </div>
-    <div class="row" *ngFor="let item of trainingDays">
+    <div class="row">
       <div class="col">
-        <mat-card class="day-card">
-          <mat-card-content>
-            <h4>Dia - {{ item.label }}</h4>
-            <div class="day-group">
-              <mat-form-field appearance="fill">
-                <mat-label>{{ item.label }}</mat-label>
-                <mat-select
-                  [(ngModel)]="item.value"
-                  [name]="item.config.name"
-                  [placeholder]="item.config.placeholder"
-                  [disabled]="item.config.disabled"
-                  [required]="item.config.required"
-                >
-                  <mat-option
-                    *ngFor="let item of item.selectOptions"
-                    [value]="item.value"
+        <mat-accordion class="example-headers-align">
+          <mat-expansion-panel
+            [expanded]="step === 0"
+            (opened)="setStep(0)"
+            hideToggle
+          >
+            <mat-expansion-panel-header>
+              <mat-panel-title> Semana 1 </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <ng-container *ngFor="let item of trainingDays; let i = index">
+              <ng-container *ngIf="i < 7">
+                <mat-form-field appearance="fill">
+                  <mat-label>{{ item.label }}</mat-label>
+                  <mat-select
+                    [(ngModel)]="item.value"
+                    [name]="item.config.name"
+                    [placeholder]="item.config.placeholder"
+                    [disabled]="item.config.disabled"
+                    [required]="item.config.required"
                   >
-                    {{ item.name }}
-                  </mat-option>
-                </mat-select>
-                <mat-hint *ngIf="item.config.hint">{{
-                  form["url"].config.hint
-                }}</mat-hint>
-                <mat-error *ngIf="getErrorText(item)">
-                  {{ getErrorText(item) }}
-                </mat-error>
-              </mat-form-field>
-            </div>
-            <div></div>
-          </mat-card-content>
-        </mat-card>
+                    <mat-option
+                      *ngFor="let item of item.selectOptions"
+                      [value]="item.value"
+                    >
+                      {{ item.name }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-hint *ngIf="item.config.hint">{{
+                    form["url"].config.hint
+                  }}</mat-hint>
+                  <mat-error *ngIf="getErrorText(item)">
+                    {{ getErrorText(item) }}
+                  </mat-error>
+                </mat-form-field>
+              </ng-container>
+            </ng-container>
+
+            <mat-action-row>
+              <button mat-button color="primary" (click)="nextStep()">
+                Next
+              </button>
+            </mat-action-row>
+          </mat-expansion-panel>
+          <mat-expansion-panel
+            [expanded]="step === 1"
+            (opened)="setStep(1)"
+            hideToggle
+          >
+            <mat-expansion-panel-header>
+              <mat-panel-title> Semana 2 </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <ng-container *ngFor="let item of trainingDays; let i = index">
+              <ng-container *ngIf="i >= 7 && i < 14">
+                <mat-form-field appearance="fill">
+                  <mat-label>{{ item.label }}</mat-label>
+                  <mat-select
+                    [(ngModel)]="item.value"
+                    [name]="item.config.name"
+                    [placeholder]="item.config.placeholder"
+                    [disabled]="item.config.disabled"
+                    [required]="item.config.required"
+                  >
+                    <mat-option
+                      *ngFor="let item of item.selectOptions"
+                      [value]="item.value"
+                    >
+                      {{ item.name }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-hint *ngIf="item.config.hint">{{
+                    form["url"].config.hint
+                  }}</mat-hint>
+                  <mat-error *ngIf="getErrorText(item)">
+                    {{ getErrorText(item) }}
+                  </mat-error>
+                </mat-form-field>
+              </ng-container>
+            </ng-container>
+            <mat-action-row>
+              <button mat-button color="primary" (click)="nextStep()">
+                Next
+              </button>
+            </mat-action-row>
+          </mat-expansion-panel>
+          <mat-expansion-panel
+            [expanded]="step === 2"
+            (opened)="setStep(2)"
+            hideToggle
+          >
+            <mat-expansion-panel-header>
+              <mat-panel-title> Semana 3 </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <ng-container *ngFor="let item of trainingDays; let i = index">
+              <ng-container *ngIf="i >= 14 && i < 21">
+                <mat-form-field appearance="fill">
+                  <mat-label>{{ item.label }}</mat-label>
+                  <mat-select
+                    [(ngModel)]="item.value"
+                    [name]="item.config.name"
+                    [placeholder]="item.config.placeholder"
+                    [disabled]="item.config.disabled"
+                    [required]="item.config.required"
+                  >
+                    <mat-option
+                      *ngFor="let item of item.selectOptions"
+                      [value]="item.value"
+                    >
+                      {{ item.name }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-hint *ngIf="item.config.hint">{{
+                    form["url"].config.hint
+                  }}</mat-hint>
+                  <mat-error *ngIf="getErrorText(item)">
+                    {{ getErrorText(item) }}
+                  </mat-error>
+                </mat-form-field>
+              </ng-container>
+            </ng-container>
+            <mat-action-row>
+              <button mat-button color="primary" (click)="nextStep()">
+                Next
+              </button>
+            </mat-action-row>
+          </mat-expansion-panel>
+          <mat-expansion-panel
+            [expanded]="step === 3"
+            (opened)="setStep(3)"
+            hideToggle
+          >
+            <mat-expansion-panel-header>
+              <mat-panel-title> Semana 4 </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <ng-container *ngFor="let item of trainingDays; let i = index">
+              <ng-container *ngIf="i >= 21 && i < 28">
+                <mat-form-field appearance="fill">
+                  <mat-label>{{ item.label }}</mat-label>
+                  <mat-select
+                    [(ngModel)]="item.value"
+                    [name]="item.config.name"
+                    [placeholder]="item.config.placeholder"
+                    [disabled]="item.config.disabled"
+                    [required]="item.config.required"
+                  >
+                    <mat-option
+                      *ngFor="let item of item.selectOptions"
+                      [value]="item.value"
+                    >
+                      {{ item.name }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-hint *ngIf="item.config.hint">{{
+                    form["url"].config.hint
+                  }}</mat-hint>
+                  <mat-error *ngIf="getErrorText(item)">
+                    {{ getErrorText(item) }}
+                  </mat-error>
+                </mat-form-field>
+              </ng-container>
+            </ng-container>
+            <mat-action-row>
+              <button mat-button color="primary" (click)="nextStep()">
+                Next
+              </button>
+            </mat-action-row>
+          </mat-expansion-panel>
+        </mat-accordion>
       </div>
     </div>
 

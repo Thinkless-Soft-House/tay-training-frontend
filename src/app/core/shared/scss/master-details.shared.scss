@@ -8,6 +8,7 @@
 .master {
   box-sizing: border-box;
   padding: 0.5em;
+  margin: 0 auto;
   width: clamp(300px, 90%, 1100px);
 
   @include functions.flexbox($flex-direction: column, $justify-content: center);
