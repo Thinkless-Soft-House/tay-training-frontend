@@ -15,6 +15,13 @@ import { WorkoutsService } from 'src/app/services/workouts.service';
   ],
 })
 export class WorkoutsComponent extends MasterTable<WorkoutsService> {
+  customActionButtons = [
+    {
+      name: 'view',
+      icon: 'visibility',
+    },
+  ];
+
   constructor(
     router: Router,
     public workoutsService: WorkoutsService,
@@ -38,4 +45,17 @@ export class WorkoutsComponent extends MasterTable<WorkoutsService> {
   // edit(row: any)
   // delete(row: any)
   // changeTable(event: any)
+
+  customIcon(event: any) {
+    console.log(event);
+    switch (event.name) {
+      case 'view':
+        this.callView(event.row);
+        break;
+    }
+  }
+
+  callView(row: any) {
+    console.log(row);
+  }
 }

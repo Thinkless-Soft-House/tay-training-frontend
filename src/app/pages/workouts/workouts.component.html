@@ -25,6 +25,8 @@
   <app-master-table
     [columns]="columns"
     [service]="workoutsService"
+    [customActionButtons]="customActionButtons"
+    (customIcon$)="customIcon($event)"
     functionName="getByFilter"
     [filterChange$]="filterChange$"
     (edit$)="edit($event)"

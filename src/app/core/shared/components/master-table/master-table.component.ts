@@ -26,8 +26,15 @@ export class MasterTableComponent<T, Y> {
   @Input() service!: Y;
   @Input() functionName: string = 'getAll';
 
+  @Input() customActionButtons: {
+    icon: string;
+    name: string;
+  }[] = [];
+
   @Output() edit$: EventEmitter<T> = new EventEmitter();
   @Output() delete$: EventEmitter<T> = new EventEmitter();
+  @Output() customIcon$: EventEmitter<{ name: string; row: T }> =
+    new EventEmitter();
   @Output() changeTable$: EventEmitter<any> = new EventEmitter();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -88,5 +95,9 @@ export class MasterTableComponent<T, Y> {
       this.filterChangeToDataSource$.next(this.filterValue);
       this.loadingService.deactiveLoading();
     }, 500);
+  }
+
+  customIcon(name: string, row: T) {
+    this.customIcon$.emit({ name, row });
   }
 }
