@@ -9,4 +9,10 @@ export class WorkoutsService extends BaseModelService {
   constructor(http: HttpClient) {
     super('/training-sheet', http);
   }
+
+  getBySlug(slug: string, relations?: string[]) {
+    const rel = relations ? relations.join(',') : '';
+    const req = this.http.get(`${this.path}/slug/${slug}?relations=${rel}`);
+    return this.request(req);
+  }
 }

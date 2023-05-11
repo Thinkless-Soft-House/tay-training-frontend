@@ -35,6 +35,8 @@ export interface ExerciseConfiguration {
   reps: string;
   exerciseMethodId?: number;
   exerciseId: number;
+
+  exercise?: Exercise;
 }
 
 export interface ExerciseMethod {
@@ -44,6 +46,21 @@ export interface ExerciseMethod {
   methodId: number;
   exerciseGroupId?: number;
   exerciseConfigurations?: ExerciseConfiguration[];
+
+  method?: Method;
+}
+
+export interface Method {
+  id?: number;
+  name: string;
+  description: string;
+}
+export interface Exercise {
+  id?: number;
+  name: string;
+  description: string;
+  videoUrl: string;
+  hasMethod: boolean;
 }
 
 @Component({

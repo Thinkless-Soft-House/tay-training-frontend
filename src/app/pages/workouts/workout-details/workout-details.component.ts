@@ -24,6 +24,7 @@ export interface TrainingSheet {
   id?: number;
   name: string;
   publicName: string;
+  slug: string;
   trainingDays: TrainingDay[];
 }
 export interface TrainingDay {
@@ -31,6 +32,8 @@ export interface TrainingDay {
   day: number;
   trainingSheetId: number;
   exerciseGroupId: number;
+
+  exerciseGroup?: ExerciseSet;
 }
 
 @Component({

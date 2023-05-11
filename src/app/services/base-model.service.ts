@@ -38,8 +38,10 @@ export class BaseModelService {
     return this.request(req);
   }
 
-  getByFilter(filter: { [key: string]: string }) {
+  getByFilter(filter: { [key: string]: string }, relations?: string[]) {
     console.log('Get By Filter', this.path);
+    const rel = relations ? relations.join(',') : '';
+
     const filterQuery = Object.entries(filter).reduce(
       (acc, [key, value], index) => {
         return Object.entries(filter).length !== index + 1
@@ -48,7 +50,9 @@ export class BaseModelService {
       },
       ''
     );
-    const req = this.http.get(`${this.path}/filter?${filterQuery}`);
+    const req = this.http.get(
+      `${this.path}/filter?${filterQuery}&relations=${rel}`
+    );
     return this.request(req);
     // return this.request(this.mockupRequest());
   }

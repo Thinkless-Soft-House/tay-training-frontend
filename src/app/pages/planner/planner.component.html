@@ -1,0 +1,189 @@
+<section id="planner" *ngIf="planner !== null">
+  <!-- Header -->
+  <div class="header">
+    <!-- Nome do treino -->
+    <h1 class="title">Ficha de treino | Academia</h1>
+
+    <h2 class="planner-title">{{ planner!.publicName }}</h2>
+  </div>
+
+  <div class="div" id="table">
+    <!-- Tabela de treinos -->
+
+    <table>
+      <thead>
+        <th>X</th>
+        <th>Sem. 1</th>
+        <th>Sem. 2</th>
+        <th>Sem. 3</th>
+        <th>Sem. 4</th>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td>Domingo</td>
+          <td *ngFor="let item of mountTable(1)">
+            {{
+              item === null || item === undefined
+                ? "FOLGA"
+                : item.exerciseGroup!.name
+            }}
+          </td>
+        </tr>
+        <tr>
+          <td>Segunda</td>
+          <td *ngFor="let item of mountTable(2)">
+            {{
+              item === null || item === undefined
+                ? "FOLGA"
+                : item.exerciseGroup!.name
+            }}
+          </td>
+        </tr>
+        <tr>
+          <td>Terça</td>
+          <td *ngFor="let item of mountTable(3)">
+            {{
+              item === null || item === undefined
+                ? "FOLGA"
+                : item.exerciseGroup!.name
+            }}
+          </td>
+        </tr>
+        <tr>
+          <td>Quarta</td>
+          <td *ngFor="let item of mountTable(4)">
+            {{
+              item === null || item === undefined
+                ? "FOLGA"
+                : item.exerciseGroup!.name
+            }}
+          </td>
+        </tr>
+        <tr>
+          <td>Quinta</td>
+          <td *ngFor="let item of mountTable(5)">
+            {{
+              item === null || item === undefined
+                ? "FOLGA"
+                : item.exerciseGroup!.name
+            }}
+          </td>
+        </tr>
+        <tr>
+          <td>Sexta</td>
+          <td *ngFor="let item of mountTable(6)">
+            {{
+              item === null || item === undefined
+                ? "FOLGA"
+                : item.exerciseGroup!.name
+            }}
+          </td>
+        </tr>
+        <tr>
+          <td>Sábado</td>
+          <td *ngFor="let item of mountTable(7)">
+            {{
+              item === null || item === undefined
+                ? "FOLGA"
+                : item.exerciseGroup!.name
+            }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="about-table">
+      <i>
+        Essa tabela é uma sugestão de como organizar seus treinos na semana.
+      </i>
+    </h3>
+  </div>
+
+  <!-- Lista de treinos -->
+  <div class="workouts">
+    <div
+      class="workout"
+      *ngFor="let item of getDistinctWorkouts(); let i = index"
+    >
+      <!-- Treino  -->
+
+      <h3>
+        {{
+          item?.exerciseGroup?.publicName
+            ? item?.exerciseGroup?.publicName
+            : item?.exerciseGroup?.name
+        }}
+      </h3>
+
+      <mat-accordion>
+        <mat-expansion-panel
+          hideToggle
+          *ngFor="
+            let workout of item?.exerciseGroup?.exerciseMethods;
+            let iw = index
+          "
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <!-- Collapse Nome do treino/combinação -->
+              {{
+                workout?.exerciseConfigurations?.length === 1
+                  ? "Exercício " + (i + 1)
+                  : "Combinação " + (i + 1)
+              }}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <!-- {{ workout.method | json }} -->
+          <!-- Metodo -->
+          <p class="method">Método: {{ workout?.method?.name }}</p>
+          <!-- Tempo de descanso -->
+          <p class="rest">Tempo de descanso: {{ workout?.rest }}</p>
+          <!-- Observações -->
+          <p class="obs" *ngIf="workout.observations">
+            Sobre o exercicio: {{ workout?.observations }}
+          </p>
+
+          <hr class="divider-1" />
+
+          <!-- Exercicios -->
+          <!-- Collapse Exercicio -->
+          <div
+            class="exercise"
+            *ngFor="let exercise of workout.exerciseConfigurations"
+          >
+            <!-- Exercicio Nome -->
+            <p>Exercicio: {{ exercise.exercise?.name }}</p>
+            <!-- Exercicio Desc -->
+            <p>Descrição{{ exercise.exercise?.description }}</p>
+            <!-- Exercicio Series/Reps -->
+            <p>Série/Repetição: {{ exercise.series }} x {{ exercise.reps }}</p>
+
+            <!-- Video -->
+            <!-- Collapse -->
+            <div class="video">
+              <mat-expansion-panel hideToggle>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>Video</mat-panel-title>
+                </mat-expansion-panel-header>
+                <!-- Iframe resposnsivo -->
+                <div class="iframe-container">
+                  <iframe
+                    width="560"
+                    height="315"
+                    [src]="secIframeLink(exercise.id!)"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                  ></iframe>
+                </div>
+                <!-- Iframe resposnsivo -->
+              </mat-expansion-panel>
+            </div>
+            <!-- Iframe resposnsivo -->
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+</section>
