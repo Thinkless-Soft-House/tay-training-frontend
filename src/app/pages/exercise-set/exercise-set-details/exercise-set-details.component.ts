@@ -7,7 +7,7 @@ import {
   animate,
 } from '@angular/animations';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -35,19 +35,19 @@ export interface ExerciseConfiguration {
   reps: string;
   exerciseMethodId?: number;
   exerciseId: number;
+  methodId: number;
 
   exercise?: Exercise;
+  method?: Method;
 }
 
 export interface ExerciseMethod {
   id?: number;
   rest: string;
   observations: string;
-  methodId: number;
+
   exerciseGroupId?: number;
   exerciseConfigurations?: ExerciseConfiguration[];
-
-  method?: Method;
 }
 
 export interface Method {
@@ -125,7 +125,6 @@ export class ExerciseSetDetailsComponent {
 
   exerciseMethodController: {
     restTime: ControlInput;
-    method: ControlInput;
     observations: ControlInput;
   } = {
     restTime: new ControlInput({
@@ -146,32 +145,18 @@ export class ExerciseSetDetailsComponent {
         },
       },
     }),
-    method: new ControlInput({
-      label: 'Método',
-      selectOptions: [
-        { name: 'Opção 0', value: '0' },
-        { name: 'Opção 1', value: '1' },
-        { name: 'Opção 2', value: '2' },
-        { name: 'Opção 3', value: '3' },
-      ],
-      config: {
-        name: 'method',
-        required: true,
-        errors: {
-          required: 'Campo obrigatório',
-        },
-      },
-    }),
   };
 
   newExerciseList: {
     exercise: ControlInput;
     series: ControlInput;
+    method: ControlInput;
     repetitions: ControlInput;
   }[] = [];
   newExercise: {
     exercise: ControlInput;
     series: ControlInput;
+    method: ControlInput;
     repetitions: ControlInput;
   };
 
@@ -189,12 +174,6 @@ export class ExerciseSetDetailsComponent {
     { name: 'Método 1', value: 1 },
     { name: 'Método 2', value: 2 },
     { name: 'Método 3', value: 3 },
-  ];
-
-  typeExercise = [
-    { name: 'One Set', value: 'ONESET' },
-    { name: 'Bi Set', value: 'BISET' },
-    { name: 'Tri Set', value: 'TRISET' },
   ];
   // Exercises table Configurations
 
@@ -225,7 +204,8 @@ export class ExerciseSetDetailsComponent {
     private exerciseSetService: ExerciseSetService,
     private exerciseMethodsService: ExerciseMethodService,
     private exerciseConfigurationService: ExerciseConfigurationService,
-    private categoriesService: SetCategoriesService
+    private categoriesService: SetCategoriesService,
+    private detectorChanges: ChangeDetectorRef
   ) {
     this.newExercise = this.initSetForms();
   }
@@ -256,9 +236,8 @@ export class ExerciseSetDetailsComponent {
     console.log('exercise', this.allExercises);
     console.log('methods', this.allMethods);
 
-    this.exerciseMethodController.method.selectOptions = this.allMethods;
-
     this.newExercise.exercise.selectOptions = this.allExercises;
+    this.newExercise.method.selectOptions = this.allMethods;
     this.newExerciseList.push(this.newExercise);
   }
   ngAfterViewInit() {
@@ -295,6 +274,7 @@ export class ExerciseSetDetailsComponent {
 
     setTimeout(() => {
       this.pageCanLoad = true;
+      this.detectorChanges.detectChanges();
     }, 200);
   }
 
@@ -342,11 +322,17 @@ export class ExerciseSetDetailsComponent {
     }
 
     // Checar os valores no formulario do form estão todos válidos
-    if (this.formRef.controls['name'].invalid) {
+    if (
+      !this.formRef.controls['name'] ||
+      this.formRef.controls['name'].invalid
+    ) {
       ret += `Nome: ${this.getErrorText(this.form['name'])}\r\n`;
     }
 
-    if (this.formRef.controls['setCategories'].invalid) {
+    if (
+      !this.formRef.controls['setCategories'] ||
+      this.formRef.controls['setCategories'].invalid
+    ) {
       ret += `Categoria: ${this.getErrorText(this.form['setCategories'])}\r\n`;
     }
 
@@ -354,7 +340,6 @@ export class ExerciseSetDetailsComponent {
     if (this.exercicies.length === 0) {
       ret += `É necessário adicionar pelo menos um exercicio/combinação\r\n`;
     }
-    console.log('ret by => ' + called, ret);
     return ret;
   }
 
@@ -393,6 +378,17 @@ export class ExerciseSetDetailsComponent {
           },
         },
       }),
+      method: new ControlInput({
+        label: 'Método',
+        config: {
+          required: true,
+          name: 'method',
+          type: 'text',
+          errors: {
+            required: 'Campo obrigatório',
+          },
+        },
+      }),
       repetitions: new ControlInput({
         label: 'Repetições',
         config: {
@@ -409,6 +405,7 @@ export class ExerciseSetDetailsComponent {
 
     model.exercise.config.name = `${prefix}_exercise`;
     model.series.config.name = `${prefix}_series`;
+    model.method.config.name = `${prefix}_method`;
     model.repetitions.config.name = `${prefix}_repetitions`;
 
     return model;
@@ -418,6 +415,7 @@ export class ExerciseSetDetailsComponent {
       const ret = {
         exerciseId: e.exercise.value as number,
         series: e.series.value as string,
+        methodId: e.method.value as number,
         reps: e.repetitions.value as string,
       };
 
@@ -425,17 +423,18 @@ export class ExerciseSetDetailsComponent {
     });
   }
   private resetSetForms() {
+    this.exerciseMethodController.observations.value = '';
+    this.exerciseMethodController.restTime.value = '';
+
     this.newExercise = this.initSetForms();
     this.newExercise.exercise.selectOptions = this.allExercises;
+    this.newExercise.method.selectOptions = this.allMethods;
 
     this.newExerciseList = [];
     this.newExerciseList.push(this.newExercise);
   }
   private populateSetForms(exerciseMethods: ExerciseMethod) {
     this.newExerciseList = [];
-
-    this.exerciseMethodController.method.value = exerciseMethods.methodId;
-    this.exerciseMethodController.method.selectOptions = this.allMethods;
 
     this.exerciseMethodController.observations.value =
       exerciseMethods.observations;
@@ -446,6 +445,7 @@ export class ExerciseSetDetailsComponent {
 
       exercise.exercise.value = e.exerciseId;
       exercise.series.value = e.series;
+      exercise.method.value = e.methodId;
       exercise.repetitions.value = e.reps;
 
       exercise.exercise.selectOptions = this.allExercises;
@@ -462,14 +462,6 @@ export class ExerciseSetDetailsComponent {
     }
 
     // Checar os valores no formulario do exerciseMethodController estão todos válidos
-    if (
-      !this.formRef.controls['method'] ||
-      this.formRef.controls['method'].invalid
-    ) {
-      ret += `Método: ${this.getErrorText(
-        this.exerciseMethodController.method
-      )}\r\n`;
-    }
     if (
       !this.formRef.controls['restTime'] ||
       this.formRef.controls['restTime'].invalid
@@ -507,14 +499,18 @@ export class ExerciseSetDetailsComponent {
     if (this.newExerciseList.length === 0) {
       ret += `É necessário adicionar pelo menos um exercício\r\n`;
     }
-    console.log('ret by => ' + called, ret);
     return ret;
   }
 
   addNewExercise() {
+    console.log('addNewExercise');
     const exercise = this.initSetForms();
     exercise.exercise.selectOptions = this.allExercises;
+    exercise.method.selectOptions = this.allMethods;
+    console.log('exercise', exercise);
+    console.log('newExerciseList pre', this.newExerciseList);
     this.newExerciseList.push(exercise);
+    console.log('newExerciseList pos', this.newExerciseList);
   }
 
   addExercise() {
@@ -522,7 +518,6 @@ export class ExerciseSetDetailsComponent {
 
     const exercise: ExerciseMethod = {
       rest: this.exerciseMethodController.restTime.value as string,
-      methodId: this.exerciseMethodController.method.value as number,
       observations: this.exerciseMethodController.observations.value as string,
       exerciseConfigurations: configExercise,
     };
@@ -585,7 +580,6 @@ export class ExerciseSetDetailsComponent {
         const toSave: ExerciseMethod = {
           id: e.id ? e.id : undefined,
           rest: e.rest,
-          methodId: e.methodId,
           observations: e.observations,
           exerciseGroupId: exerciseSetCreated.id,
         };

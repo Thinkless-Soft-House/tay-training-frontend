@@ -27,9 +27,9 @@ export class PlannerComponent {
       'trainingDays.exerciseGroup',
       'trainingDays.exerciseGroup.category',
       'trainingDays.exerciseGroup.exerciseMethods',
-      'trainingDays.exerciseGroup.exerciseMethods.method',
       'trainingDays.exerciseGroup.exerciseMethods.exerciseConfigurations',
       'trainingDays.exerciseGroup.exerciseMethods.exerciseConfigurations.exercise',
+      'trainingDays.exerciseGroup.exerciseMethods.exerciseConfigurations.method',
     ]);
 
     this.planner = res.data[0];

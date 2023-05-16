@@ -1,4 +1,4 @@
-<section class="master mat-elevation-z2">
+<section class="master mat-elevation-z2" *ngIf="pageCanLoad">
   <div class="loading-shade all" *ngIf="loadingService.loading">
     <mat-spinner></mat-spinner>
   </div>
@@ -50,6 +50,51 @@
       </div>
       <div class="col">
         <!-- Categoria do conjunto -->
+        <mat-form-field>
+          <mat-label>{{ form["publicName"].label }}</mat-label>
+          <input
+            matInput
+            [type]="form['publicName'].config.type"
+            [name]="form['publicName'].config.name"
+            [(ngModel)]="form['publicName'].value"
+            [placeholder]="form['publicName'].config.placeholder"
+            [disabled]="form['publicName'].config.disabled"
+            [readonly]="form['publicName'].config.readonly"
+            [required]="form['publicName'].config.required"
+            [minlength]="form['publicName'].config.minlength"
+            [maxlength]="form['publicName'].config.maxlength"
+            [pattern]="form['publicName'].config.pattern"
+            [email]="form['publicName'].config.email"
+            [mask]="
+              form['publicName'].config.mask &&
+              form['publicName'].config.maskConfig.mask
+                ? form['publicName'].config.maskConfig.mask
+                : null
+            "
+            [dropSpecialCharacters]="
+              form['publicName'].config.mask &&
+              form['publicName'].config.maskConfig.dropSpecialCharacters
+                ? form['publicName'].config.maskConfig.dropSpecialCharacters
+                : true
+            "
+            [validation]="
+              form['publicName'].config.mask &&
+              form['publicName'].config.maskConfig.validation
+                ? form['publicName'].config.maskConfig.validation
+                : false
+            "
+          />
+          <mat-hint *ngIf="form['publicName'].config.hint">{{
+            form["publicName"].config.hint
+          }}</mat-hint>
+          <mat-error *ngIf="getErrorText(form['publicName'])">
+            {{ getErrorText(form["publicName"]) }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
         <mat-form-field appearance="fill">
           <mat-label>{{ form["setCategories"].label }}</mat-label>
           <mat-select
@@ -74,9 +119,10 @@
           </mat-error>
         </mat-form-field>
       </div>
+      <div class="col"></div>
     </div>
 
-    <div class="row mat-elevation-z2 workouts" *ngIf="pageCanLoad">
+    <div class="row mat-elevation-z2 workouts">
       <div class="col">
         <h2>Treinos</h2>
 
@@ -93,7 +139,9 @@
             <!-- Normal Columns -->
             <ng-container matColumnDef="type">
               <th mat-header-cell *matHeaderCellDef>ID</th>
-              <td mat-cell *matCellDef="let element; let i = dataIndex">{{ i + 1 }}</td>
+              <td mat-cell *matCellDef="let element; let i = dataIndex">
+                {{ i + 1 }}
+              </td>
             </ng-container>
 
             <ng-container matColumnDef="countExercicies">
@@ -149,10 +197,6 @@
                       Tempo de descanso da combinação:
                       {{ element.rest }} segundos
                     </div>
-                    <div class="col methodId">
-                      Método:
-                      {{ getMethod(element.methodId) }}
-                    </div>
                   </div>
 
                   <div class="cards">
@@ -190,6 +234,10 @@
                             <div class="col reps">
                               Repetições: {{ exerciseConfiguration.reps }}
                             </div>
+                            <div class="col methodId">
+                              Método:
+                              {{ getMethod(exerciseConfiguration.methodId) }}
+                            </div>
                           </div>
                         </mat-card-content>
                       </mat-card>
@@ -222,41 +270,6 @@
         <!-- Exercise-method Type -->
 
         <div class="row">
-          <div class="col">
-            <!-- Treino -->
-            <mat-form-field appearance="fill">
-              <mat-label>{{
-                exerciseMethodController["method"].label
-              }}</mat-label>
-              <mat-select
-                [(ngModel)]="exerciseMethodController['method'].value"
-                [name]="exerciseMethodController['method'].config.name"
-                [placeholder]="
-                  exerciseMethodController['method'].config.placeholder
-                "
-                [disabled]="exerciseMethodController['method'].config.disabled"
-                [required]="exerciseMethodController['method'].config.required"
-              >
-                <mat-option
-                  *ngFor="
-                    let item of exerciseMethodController['method'].selectOptions
-                  "
-                  [value]="item.value"
-                >
-                  {{ item.name }}
-                </mat-option>
-              </mat-select>
-              <mat-hint
-                *ngIf="exerciseMethodController['method'].config.hint"
-                >{{ exerciseMethodController["method"].config.hint }}</mat-hint
-              >
-              <mat-error
-                *ngIf="getErrorText(exerciseMethodController['method'])"
-              >
-                {{ getErrorText(exerciseMethodController["method"]) }}
-              </mat-error>
-            </mat-form-field>
-          </div>
           <div class="col">
             <mat-form-field>
               <mat-label>{{
@@ -301,6 +314,7 @@
               </mat-error>
             </mat-form-field>
           </div>
+          <div class="col"></div>
         </div>
         <div class="row">
           <div class="col">
@@ -385,7 +399,31 @@
               </div>
 
               <!-- One Set Method -->
-              <div class="col"></div>
+              <div class="col">
+                <mat-form-field appearance="fill">
+                  <mat-label>{{ exerc["method"].label }}</mat-label>
+                  <mat-select
+                    [(ngModel)]="exerc['method'].value"
+                    [name]="exerc['method'].config.name"
+                    [placeholder]="exerc['method'].config.placeholder"
+                    [disabled]="exerc['method'].config.disabled"
+                    [required]="exerc['method'].config.required"
+                  >
+                    <mat-option
+                      *ngFor="let item of exerc['method'].selectOptions"
+                      [value]="item.value"
+                    >
+                      {{ item.name }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-hint *ngIf="exerc['method'].config.hint">{{
+                    exerc["method"].config.hint
+                  }}</mat-hint>
+                  <mat-error *ngIf="getErrorText(exerc['method'])">
+                    {{ getErrorText(exerc["method"]) }}
+                  </mat-error>
+                </mat-form-field>
+              </div>
             </div>
 
             <div class="row">
@@ -461,7 +499,7 @@
           </div>
         </div>
 
-        <div class="row">
+        <div class="row" *ngIf="formRef">
           <div class="col"></div>
           <div class="col submit-col">
             <button
@@ -485,12 +523,6 @@
             >
               <mat-icon>help</mat-icon>
             </button>
-            <!-- [class.show]="
-              !newExercise['exercise'].value ||
-              !newExercise['series'].value ||
-              !newExercise['sleepTime'].value ||
-              !newExercise['repetitions'].value
-            " -->
           </div>
         </div>
       </div>

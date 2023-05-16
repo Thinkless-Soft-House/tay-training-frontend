@@ -135,8 +135,7 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           <!-- {{ workout.method | json }} -->
-          <!-- Metodo -->
-          <p class="method">Método: {{ workout?.method?.name }}</p>
+
           <!-- Tempo de descanso -->
           <p class="rest">Tempo de descanso: {{ workout?.rest }}</p>
           <!-- Observações -->
@@ -157,6 +156,8 @@
             <!-- Exercicio Desc -->
             <p>Descrição{{ exercise.exercise?.description }}</p>
             <!-- Exercicio Series/Reps -->
+            <!-- Metodo -->
+            <p class="method">Método: {{ exercise?.method?.name }}</p>
             <p>Série/Repetição: {{ exercise.series }} x {{ exercise.reps }}</p>
 
             <!-- Video -->
