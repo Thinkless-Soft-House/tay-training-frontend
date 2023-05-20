@@ -258,7 +258,9 @@ export class ExerciseSetDetailsComponent {
 
         console.log('exerciseGroup', exerciseGroup);
 
+        console.log('formRef', this.formRef);
         this.formRef.controls['name'].setValue(exerciseGroup.name);
+        this.formRef.controls['publicName'].setValue(exerciseGroup.publicName);
         this.formRef.controls['setCategories'].setValue(
           exerciseGroup.category_id
         );
@@ -381,12 +383,8 @@ export class ExerciseSetDetailsComponent {
       method: new ControlInput({
         label: 'Método',
         config: {
-          required: true,
           name: 'method',
           type: 'text',
-          errors: {
-            required: 'Campo obrigatório',
-          },
         },
       }),
       repetitions: new ControlInput({

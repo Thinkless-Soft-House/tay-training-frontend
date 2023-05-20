@@ -26,7 +26,7 @@
             {{
               item === null || item === undefined
                 ? "FOLGA"
-                : item.exerciseGroup!.name
+                : getExerciseSetName(item.exerciseGroupId)
             }}
           </td>
         </tr>
@@ -36,7 +36,7 @@
             {{
               item === null || item === undefined
                 ? "FOLGA"
-                : item.exerciseGroup!.name
+                : getExerciseSetName(item.exerciseGroupId)
             }}
           </td>
         </tr>
@@ -46,7 +46,7 @@
             {{
               item === null || item === undefined
                 ? "FOLGA"
-                : item.exerciseGroup!.name
+                : getExerciseSetName(item.exerciseGroupId)
             }}
           </td>
         </tr>
@@ -56,7 +56,7 @@
             {{
               item === null || item === undefined
                 ? "FOLGA"
-                : item.exerciseGroup!.name
+                : getExerciseSetName(item.exerciseGroupId)
             }}
           </td>
         </tr>
@@ -66,7 +66,7 @@
             {{
               item === null || item === undefined
                 ? "FOLGA"
-                : item.exerciseGroup!.name
+                : getExerciseSetName(item.exerciseGroupId)
             }}
           </td>
         </tr>
@@ -76,7 +76,7 @@
             {{
               item === null || item === undefined
                 ? "FOLGA"
-                : item.exerciseGroup!.name
+                : getExerciseSetName(item.exerciseGroupId)
             }}
           </td>
         </tr>
@@ -86,7 +86,7 @@
             {{
               item === null || item === undefined
                 ? "FOLGA"
-                : item.exerciseGroup!.name
+                : getExerciseSetName(item.exerciseGroupId)
             }}
           </td>
         </tr>
@@ -109,6 +109,7 @@
       <!-- Treino  -->
 
       <h3>
+        {{ getExerciseSetName(item!.exerciseGroupId) }} -
         {{
           item?.exerciseGroup?.publicName
             ? item?.exerciseGroup?.publicName
@@ -118,7 +119,6 @@
 
       <mat-accordion>
         <mat-expansion-panel
-          hideToggle
           *ngFor="
             let workout of item?.exerciseGroup?.exerciseMethods;
             let iw = index
@@ -127,11 +127,8 @@
           <mat-expansion-panel-header>
             <mat-panel-title>
               <!-- Collapse Nome do treino/combinação -->
-              {{
-                workout?.exerciseConfigurations?.length === 1
-                  ? "Exercício " + (i + 1)
-                  : "Combinação " + (i + 1)
-              }}
+              {{ "Exercício " + (iw + 1) }} -
+              {{ getWorkoutMultiName(item!.exerciseGroupId!, workout.id!) }}
             </mat-panel-title>
           </mat-expansion-panel-header>
           <!-- {{ workout.method | json }} -->
@@ -147,23 +144,30 @@
 
           <!-- Exercicios -->
           <!-- Collapse Exercicio -->
-          <div
-            class="exercise"
+
+          <p>dasdas</p>
+
+          <mat-expansion-panel
+            [hideToggle]="false"
             *ngFor="let exercise of workout.exerciseConfigurations"
           >
-            <!-- Exercicio Nome -->
-            <p>Exercicio: {{ exercise.exercise?.name }}</p>
+            <mat-expansion-panel-header>
+              {{ exercise.exercise?.name }}
+            </mat-expansion-panel-header>
+
             <!-- Exercicio Desc -->
             <p>Descrição{{ exercise.exercise?.description }}</p>
             <!-- Exercicio Series/Reps -->
             <!-- Metodo -->
-            <p class="method">Método: {{ exercise?.method?.name }}</p>
+            <ng-container *ngIf="exercise?.method">
+              <p class="method">Método: {{ exercise?.method?.name }}</p>
+            </ng-container>
             <p>Série/Repetição: {{ exercise.series }} x {{ exercise.reps }}</p>
 
             <!-- Video -->
             <!-- Collapse -->
             <div class="video">
-              <mat-expansion-panel hideToggle>
+              <mat-expansion-panel>
                 <mat-expansion-panel-header>
                   <mat-panel-title>Video</mat-panel-title>
                 </mat-expansion-panel-header>
@@ -181,10 +185,17 @@
                 <!-- Iframe resposnsivo -->
               </mat-expansion-panel>
             </div>
-            <!-- Iframe resposnsivo -->
-          </div>
+          </mat-expansion-panel>
         </mat-expansion-panel>
       </mat-accordion>
+    </div>
+  </div>
+
+  <div class="offline row" *ngIf="planner.offlinePdf">
+    <div class="col">
+      <button mat-raised-button color="primary" (click)="downloadPDF()">
+        Baixar PDF
+      </button>
     </div>
   </div>
 </section>

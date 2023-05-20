@@ -1,8 +1,9 @@
 import { ActivatedRoute } from '@angular/router';
-import { Component } from '@angular/core';
+import { Component, SecurityContext } from '@angular/core';
 import { WorkoutsService } from 'src/app/services/workouts.service';
 import { TrainingSheet } from '../workouts/workout-details/workout-details.component';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ExerciseSet } from '../exercise-set/exercise-set-details/exercise-set-details.component';
 
 @Component({
   selector: 'app-planner',
@@ -13,6 +14,7 @@ export class PlannerComponent {
   planner: TrainingSheet | null = null;
 
   howToUrls: { id: number; url: SafeResourceUrl }[] = [];
+  distinctWorkouts: { workout: ExerciseSet | undefined; index: number }[] = [];
 
   constructor(
     private workoutsService: WorkoutsService,
@@ -33,6 +35,11 @@ export class PlannerComponent {
     ]);
 
     this.planner = res.data[0];
+    this.distinctWorkouts = this.getDistinctWorkouts().map((e, i) => {
+      return { workout: e!.exerciseGroup, index: i + 1 };
+    });
+    console.log('this.distinctWorkouts', this.distinctWorkouts);
+
     this.createSanitizeUrls();
     console.log(this.planner);
   }
@@ -65,6 +72,24 @@ export class PlannerComponent {
     });
   }
 
+  getExerciseSetName(id: number) {
+    return `Treino ${
+      this.distinctWorkouts.find((workout) => workout.workout!.id === id)
+        ?.index || 0
+    }`;
+  }
+  getWorkoutMultiName(egId: number, emId: number) {
+    const eg = this.distinctWorkouts.find(
+      (workout) => workout.workout!.id === egId
+    )?.workout;
+
+    const em = eg?.exerciseMethods?.find((em) => em!.id === emId);
+
+    return em?.exerciseConfigurations
+      ?.map((e) => e!.exercise!.name)
+      .join(' + ');
+  }
+
   createSanitizeUrls() {
     this.getDistinctWorkouts().forEach((workout) => {
       workout!.exerciseGroup?.exerciseMethods?.forEach((method) => {
@@ -82,5 +107,18 @@ export class PlannerComponent {
 
   secIframeLink(id: number) {
     return this.howToUrls.find((url) => url.id === id)!.url;
+  }
+
+  downloadPDF() {
+    const a = document.createElement('a');
+    const url = this.sanitizer.sanitize(
+      SecurityContext.RESOURCE_URL,
+      this.sanitizer.bypassSecurityTrustResourceUrl(this.planner?.offlinePdf!)
+    );
+
+    a.href = url!;
+    a.download = 'planner.pdf';
+    a.target = '_blank';
+    a.click();
   }
 }

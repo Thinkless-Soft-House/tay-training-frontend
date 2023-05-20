@@ -64,7 +64,8 @@
             [pattern]="form['publicName'].config.pattern"
             [email]="form['publicName'].config.email"
             [mask]="
-              form['publicName'].config.mask && form['publicName'].config.maskConfig.mask
+              form['publicName'].config.mask &&
+              form['publicName'].config.maskConfig.mask
                 ? form['publicName'].config.maskConfig.mask
                 : null
             "
@@ -86,6 +87,55 @@
           }}</mat-hint>
           <mat-error *ngIf="getErrorText(form['publicName'])">
             {{ getErrorText(form["publicName"]) }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <mat-form-field>
+          <mat-label>{{ form["offlinePdf"].label }}</mat-label>
+          <input
+            matInput
+            [type]="form['offlinePdf'].config.type"
+            [name]="form['offlinePdf'].config.name"
+            [(ngModel)]="form['offlinePdf'].value"
+            [placeholder]="form['offlinePdf'].config.placeholder"
+            [disabled]="form['offlinePdf'].config.disabled"
+            [readonly]="form['offlinePdf'].config.readonly"
+            [required]="form['offlinePdf'].config.required"
+            [minlength]="form['offlinePdf'].config.minlength"
+            [maxlength]="form['offlinePdf'].config.maxlength"
+            [pattern]="form['offlinePdf'].config.pattern"
+            [email]="form['offlinePdf'].config.email"
+            [v-url-validator]="
+              !!form['offlinePdf'].config.customValidators['urlValidator']
+            "
+            [mask]="
+              form['offlinePdf'].config.mask &&
+              form['offlinePdf'].config.maskConfig.mask
+                ? form['offlinePdf'].config.maskConfig.mask
+                : null
+            "
+            [dropSpecialCharacters]="
+              form['offlinePdf'].config.mask &&
+              form['offlinePdf'].config.maskConfig.dropSpecialCharacters
+                ? form['offlinePdf'].config.maskConfig.dropSpecialCharacters
+                : true
+            "
+            [validation]="
+              form['offlinePdf'].config.mask &&
+              form['offlinePdf'].config.maskConfig.validation
+                ? form['offlinePdf'].config.maskConfig.validation
+                : false
+            "
+          />
+          <mat-hint *ngIf="form['offlinePdf'].config.hint">{{
+            form["offlinePdf"].config.hint
+          }}</mat-hint>
+          <mat-error *ngIf="getErrorText(form['offlinePdf'])">
+            {{ getErrorText(form["offlinePdf"]) }}
           </mat-error>
         </mat-form-field>
       </div>

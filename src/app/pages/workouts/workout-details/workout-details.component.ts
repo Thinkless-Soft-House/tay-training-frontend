@@ -25,6 +25,7 @@ export interface TrainingSheet {
   name: string;
   publicName: string;
   slug: string;
+  offlinePdf?: string;
   trainingDays: TrainingDay[];
 }
 export interface TrainingDay {
@@ -60,6 +61,20 @@ export class WorkoutDetailsComponent {
       label: 'Nome Publico',
       config: {
         name: 'publicName',
+      },
+    }),
+    offlinePdf: new ControlInput({
+      label: 'URL do PDF',
+      config: {
+        name: 'offlinePdf',
+        maxlength: 100,
+        customValidators: {
+          urlValidator: true,
+        },
+        errors: {
+          maxlength: 'Máximo de 100 caracteres',
+          invalidUrl: 'Url inválida',
+        },
       },
     }),
   };
@@ -129,6 +144,7 @@ export class WorkoutDetailsComponent {
           console.log('data', data);
           this.formRef.controls['name'].setValue(data.name);
           this.formRef.controls['publicName'].setValue(data.publicName);
+          this.formRef.controls['offlinePdf'].setValue(data.offlinePdf);
           this.fillTrainingDays(data);
         } catch (error) {
           console.error(error);
@@ -242,6 +258,7 @@ export class WorkoutDetailsComponent {
     const sheet = {
       name: data.name,
       publicName: data.publicName,
+      offlinePdf: data.offlinePdf,
       trainingDays: this.trainingDays
         .filter((e) => e.value !== -1)
         .map((e) => {
@@ -252,6 +269,8 @@ export class WorkoutDetailsComponent {
         }),
     } as TrainingSheet;
 
+    console.log('sheet', sheet);
+
     if (this.isEdit) {
       // Update
 
@@ -259,6 +278,7 @@ export class WorkoutDetailsComponent {
         const sheetCreated = await this.workoutService.update(this.editId!, {
           name: sheet.name,
           publicName: sheet.publicName,
+          offlinePdf: sheet.offlinePdf,
         });
 
         // update list Days
