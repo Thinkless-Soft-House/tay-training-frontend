@@ -10,7 +10,7 @@
     width: 100%;
     text-align: center;
 
-    background-color: functions.get-theme-color("accent");
+    background-color: functions.get-theme-color("primary");
 
     .img-logo {
       width: 50px;
@@ -56,12 +56,12 @@
       }
 
       &.active {
-        $background-color: functions.get-theme-color("primary", "lighter");
+        $background-color: functions.get-theme-color("accent", "lighter");
         background-color: $background-color;
         color: functions.yiq-color-contrast($background-color);
       }
       &:hover {
-        $background-color: functions.get-theme-color("primary", "lighter");
+        $background-color: functions.get-theme-color("accent", "lighter");
         background-color: functions.adjust-color($background-color, "l", 10%);
         color: functions.yiq-color-contrast($background-color);
       }
