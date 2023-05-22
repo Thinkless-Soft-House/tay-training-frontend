@@ -70,7 +70,7 @@ export class MasterTableDataSource<T, Y> extends DataSource<T> {
           );
         }),
         tap((e: any) => {
-          this.paginator!.length = e.total;
+          this.paginator!.length = e.count;
           // Transform atualPagination.take in paginator.pageIndex
           this.paginator!.pageIndex = Math.floor(
             this.atualPagination.skip! / this.atualPagination.take!
@@ -79,7 +79,6 @@ export class MasterTableDataSource<T, Y> extends DataSource<T> {
           this.paginator!.pageSize = this.atualPagination.take!;
         }),
         map((e: any) => {
-          console.log('e', e);
           return {
             items: e.data,
             total: e.count,

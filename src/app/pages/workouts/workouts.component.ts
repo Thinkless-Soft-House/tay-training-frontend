@@ -31,11 +31,11 @@ export class WorkoutsComponent extends MasterTable<WorkoutsService> {
     private location: Location
   ) {
     const data: DataMasterTable = {
-      title: 'Treinos',
-      targetFilters: ['Name'],
+      title: 'Agrup. de Treinos',
+      targetFilters: ['Nome'],
       columns: [
         { name: 'id', title: 'ID' },
-        { name: 'name', title: 'Name' },
+        { name: 'name', title: 'Nome' },
         // { name: 'description', title: 'Description' },
       ],
       path: '/workouts',

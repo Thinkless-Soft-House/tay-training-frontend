@@ -22,10 +22,10 @@ export class MethodsComponent extends MasterTable<ServiceBackendItemService> {
   ) {
     const data: DataMasterTable = {
       title: 'Métodos',
-      targetFilters: ['Name', 'Description'],
+      targetFilters: ['Nome', 'Descrição'],
       columns: [
         { name: 'id', title: 'ID' },
-        { name: 'name', title: 'Name' },
+        { name: 'name', title: 'Nome' },
         // { name: 'description', title: 'Description' },
       ],
       path: '/methods',

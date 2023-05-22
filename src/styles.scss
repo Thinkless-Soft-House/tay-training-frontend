@@ -163,7 +163,8 @@ $mat-primary: (
   main: #f72585,
   lighter: #fdbeda,
   darker: #f31668,
-  200: #f72585, // For slide toggle,
+  200: #f72585,
+  // For slide toggle,
   // For slide toggle,
   contrast:
     (
@@ -186,7 +187,8 @@ $mat-accent: (
   main: #00007d,
   lighter: #b3b3d8,
   darker: #000060,
-  200: #00007d, // For slide toggle,
+  200: #00007d,
+  // For slide toggle,
   // For slide toggle,
   contrast:
     (
@@ -355,5 +357,11 @@ main {
 
   &.all {
     bottom: 0;
+  }
+}
+
+.header-content {
+  .material-icons {
+    font-size: 1.125rem;
   }
 }

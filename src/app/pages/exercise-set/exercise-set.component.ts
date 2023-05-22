@@ -22,12 +22,12 @@ export class ExerciseSetComponent extends MasterTable<ExerciseSetService> {
     loadingService: LoadingService
   ) {
     const data: DataMasterTable = {
-      title: 'Exercise Set',
-      targetFilters: ['Name', 'Category'],
+      title: 'Treinos',
+      targetFilters: ['Nome', 'Categoria'],
       columns: [
         { name: 'id', title: 'ID' },
-        { name: 'name', title: 'Name' },
-        { name: 'category', title: 'Category' },
+        { name: 'name', title: 'Nome' },
+        { name: 'category', title: 'Categoria' },
         // { name: 'description', title: 'Description' },
       ],
       path: '/exercise-set',
