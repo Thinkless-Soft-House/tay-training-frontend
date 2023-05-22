@@ -234,8 +234,9 @@ export class ExerciseSetDetailsComponent {
     console.log('exercise', this.allExercises);
     console.log('methods', this.allMethods);
 
-    this.newExercise.method.selectOptions = this.allMethods;
-    this.newExerciseList.push(this.newExercise);
+    const ex = this.initSetForms();
+    ex.method.selectOptions = this.allMethods;
+    this.newExerciseList.push(ex);
   }
   ngAfterViewInit() {
     this.actRoute.params.subscribe(async (params) => {
@@ -275,15 +276,16 @@ export class ExerciseSetDetailsComponent {
       this.pageCanLoad = true;
       this.detectorChanges.detectChanges();
 
-      if (this.formRef.controls[this.newExercise.exercise.config.name]) {
-        this.fillAutocomplete(this.newExercise);
+      const ex = this.newExerciseList[0];
+      if (this.formRef.controls[ex.exercise.config.name]) {
+        this.fillAutocomplete(ex);
       } else {
         await new Promise<void>((res) => {
           setTimeout(() => {
             res();
           }, 200);
         });
-        this.fillAutocomplete(this.newExercise);
+        this.fillAutocomplete(ex);
       }
 
       console.log('formRef canload');
@@ -496,12 +498,12 @@ export class ExerciseSetDetailsComponent {
     this.exerciseMethodController.observations.value = '';
     this.exerciseMethodController.restTime.value = '';
 
-    this.newExercise = this.initSetForms();
-    this.fillAutocomplete(this.newExercise);
-    this.newExercise.method.selectOptions = this.allMethods;
+    const ex = this.initSetForms();
+    this.fillAutocomplete(ex);
+    ex.method.selectOptions = this.allMethods;
 
     this.newExerciseList = [];
-    this.newExerciseList.push(this.newExercise);
+    this.newExerciseList.push(ex);
   }
   private populateSetForms(exerciseMethods: ExerciseMethod) {
     this.newExerciseList = [];

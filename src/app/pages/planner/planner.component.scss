@@ -109,7 +109,9 @@
 
 .offline {
   margin: 1em auto;
-  &.row .col {
-    @include functions.flexbox();
+  @include functions.flexbox();
+
+  & > * {
+    margin: 1em 0.5em;
   }
 }

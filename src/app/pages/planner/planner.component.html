@@ -189,26 +189,23 @@
     </div>
   </div>
 
-  <div class="offline row" *ngIf="planner.offlinePdf || planner.newTabPdf">
-    <div class="col">
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="newTabPDF()"
-        *ngIf="planner.newTabPdf"
-      >
-        Abrir PDF
-      </button>
-    </div>
-    <div class="col">
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="downloadPDF()"
-        *ngIf="planner.offlinePdf"
-      >
-        Baixar PDF
-      </button>
-    </div>
+  <div class="offline" *ngIf="planner.offlinePdf || planner.newTabPdf">
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="newTabPDF()"
+      *ngIf="planner.newTabPdf"
+    >
+      Abrir PDF
+    </button>
+
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="downloadPDF()"
+      *ngIf="planner.offlinePdf"
+    >
+      Baixar PDF
+    </button>
   </div>
 </section>
