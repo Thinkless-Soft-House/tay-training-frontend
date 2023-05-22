@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+
 interface Control {
   value?: number | string | Date | boolean;
   label?: string;
@@ -27,6 +29,15 @@ interface Control {
     dateConfig?: {
       minDate?: Date;
       maxDate?: Date;
+    };
+    autocompleteConfig?: {
+      filteredOptions?: any[];
+      $filteredOptions?: Observable<
+        {
+          name: string;
+          value: number;
+        }[]
+      >;
     };
     errors?: {
       required?: string;
@@ -71,6 +82,16 @@ export class ControlInput implements Control {
       minDate?: Date;
       maxDate?: Date;
     };
+    autocompleteConfig: {
+      filteredOptions?: any[];
+      $filteredOptions?: Observable<
+        {
+          name: string;
+          value: number;
+        }[]
+      >;
+      value?: any;
+    };
     errors: {
       required?: string;
       minlength?: string;
@@ -101,6 +122,7 @@ export class ControlInput implements Control {
       mask: args.config?.mask || false,
       customValidators: args.config?.customValidators || {},
       maskConfig: args.config?.maskConfig || {},
+      autocompleteConfig: args.config?.autocompleteConfig || {},
       dateConfig: args.config?.dateConfig || {},
       errors: args.config?.errors || {},
     };

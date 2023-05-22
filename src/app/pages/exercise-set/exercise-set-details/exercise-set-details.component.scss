@@ -1,5 +1,14 @@
 @use "src/functions.scss" as functions;
 
+.divider,
+.exercise-list {
+  width: 100%;
+}
+.spacer {
+  width: 100%;
+  padding: 1em 0;
+}
+
 .actions {
   width: 150px;
 }
@@ -21,7 +30,7 @@ tr.exercise-detail-row {
 }
 
 tr.exercise-table-row:not(.example-expanded-row):active {
-  background: #efefef;
+  // background: #efefef;
 }
 
 .exercise-table-row td {
@@ -37,24 +46,39 @@ tr.exercise-table-row:not(.example-expanded-row):active {
   padding: 0;
 }
 
-.content-exercise-details {
-  @include functions.flexbox($flex-direction: column);
-  $background-color: functions.get-theme-background();
-  background-color: functions.adjust-color($background-color, "l", 10%);
+.exercise-list {
+  margin: 1.5em 0;
 
-  &.exepanded-details {
-    padding: 0.5em;
+  .acc-item {
+    @include functions.flexbox(
+      $flex-direction: row,
+      $justify-content: space-evenly
+    );
+    width: 100%;
+
+    .action-exercise-list {
+      @include functions.flexbox(
+        $flex-direction: row,
+        $justify-content: space-evenly
+      );
+      margin: 0.5em 0;
+    }
+
+    .exp-panel-exercise {
+      flex: 1;
+    }
   }
 
   .cards {
     @include functions.flexbox(
       $flex-direction: row,
-      $justify-content: space-evenly
+      $justify-content: space-evenly,
+      $flex-wrap: wrap
     );
     width: clamp(300px, 100%, 900px);
 
     .config {
-      width: clamp(300px, 100%, 500px);
+      width: clamp(300px, 30%, 300px);
       padding: 0.5em;
       margin: 0.5em;
 
@@ -82,11 +106,47 @@ tr.exercise-table-row:not(.example-expanded-row):active {
   }
 }
 
-.exercises {
-  margin: 1em auto;
-  padding: 1.5em;
-  border-radius: 7px;
+.example-full-width {
+  textarea {
+    height: 16px;
+  }
+}
 
-  $background-color: functions.get-theme-background();
-  background-color: functions.adjust-color($background-color, "l", 7%);
+.exercises {
+  width: 100%;
+  box-sizing: border-box;
+
+  .exercise {
+    margin: 1em auto;
+    padding: 1.5em;
+    border-radius: 7px;
+    $background-color: functions.get-theme-background();
+    background-color: functions.adjust-color($background-color, "l", 7%);
+
+    position: relative;
+    .row {
+      margin: 0;
+    }
+
+    .delete-edge {
+      position: absolute;
+      top: -2em;
+      right: -2em;
+      padding: 0.5em;
+      cursor: pointer;
+    }
+  }
+}
+
+.action-btns-exercise {
+  @include functions.flexbox(
+    $flex-direction: row,
+    $justify-content: space-evenly,
+    $flex-wrap: wrap
+  );
+  width: 100%;
+
+  .submit-btn {
+    flex: 1;
+  }
 }

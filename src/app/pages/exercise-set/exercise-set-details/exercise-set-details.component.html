@@ -122,411 +122,342 @@
       <div class="col"></div>
     </div>
 
-    <div class="row mat-elevation-z2 workouts">
-      <div class="col">
-        <h2>Treinos</h2>
+    <hr class="divider" />
 
-        <ng-container *ngIf="exercicies.length > 0">
-          <h3>Treinos Salvos</h3>
+    <h2>Exercicios</h2>
+    <mat-accordion
+      class="exercise-list"
+      cdkDropList
+      (cdkDropListDropped)="drop($event)"
+    >
+      <div class="acc-item" *ngFor="let item of exercicies; let emI = index">
+        <mat-expansion-panel class="exp-panel-exercise" cdkDrag>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ emI + 1 }}º - {{ getWorkoutMultiName(emI) }}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="row">
+            <div class="col rest">
+              Tempo de descanso da combinação:
+              {{ item.rest }} segundos
+            </div>
+          </div>
 
-          <table
-            #tableExercisies
-            mat-table
-            [dataSource]="exercicies"
-            multiTemplateDataRows
-            class="mat-elevation-z8"
-          >
-            <!-- Normal Columns -->
-            <ng-container matColumnDef="type">
-              <th mat-header-cell *matHeaderCellDef>1º Exercicio</th>
-              <td mat-cell *matCellDef="let element; let i = dataIndex">
-                {{ getExercise(element.exerciseConfigurations[0].exerciseId) }}
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="countExercicies">
-              <th mat-header-cell *matHeaderCellDef>Quantidade de exer.</th>
-              <td mat-cell *matCellDef="let element">
-                {{ element.exerciseConfigurations.length }}
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef></th>
-              <td
-                mat-cell
-                *matCellDef="let element; let i = dataIndex"
-                class="actions"
-              >
-                <button
-                  mat-icon-button
-                  type="button"
-                  (click)="editExercise($event, i)"
-                >
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button
-                  mat-icon-button
-                  type="button"
-                  (click)="removeExercise($event, i)"
-                >
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </td>
-            </ng-container>
-            <!-- End Normal Columns -->
-
-            <!-- Expand Column-->
-
-            <ng-container matColumnDef="expandedDetail">
-              <td
-                mat-cell
-                *matCellDef="let element"
-                [attr.colspan]="columnsDisplay.length"
-              >
-                <div
-                  class="content-exercise-details"
-                  [@detailExpand]="
-                    element == expandedExercise ? 'expanded' : 'collapsed'
-                  "
-                  [class.exepanded-details]="element == expandedExercise"
-                >
-                  <!-- Dados de cada uma das configs -->
+          <div class="cards">
+            <ng-container
+              *ngFor="
+                let exerciseConfiguration of item.exerciseConfigurations;
+                let i = index
+              "
+            >
+              <mat-card class="config">
+                <mat-card-content>
                   <div class="row">
-                    <div class="col rest">
-                      Tempo de descanso da combinação:
-                      {{ element.rest }} segundos
+                    <div class="col subtitle">
+                      <h4>Exercicio {{ i + 1 }}</h4>
                     </div>
                   </div>
-
-                  <div class="cards">
-                    <ng-container
-                      *ngFor="
-                        let exerciseConfiguration of element.exerciseConfigurations;
-                        let i = index
-                      "
-                    >
-                      <mat-card class="config">
-                        <mat-card-content>
-                          <div class="row">
-                            <div class="col subtitle">
-                              <h4>Exercicio {{ i + 1 }}</h4>
-                            </div>
-                          </div>
-                          <div
-                            class="row"
-                            *ngIf="
-                              allExercises.length > 0 && allMethods.length > 0
-                            "
-                          >
-                            <div class="col exerciseId">
-                              Exercicio:
-                              {{
-                                getExercise(exerciseConfiguration.exerciseId)
-                              }}
-                            </div>
-                            <div class="col"></div>
-                          </div>
-                          <div class="row">
-                            <div class="col series">
-                              Séries: {{ exerciseConfiguration.series }}
-                            </div>
-                            <div class="col reps">
-                              Repetições: {{ exerciseConfiguration.reps }}
-                            </div>
-                            <div class="col methodId">
-                              Método:
-                              {{ getMethod(exerciseConfiguration.methodId) }}
-                            </div>
-                          </div>
-                        </mat-card-content>
-                      </mat-card>
-                    </ng-container>
+                  <div
+                    class="row"
+                    *ngIf="allExercises.length > 0 && allMethods.length > 0"
+                  >
+                    <div class="col exerciseId">
+                      Exercicio:
+                      {{ getExercise(exerciseConfiguration.exerciseId) }}
+                    </div>
                   </div>
-                </div>
-              </td>
+                  <div class="row">
+                    <div class="col series">
+                      Séries e Repetições: {{ exerciseConfiguration.series }} x
+                      {{ exerciseConfiguration.reps }}
+                    </div>
+                  </div>
+                  <div class="row" *ngIf="exerciseConfiguration.methodId">
+                    <div class="col methodId">
+                      Método:
+                      {{ getMethod(exerciseConfiguration.methodId) }}
+                    </div>
+                  </div>
+                </mat-card-content>
+              </mat-card>
             </ng-container>
+          </div>
+        </mat-expansion-panel>
+        <div class="action-exercise-list">
+          <button
+            mat-icon-button
+            type="button"
+            (click)="editExercise($event, emI)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            type="button"
+            (click)="removeExercise($event, emI)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </mat-accordion>
 
-            <tr mat-header-row *matHeaderRowDef="columnsDisplay"></tr>
-            <tr
-              mat-row
-              *matRowDef="let element; columns: columnsDisplay"
-              class="exercise-table-row"
-              [class.example-expanded-row]="expandedExercise === element"
-              (click)="
-                expandedExercise = expandedExercise === element ? null : element
-              "
-            ></tr>
-            <tr
-              mat-row
-              *matRowDef="let row; columns: ['expandedDetail']"
-              class="exercise-detail-row"
-            ></tr>
-          </table>
-        </ng-container>
+    <h2>Adicionar novo exercício</h2>
 
-        <h3 style="margin-top: 1em">Adicionar novo</h3>
+    <div class="row">
+      <div class="col">
+        <mat-form-field>
+          <mat-label>{{
+            exerciseMethodController["restTime"].label
+          }}</mat-label>
+          <input
+            matInput
+            [type]="exerciseMethodController['restTime'].config.type"
+            [name]="exerciseMethodController['restTime'].config.name"
+            [(ngModel)]="exerciseMethodController['restTime'].value"
+            [placeholder]="
+              exerciseMethodController['restTime'].config.placeholder
+            "
+            [disabled]="exerciseMethodController['restTime'].config.disabled"
+            [readonly]="exerciseMethodController['restTime'].config.readonly"
+            [required]="exerciseMethodController['restTime'].config.required"
+            [minlength]="exerciseMethodController['restTime'].config.minlength"
+            [maxlength]="exerciseMethodController['restTime'].config.maxlength"
+            [pattern]="exerciseMethodController['restTime'].config.pattern"
+            [email]="exerciseMethodController['restTime'].config.email"
+          />
+          <mat-hint *ngIf="exerciseMethodController['restTime'].config.hint">{{
+            exerciseMethodController["restTime"].config.hint
+          }}</mat-hint>
+          <mat-error *ngIf="getErrorText(exerciseMethodController['restTime'])">
+            {{ getErrorText(exerciseMethodController["restTime"]) }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <mat-form-field class="example-full-width">
+          <mat-label>{{
+            exerciseMethodController["observations"].label
+          }}</mat-label>
+          <textarea
+            matInput
+            [type]="exerciseMethodController['observations'].config.type"
+            [name]="exerciseMethodController['observations'].config.name"
+            [(ngModel)]="exerciseMethodController['observations'].value"
+            [placeholder]="
+              exerciseMethodController['observations'].config.placeholder
+            "
+            [disabled]="
+              exerciseMethodController['observations'].config.disabled
+            "
+            [readonly]="
+              exerciseMethodController['observations'].config.readonly
+            "
+            [required]="
+              exerciseMethodController['observations'].config.required
+            "
+            [minlength]="
+              exerciseMethodController['observations'].config.minlength
+            "
+            [maxlength]="
+              exerciseMethodController['observations'].config.maxlength
+            "
+            [pattern]="exerciseMethodController['observations'].config.pattern"
+            [email]="exerciseMethodController['observations'].config.email"
+          ></textarea>
+          <mat-hint
+            *ngIf="exerciseMethodController['observations'].config.hint"
+            >{{
+              exerciseMethodController["observations"].config.hint
+            }}</mat-hint
+          >
+          <mat-error
+            *ngIf="getErrorText(exerciseMethodController['observations'])"
+          >
+            {{ getErrorText(exerciseMethodController["observations"]) }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <!-- Lista de novos exercicios -->
 
-        <!-- Exercise-method Type -->
+    <div class="exercises">
+      <div
+        class="exercise mat-elevation-z2"
+        *ngFor="let exerc of newExerciseList; let nelI = index"
+      >
+        <h4>Configurações do Exercício {{ nelI + 1 }}</h4>
 
         <div class="row">
+          <!-- One set Exercise -->
           <div class="col">
+            <!-- Treino -->
+            <mat-form-field class="example-full-width">
+              <mat-label>Exercício</mat-label>
+              <input
+                type="text"
+                placeholder="Pick one"
+                aria-label="Number"
+                matInput
+                [(ngModel)]="exerc['exercise'].value"
+                [name]="exerc['exercise'].config.name"
+                [required]="exerc['exercise'].config.required"
+                [matAutocomplete]="auto"
+              />
+              <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                <mat-option
+                  *ngFor="
+                    let option of exerc['exercise'].config.autocompleteConfig
+                      .$filteredOptions | async
+                  "
+                  [value]="option.name"
+                >
+                  {{ option.name }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+
+          <!-- One Set Method -->
+          <div class="col">
+            <mat-form-field appearance="fill">
+              <mat-label>{{ exerc["method"].label }}</mat-label>
+              <mat-select
+                [(ngModel)]="exerc['method'].value"
+                [name]="exerc['method'].config.name"
+                [placeholder]="exerc['method'].config.placeholder"
+                [disabled]="exerc['method'].config.disabled"
+                [required]="exerc['method'].config.required"
+              >
+                <mat-option
+                  *ngFor="let item of exerc['method'].selectOptions"
+                  [value]="item.value"
+                >
+                  {{ item.name }}
+                </mat-option>
+              </mat-select>
+              <mat-hint *ngIf="exerc['method'].config.hint">{{
+                exerc["method"].config.hint
+              }}</mat-hint>
+              <mat-error *ngIf="getErrorText(exerc['method'])">
+                {{ getErrorText(exerc["method"]) }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row">
+          <!-- One Set Series -->
+          <div class="col">
+            <!-- Séries -->
             <mat-form-field>
-              <mat-label>{{
-                exerciseMethodController["restTime"].label
-              }}</mat-label>
+              <mat-label>{{ exerc["series"].label }}</mat-label>
               <input
                 matInput
-                [type]="exerciseMethodController['restTime'].config.type"
-                [name]="exerciseMethodController['restTime'].config.name"
-                [(ngModel)]="exerciseMethodController['restTime'].value"
-                [placeholder]="
-                  exerciseMethodController['restTime'].config.placeholder
-                "
-                [disabled]="
-                  exerciseMethodController['restTime'].config.disabled
-                "
-                [readonly]="
-                  exerciseMethodController['restTime'].config.readonly
-                "
-                [required]="
-                  exerciseMethodController['restTime'].config.required
-                "
-                [minlength]="
-                  exerciseMethodController['restTime'].config.minlength
-                "
-                [maxlength]="
-                  exerciseMethodController['restTime'].config.maxlength
-                "
-                [pattern]="exerciseMethodController['restTime'].config.pattern"
-                [email]="exerciseMethodController['restTime'].config.email"
+                [type]="exerc['series'].config.type"
+                [name]="exerc['series'].config.name"
+                [(ngModel)]="exerc['series'].value"
+                [placeholder]="exerc['series'].config.placeholder"
+                [disabled]="exerc['series'].config.disabled"
+                [readonly]="exerc['series'].config.readonly"
+                [required]="exerc['series'].config.required"
+                [minlength]="exerc['series'].config.minlength"
+                [maxlength]="exerc['series'].config.maxlength"
+                [pattern]="exerc['series'].config.pattern"
+                [email]="exerc['series'].config.email"
               />
-              <mat-hint
-                *ngIf="exerciseMethodController['restTime'].config.hint"
-                >{{
-                  exerciseMethodController["restTime"].config.hint
-                }}</mat-hint
-              >
-              <mat-error
-                *ngIf="getErrorText(exerciseMethodController['restTime'])"
-              >
-                {{ getErrorText(exerciseMethodController["restTime"]) }}
+              <mat-hint *ngIf="exerc['series'].config.hint">{{
+                exerc["series"].config.hint
+              }}</mat-hint>
+              <mat-error *ngIf="getErrorText(exerc['series'])">
+                {{ getErrorText(exerc["series"]) }}
               </mat-error>
             </mat-form-field>
           </div>
-          <div class="col"></div>
-        </div>
-        <div class="row">
+          <!-- One Set Reps -->
           <div class="col">
-            <mat-form-field class="example-full-width">
-              <mat-label>{{
-                exerciseMethodController["observations"].label
-              }}</mat-label>
-              <textarea
+            <mat-form-field>
+              <mat-label>{{ exerc["repetitions"].label }}</mat-label>
+              <input
                 matInput
-                [type]="exerciseMethodController['observations'].config.type"
-                [name]="exerciseMethodController['observations'].config.name"
-                [(ngModel)]="exerciseMethodController['observations'].value"
-                [placeholder]="
-                  exerciseMethodController['observations'].config.placeholder
-                "
-                [disabled]="
-                  exerciseMethodController['observations'].config.disabled
-                "
-                [readonly]="
-                  exerciseMethodController['observations'].config.readonly
-                "
-                [required]="
-                  exerciseMethodController['observations'].config.required
-                "
-                [minlength]="
-                  exerciseMethodController['observations'].config.minlength
-                "
-                [maxlength]="
-                  exerciseMethodController['observations'].config.maxlength
-                "
-                [pattern]="
-                  exerciseMethodController['observations'].config.pattern
-                "
-                [email]="exerciseMethodController['observations'].config.email"
-              ></textarea>
-              <mat-hint
-                *ngIf="exerciseMethodController['observations'].config.hint"
-                >{{
-                  exerciseMethodController["observations"].config.hint
-                }}</mat-hint
-              >
-              <mat-error
-                *ngIf="getErrorText(exerciseMethodController['observations'])"
-              >
-                {{ getErrorText(exerciseMethodController["observations"]) }}
+                [type]="exerc['repetitions'].config.type"
+                [name]="exerc['repetitions'].config.name"
+                [(ngModel)]="exerc['repetitions'].value"
+                [placeholder]="exerc['repetitions'].config.placeholder"
+                [disabled]="exerc['repetitions'].config.disabled"
+                [readonly]="exerc['repetitions'].config.readonly"
+                [required]="exerc['repetitions'].config.required"
+                [minlength]="exerc['repetitions'].config.minlength"
+                [maxlength]="exerc['repetitions'].config.maxlength"
+                [pattern]="exerc['repetitions'].config.pattern"
+                [email]="exerc['repetitions'].config.email"
+              />
+              <mat-hint *ngIf="exerc['repetitions'].config.hint">{{
+                exerc["repetitions"].config.hint
+              }}</mat-hint>
+              <mat-error *ngIf="getErrorText(exerc['repetitions'])">
+                {{ getErrorText(exerc["repetitions"]) }}
               </mat-error>
             </mat-form-field>
           </div>
         </div>
 
-        <div class="exercises mat-elevation-z2">
-          <ng-container *ngFor="let exerc of newExerciseList; let i = index">
-            <h4>Configurações do Exercício {{ i + 1 }}</h4>
-
-            <div class="row">
-              <!-- One set Exercise -->
-              <div class="col">
-                <!-- Treino -->
-                <mat-form-field appearance="fill">
-                  <mat-label>{{ exerc["exercise"].label }}</mat-label>
-                  <mat-select
-                    [(ngModel)]="exerc['exercise'].value"
-                    [name]="exerc['exercise'].config.name"
-                    [placeholder]="exerc['exercise'].config.placeholder"
-                    [disabled]="exerc['exercise'].config.disabled"
-                    [required]="exerc['exercise'].config.required"
-                  >
-                    <mat-option
-                      *ngFor="let item of exerc['exercise'].selectOptions"
-                      [value]="item.value"
-                    >
-                      {{ item.name }}
-                    </mat-option>
-                  </mat-select>
-                  <mat-hint *ngIf="exerc['exercise'].config.hint">{{
-                    exerc["exercise"].config.hint
-                  }}</mat-hint>
-                  <mat-error *ngIf="getErrorText(exerc['exercise'])">
-                    {{ getErrorText(exerc["exercise"]) }}
-                  </mat-error>
-                </mat-form-field>
-              </div>
-
-              <!-- One Set Method -->
-              <div class="col">
-                <mat-form-field appearance="fill">
-                  <mat-label>{{ exerc["method"].label }}</mat-label>
-                  <mat-select
-                    [(ngModel)]="exerc['method'].value"
-                    [name]="exerc['method'].config.name"
-                    [placeholder]="exerc['method'].config.placeholder"
-                    [disabled]="exerc['method'].config.disabled"
-                    [required]="exerc['method'].config.required"
-                  >
-                    <mat-option
-                      *ngFor="let item of exerc['method'].selectOptions"
-                      [value]="item.value"
-                    >
-                      {{ item.name }}
-                    </mat-option>
-                  </mat-select>
-                  <mat-hint *ngIf="exerc['method'].config.hint">{{
-                    exerc["method"].config.hint
-                  }}</mat-hint>
-                  <mat-error *ngIf="getErrorText(exerc['method'])">
-                    {{ getErrorText(exerc["method"]) }}
-                  </mat-error>
-                </mat-form-field>
-              </div>
-            </div>
-
-            <div class="row">
-              <!-- One Set Series -->
-              <div class="col">
-                <!-- Séries -->
-                <mat-form-field>
-                  <mat-label>{{ exerc["series"].label }}</mat-label>
-                  <input
-                    matInput
-                    [type]="exerc['series'].config.type"
-                    [name]="exerc['series'].config.name"
-                    [(ngModel)]="exerc['series'].value"
-                    [placeholder]="exerc['series'].config.placeholder"
-                    [disabled]="exerc['series'].config.disabled"
-                    [readonly]="exerc['series'].config.readonly"
-                    [required]="exerc['series'].config.required"
-                    [minlength]="exerc['series'].config.minlength"
-                    [maxlength]="exerc['series'].config.maxlength"
-                    [pattern]="exerc['series'].config.pattern"
-                    [email]="exerc['series'].config.email"
-                  />
-                  <mat-hint *ngIf="exerc['series'].config.hint">{{
-                    exerc["series"].config.hint
-                  }}</mat-hint>
-                  <mat-error *ngIf="getErrorText(exerc['series'])">
-                    {{ getErrorText(exerc["series"]) }}
-                  </mat-error>
-                </mat-form-field>
-              </div>
-              <!-- One Set Reps -->
-              <div class="col">
-                <mat-form-field>
-                  <mat-label>{{ exerc["repetitions"].label }}</mat-label>
-                  <input
-                    matInput
-                    [type]="exerc['repetitions'].config.type"
-                    [name]="exerc['repetitions'].config.name"
-                    [(ngModel)]="exerc['repetitions'].value"
-                    [placeholder]="exerc['repetitions'].config.placeholder"
-                    [disabled]="exerc['repetitions'].config.disabled"
-                    [readonly]="exerc['repetitions'].config.readonly"
-                    [required]="exerc['repetitions'].config.required"
-                    [minlength]="exerc['repetitions'].config.minlength"
-                    [maxlength]="exerc['repetitions'].config.maxlength"
-                    [pattern]="exerc['repetitions'].config.pattern"
-                    [email]="exerc['repetitions'].config.email"
-                  />
-                  <mat-hint *ngIf="exerc['repetitions'].config.hint">{{
-                    exerc["repetitions"].config.hint
-                  }}</mat-hint>
-                  <mat-error *ngIf="getErrorText(exerc['repetitions'])">
-                    {{ getErrorText(exerc["repetitions"]) }}
-                  </mat-error>
-                </mat-form-field>
-              </div>
-            </div>
-          </ng-container>
-
-          <div class="row">
-            <div class="col"></div>
-            <div class="col submit-col">
-              <button
-                class="submit-btn"
-                type="button"
-                mat-raised-button
-                color="accent"
-                (click)="addNewExercise()"
-              >
-                Novo Exercicio
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="row" *ngIf="pageCanLoad && formRef">
-          <div class="col"></div>
-          <div class="col submit-col">
-            <button
-              class="submit-btn"
-              type="button"
-              mat-raised-button
-              color="accent"
-              (click)="addExercise()"
-              [disabled]="issueValuesNewExercise() !== ''"
-            >
-              Salvar treino
-            </button>
-            <button
-              mat-icon-button
-              aria-label="Help Form Button"
-              type="button"
-              [class.show]="issueValuesNewExercise() !== ''"
-              class="help-btn"
-              [matTooltip]="issueValuesNewExercise()"
-              matTooltipClass="multiline-tooltip"
-            >
-              <mat-icon>help</mat-icon>
-            </button>
-          </div>
+        <div class="delete-edge" *ngIf="newExerciseList.length > 1">
+          <button
+            mat-fab
+            color="warn"
+            aria-label="Example icon button with a delete icon"
+            (click)="deleteNewExercise(nelI)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
         </div>
       </div>
     </div>
+
+    <div class="action-btns-exercise" *ngIf="pageCanLoad && formRef">
+      <div class="row">
+        <div class="col submit-col">
+          <button
+            class="submit-btn"
+            type="button"
+            mat-raised-button
+            color="accent"
+            (click)="addNewExercise()"
+          >
+            <mat-icon>add</mat-icon>
+            Adicionar Exercicio
+          </button>
+        </div>
+        <div class="col submit-col">
+          <button
+            class="submit-btn"
+            type="button"
+            mat-raised-button
+            color="accent"
+            (click)=" saveExercise()"
+            [disabled]="issueValuesNewExercise() !== ''"
+          >
+            Salvar Exercicios
+          </button>
+          <button
+            mat-icon-button
+            aria-label="Help Form Button"
+            type="button"
+            [class.show]="issueValuesNewExercise() !== ''"
+            class="help-btn"
+            [matTooltip]="issueValuesNewExercise()"
+            matTooltipClass="multiline-tooltip"
+          >
+            <mat-icon>help</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+    <div class="spacer"></div>
 
     <div class="row">
       <div class="col"></div>

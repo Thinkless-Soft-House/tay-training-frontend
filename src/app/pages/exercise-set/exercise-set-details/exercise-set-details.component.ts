@@ -19,6 +19,7 @@ import { MethodsService } from 'src/app/services/methods.service';
 import { ExerciseMethodService } from 'src/app/services/exercise-method.service';
 import { ExerciseConfigurationService } from 'src/app/services/exercise-configuration.service';
 import { SetCategoriesService } from 'src/app/services/set-categories.service';
+import { Observable, debounceTime, map, of, startWith, tap } from 'rxjs';
 
 export interface ExerciseSet {
   id?: number;
@@ -131,6 +132,7 @@ export class ExerciseSetDetailsComponent {
       label: 'Tempo de descanso',
       config: {
         name: 'restTime',
+        required: true,
         errors: {
           required: 'Campo obrigatório',
         },
@@ -175,24 +177,20 @@ export class ExerciseSetDetailsComponent {
     { name: 'Método 2', value: 2 },
     { name: 'Método 3', value: 3 },
   ];
-  // Exercises table Configurations
 
-  // columns = [
-  //   { name: 'exercise', title: 'Exercício' },
-  //   { name: 'method', title: 'Método' },
-  //   { name: 'series', title: 'Séries' },
-  //   { name: 'sleepTime', title: 'Tempo de descanso' },
-  //   { name: 'repetitions', title: 'Repetições' },
-  // ];
-  columnsDisplay = ['type', 'countExercicies', 'actions'];
+  columnsDisplay = ['reorder', 'type', 'countExercicies', 'actions'];
   expandedExercise: ExerciseMethod | null = null;
 
   @ViewChild('reactiveForm') formRef!: NgForm;
-  @ViewChild('tableExercisies') table!: MatTable<any> | null;
+  // @ViewChild('tableExercisies') table!: MatTable<any> | null;
 
   isEdit = false;
   editId: number | null = null;
   exerciseMethodSaved: ExerciseMethod[] = [];
+
+  exerciseFiltered: {
+    [id: string]: Observable<{ name: string; id: number }[]>;
+  } = {};
 
   constructor(
     private utilsService: UtilsService,
@@ -236,7 +234,6 @@ export class ExerciseSetDetailsComponent {
     console.log('exercise', this.allExercises);
     console.log('methods', this.allMethods);
 
-    this.newExercise.exercise.selectOptions = this.allExercises;
     this.newExercise.method.selectOptions = this.allMethods;
     this.newExerciseList.push(this.newExercise);
   }
@@ -274,10 +271,88 @@ export class ExerciseSetDetailsComponent {
       }
     });
 
-    setTimeout(() => {
+    setTimeout(async () => {
       this.pageCanLoad = true;
       this.detectorChanges.detectChanges();
+
+      if (this.formRef.controls[this.newExercise.exercise.config.name]) {
+        this.fillAutocomplete(this.newExercise);
+      } else {
+        await new Promise<void>((res) => {
+          setTimeout(() => {
+            res();
+          }, 200);
+        });
+        this.fillAutocomplete(this.newExercise);
+      }
+
+      console.log('formRef canload');
     }, 200);
+  }
+
+  // Autocomplete Exercise Start
+
+  private fillAutocomplete(exercise: any) {
+    new Promise<void>((res) => {
+      setTimeout(() => {
+        res();
+      }, 200);
+    }).then(() => {
+      exercise.exercise.config.autocompleteConfig.$filteredOptions =
+        this.formRef.controls[exercise.exercise.config.name].valueChanges.pipe(
+          startWith(''),
+          debounceTime(200),
+          map((value) => {
+            if (typeof value === 'string') {
+              console.log('value', value);
+              exercise.exercise.config.autocompleteConfig.value =
+                this.checkValue(value) ? this.checkValue(value) : null;
+
+              return this.checkValue(value)
+                ? this.autocompleteFilter('')
+                : this.autocompleteFilter(value || '');
+            } else {
+              return this.autocompleteFilter('');
+            }
+          }),
+          tap((value) => {
+            console.log(
+              'exercise.exercise.config.autocompleteConfig.value',
+              exercise.exercise.config.autocompleteConfig.value
+            );
+          })
+        );
+    });
+  }
+
+  private autocompleteFilter(value: string): {
+    name: string;
+    value: number;
+  }[] {
+    const filterValue = value.toLowerCase();
+    const exercises = this.allExercises.filter((option) => {
+      return option.name.toLowerCase().includes(filterValue);
+    });
+
+    return exercises;
+  }
+
+  checkValue(value: string) {
+    return this.allExercises.find((x) => x.name === value);
+  }
+  // Autocomplete Exercise End
+
+  drop(event: CdkDragDrop<ExerciseMethod[]>) {
+    console.log('event', event);
+    const prevIndex = this.exercicies.findIndex((d) => d === event.item.data);
+    moveItemInArray(this.exercicies, prevIndex, event.currentIndex);
+  }
+
+  getWorkoutMultiName(index: number) {
+    const em = this.exercicies[index];
+    return em?.exerciseConfigurations
+      ?.map((e) => this.getExercise(e!.exerciseId))
+      .join(' + ');
   }
 
   getExercise(exercise: number) {
@@ -355,17 +430,14 @@ export class ExerciseSetDetailsComponent {
     const model = {
       exercise: new ControlInput({
         label: 'Exercício',
-        selectOptions: [
-          { name: 'Opção 0', value: 0 },
-          { name: 'Opção 1', value: 1 },
-          { name: 'Opção 2', value: 2 },
-          { name: 'Opção 3', value: 3 },
-        ],
         config: {
           required: true,
           name: 'exercise',
           errors: {
             required: 'Campo obrigatório',
+          },
+          autocompleteConfig: {
+            $filteredOptions: of([]),
           },
         },
       }),
@@ -411,7 +483,7 @@ export class ExerciseSetDetailsComponent {
   private extractSetForms(): ExerciseConfiguration[] {
     return this.newExerciseList.map((e) => {
       const ret = {
-        exerciseId: e.exercise.value as number,
+        exerciseId: e.exercise.config.autocompleteConfig.value.value as number,
         series: e.series.value as string,
         methodId: e.method.value as number,
         reps: e.repetitions.value as string,
@@ -425,7 +497,7 @@ export class ExerciseSetDetailsComponent {
     this.exerciseMethodController.restTime.value = '';
 
     this.newExercise = this.initSetForms();
-    this.newExercise.exercise.selectOptions = this.allExercises;
+    this.fillAutocomplete(this.newExercise);
     this.newExercise.method.selectOptions = this.allMethods;
 
     this.newExerciseList = [];
@@ -441,12 +513,18 @@ export class ExerciseSetDetailsComponent {
     exerciseMethods.exerciseConfigurations!.forEach((e) => {
       const exercise = this.initSetForms();
 
-      exercise.exercise.value = e.exerciseId;
+      const ex = this.allExercises.find((ex) => ex.value === e.exerciseId)!;
+      exercise.exercise.value = ex.name;
+      exercise.exercise.config.autocompleteConfig.value = {
+        name: ex.name,
+        value: ex.value,
+      };
       exercise.series.value = e.series;
       exercise.method.value = e.methodId;
+      exercise.method.selectOptions = this.allMethods;
       exercise.repetitions.value = e.reps;
 
-      exercise.exercise.selectOptions = this.allExercises;
+      this.fillAutocomplete(exercise);
 
       this.newExerciseList.push(exercise);
     });
@@ -480,7 +558,7 @@ export class ExerciseSetDetailsComponent {
     // Checar se tem todos os newExercise no array newExerciseList estão completos, alem de verificar se o seu length é maior que 0
 
     this.newExerciseList.forEach((e, index) => {
-      if (!e.exercise.value) {
+      if (!e.exercise.config.autocompleteConfig.value) {
         ret += `Exercício ${index + 1}: ${this.getErrorText(e.exercise)}\r\n`;
       }
 
@@ -503,15 +581,23 @@ export class ExerciseSetDetailsComponent {
   addNewExercise() {
     console.log('addNewExercise');
     const exercise = this.initSetForms();
-    exercise.exercise.selectOptions = this.allExercises;
+
     exercise.method.selectOptions = this.allMethods;
     console.log('exercise', exercise);
     console.log('newExerciseList pre', this.newExerciseList);
     this.newExerciseList.push(exercise);
+
+    this.fillAutocomplete(exercise);
+
     console.log('newExerciseList pos', this.newExerciseList);
   }
 
-  addExercise() {
+  deleteNewExercise(index: number) {
+    console.log('deleteNewExercise', index);
+    this.newExerciseList.splice(index, 1);
+  }
+
+  saveExercise() {
     const configExercise: ExerciseConfiguration[] = this.extractSetForms();
 
     const exercise: ExerciseMethod = {
@@ -520,8 +606,9 @@ export class ExerciseSetDetailsComponent {
       exerciseConfigurations: configExercise,
     };
 
+    console.log('saved exercise', exercise);
     this.exercicies.push(exercise);
-    this.table?.renderRows();
+    // this.table?.renderRows();
 
     this.resetSetForms();
   }
@@ -529,7 +616,7 @@ export class ExerciseSetDetailsComponent {
     event.stopPropagation();
     console.log('index', index);
     this.exercicies.splice(index, 1);
-    this.table?.renderRows();
+    // this.table?.renderRows();
 
     console.log('exercisies', this.exercicies);
   }

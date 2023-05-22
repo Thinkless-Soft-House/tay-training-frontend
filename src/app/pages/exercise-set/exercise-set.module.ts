@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatTableModule } from '@angular/material/table';
 
 import { ExerciseSetRoutingModule } from './exercise-set-routing.module';
 import { ExerciseSetComponent } from './exercise-set.component';
@@ -22,6 +24,8 @@ import { ExerciseSetDetailsComponent } from './exercise-set-details/exercise-set
     ComponentsModule,
     NgxMaskDirective,
     NgxMaskPipe,
+    MatTableModule,
+    DragDropModule,
   ],
   providers: [provideNgxMask()],
 })
