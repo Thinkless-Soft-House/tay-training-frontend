@@ -140,6 +140,54 @@
         </mat-form-field>
       </div>
     </div>
+    <div class="row">
+      <div class="col">
+        <mat-form-field>
+          <mat-label>{{ form["newTabPdf"].label }}</mat-label>
+          <input
+            matInput
+            [type]="form['newTabPdf'].config.type"
+            [name]="form['newTabPdf'].config.name"
+            [(ngModel)]="form['newTabPdf'].value"
+            [placeholder]="form['newTabPdf'].config.placeholder"
+            [disabled]="form['newTabPdf'].config.disabled"
+            [readonly]="form['newTabPdf'].config.readonly"
+            [required]="form['newTabPdf'].config.required"
+            [minlength]="form['newTabPdf'].config.minlength"
+            [maxlength]="form['newTabPdf'].config.maxlength"
+            [pattern]="form['newTabPdf'].config.pattern"
+            [email]="form['newTabPdf'].config.email"
+            [v-url-validator]="
+              !!form['newTabPdf'].config.customValidators['urlValidator']
+            "
+            [mask]="
+              form['newTabPdf'].config.mask &&
+              form['newTabPdf'].config.maskConfig.mask
+                ? form['newTabPdf'].config.maskConfig.mask
+                : null
+            "
+            [dropSpecialCharacters]="
+              form['newTabPdf'].config.mask &&
+              form['newTabPdf'].config.maskConfig.dropSpecialCharacters
+                ? form['newTabPdf'].config.maskConfig.dropSpecialCharacters
+                : true
+            "
+            [validation]="
+              form['newTabPdf'].config.mask &&
+              form['newTabPdf'].config.maskConfig.validation
+                ? form['newTabPdf'].config.maskConfig.validation
+                : false
+            "
+          />
+          <mat-hint *ngIf="form['newTabPdf'].config.hint">{{
+            form["newTabPdf"].config.hint
+          }}</mat-hint>
+          <mat-error *ngIf="getErrorText(form['newTabPdf'])">
+            {{ getErrorText(form["newTabPdf"]) }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
 
     <div class="row">
       <div class="col">

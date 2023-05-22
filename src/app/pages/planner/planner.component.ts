@@ -118,6 +118,16 @@ export class PlannerComponent {
 
     a.href = url!;
     a.download = 'planner.pdf';
+    a.click();
+  }
+  newTabPDF() {
+    const a = document.createElement('a');
+    const url = this.sanitizer.sanitize(
+      SecurityContext.RESOURCE_URL,
+      this.sanitizer.bypassSecurityTrustResourceUrl(this.planner?.newTabPdf!)
+    );
+
+    a.href = url!;
     a.target = '_blank';
     a.click();
   }

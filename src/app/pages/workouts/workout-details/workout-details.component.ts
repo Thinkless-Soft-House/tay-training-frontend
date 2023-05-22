@@ -26,6 +26,7 @@ export interface TrainingSheet {
   publicName: string;
   slug: string;
   offlinePdf?: string;
+  newTabPdf?: string;
   trainingDays: TrainingDay[];
 }
 export interface TrainingDay {
@@ -64,9 +65,23 @@ export class WorkoutDetailsComponent {
       },
     }),
     offlinePdf: new ControlInput({
-      label: 'URL do PDF',
+      label: 'URL do PDF - Baixar',
       config: {
         name: 'offlinePdf',
+        maxlength: 100,
+        customValidators: {
+          urlValidator: true,
+        },
+        errors: {
+          maxlength: 'Máximo de 100 caracteres',
+          invalidUrl: 'Url inválida',
+        },
+      },
+    }),
+    newTabPdf: new ControlInput({
+      label: 'URL do PDF - Nova Aba',
+      config: {
+        name: 'newTabPdf',
         maxlength: 100,
         customValidators: {
           urlValidator: true,
@@ -259,6 +274,7 @@ export class WorkoutDetailsComponent {
       name: data.name,
       publicName: data.publicName,
       offlinePdf: data.offlinePdf,
+      newTabPdf: data.newTabPdf,
       trainingDays: this.trainingDays
         .filter((e) => e.value !== -1)
         .map((e) => {
@@ -279,6 +295,7 @@ export class WorkoutDetailsComponent {
           name: sheet.name,
           publicName: sheet.publicName,
           offlinePdf: sheet.offlinePdf,
+          newTabPdf: sheet.newTabPdf,
         });
 
         // update list Days
