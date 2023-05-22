@@ -36,7 +36,7 @@ export interface ExerciseConfiguration {
   reps: string;
   exerciseMethodId?: number;
   exerciseId: number;
-  methodId: number;
+  methodId: number | null;
 
   exercise?: Exercise;
   method?: Method;
@@ -233,10 +233,6 @@ export class ExerciseSetDetailsComponent {
 
     console.log('exercise', this.allExercises);
     console.log('methods', this.allMethods);
-
-    const ex = this.initSetForms();
-    ex.method.selectOptions = this.allMethods;
-    this.newExerciseList.push(ex);
   }
   ngAfterViewInit() {
     this.actRoute.params.subscribe(async (params) => {
@@ -276,9 +272,12 @@ export class ExerciseSetDetailsComponent {
       this.pageCanLoad = true;
       this.detectorChanges.detectChanges();
 
-      const ex = this.newExerciseList[0];
+      const ex = this.initSetForms();
+      ex.method.selectOptions = this.allMethods;
+
       if (this.formRef.controls[ex.exercise.config.name]) {
         this.fillAutocomplete(ex);
+        this.newExerciseList.push(ex);
       } else {
         await new Promise<void>((res) => {
           setTimeout(() => {
@@ -286,6 +285,7 @@ export class ExerciseSetDetailsComponent {
           }, 200);
         });
         this.fillAutocomplete(ex);
+        this.newExerciseList.push(ex);
       }
 
       console.log('formRef canload');
@@ -522,7 +522,7 @@ export class ExerciseSetDetailsComponent {
         value: ex.value,
       };
       exercise.series.value = e.series;
-      exercise.method.value = e.methodId;
+      exercise.method.value = e.methodId as number;
       exercise.method.selectOptions = this.allMethods;
       exercise.repetitions.value = e.reps;
 
@@ -682,6 +682,9 @@ export class ExerciseSetDetailsComponent {
           e.exerciseConfigurations!.map((exerciseConfiguration) => {
             return {
               ...exerciseConfiguration,
+              methodId: exerciseConfiguration.methodId
+                ? exerciseConfiguration.methodId
+                : null,
               exerciseMethodId: exerciseMethodCreated.id,
             };
           });
