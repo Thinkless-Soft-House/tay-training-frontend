@@ -1,1 +1,12 @@
-<p>home works!</p>
+<div class="sections">
+  <mat-card *ngFor="let item of menuItems">
+    <mat-card-header>
+      <mat-card-title>{{ item.name }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-actions align="end">
+      <button mat-raised-button color="primary" (click)="goTo(item.route)">
+        Ir
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

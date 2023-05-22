@@ -1,0 +1,15 @@
+.sections {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
+
+  padding: 1em;
+
+  mat-card {
+    width: clamp(150px, 100%, 250px);
+    margin: 1em 0;
+    padding: 1em;
+  }
+}
