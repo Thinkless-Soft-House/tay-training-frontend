@@ -108,12 +108,7 @@ export class ExerciseSetDetailsComponent {
     }),
     setCategories: new ControlInput({
       label: 'Categoria do treino',
-      selectOptions: [
-        { name: 'Opção 0', value: '0' },
-        { name: 'Opção 1', value: '1' },
-        { name: 'Opção 2', value: '2' },
-        { name: 'Opção 3', value: '3' },
-      ],
+      selectOptions: [],
       config: {
         name: 'setCategories',
         required: true,
@@ -164,19 +159,9 @@ export class ExerciseSetDetailsComponent {
 
   exercicies: ExerciseMethod[] = [];
 
-  allExercises = [
-    { name: 'Treino 0', value: 0 },
-    { name: 'Treino 1', value: 1 },
-    { name: 'Treino 2', value: 2 },
-    { name: 'Treino 3', value: 3 },
-  ];
+  allExercises: { name: string; value: number }[] = [];
 
-  allMethods = [
-    { name: 'Método 0', value: 0 },
-    { name: 'Método 1', value: 1 },
-    { name: 'Método 2', value: 2 },
-    { name: 'Método 3', value: 3 },
-  ];
+  allMethods: { name: string; value: number }[] = [];
 
   columnsDisplay = ['reorder', 'type', 'countExercicies', 'actions'];
   expandedExercise: ExerciseMethod | null = null;
@@ -233,6 +218,29 @@ export class ExerciseSetDetailsComponent {
 
     console.log('exercise', this.allExercises);
     console.log('methods', this.allMethods);
+
+    setTimeout(async () => {
+      this.pageCanLoad = true;
+      this.detectorChanges.detectChanges();
+
+      const ex = this.initSetForms();
+      ex.method.selectOptions = this.allMethods;
+
+      if (this.formRef.controls[ex.exercise.config.name]) {
+        this.fillAutocomplete(ex);
+        this.newExerciseList.push(ex);
+      } else {
+        await new Promise<void>((res) => {
+          setTimeout(() => {
+            res();
+          }, 200);
+        });
+        this.fillAutocomplete(ex);
+        this.newExerciseList.push(ex);
+      }
+
+      console.log('formRef canload');
+    }, 200);
   }
   ngAfterViewInit() {
     this.actRoute.params.subscribe(async (params) => {
@@ -267,29 +275,6 @@ export class ExerciseSetDetailsComponent {
         }, 50);
       }
     });
-
-    setTimeout(async () => {
-      this.pageCanLoad = true;
-      this.detectorChanges.detectChanges();
-
-      const ex = this.initSetForms();
-      ex.method.selectOptions = this.allMethods;
-
-      if (this.formRef.controls[ex.exercise.config.name]) {
-        this.fillAutocomplete(ex);
-        this.newExerciseList.push(ex);
-      } else {
-        await new Promise<void>((res) => {
-          setTimeout(() => {
-            res();
-          }, 200);
-        });
-        this.fillAutocomplete(ex);
-        this.newExerciseList.push(ex);
-      }
-
-      console.log('formRef canload');
-    }, 200);
   }
 
   // Autocomplete Exercise Start
