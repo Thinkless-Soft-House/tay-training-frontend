@@ -108,7 +108,7 @@
     >
       <!-- Treino  -->
 
-      <h3>
+      <h3 class="workout-title">
         {{ getExerciseSetName(item!.exerciseGroupId) }} -
         {{
           item?.exerciseGroup?.publicName
@@ -127,14 +127,46 @@
           <mat-expansion-panel-header>
             <mat-panel-title>
               <!-- Collapse Nome do treino/combinação -->
-              {{ "Exercício " + (iw + 1) }} -
+              {{ (iw + 1) + (workout.exerciseConfigurations!.length === 1 ? "º - Exercício " : "º - Combinação ")  }} -
               {{ getWorkoutMultiName(item!.exerciseGroupId!, workout.id!) }}
             </mat-panel-title>
           </mat-expansion-panel-header>
           <!-- {{ workout.method | json }} -->
 
+          <ng-container *ngIf="workout.exerciseConfigurations!.length < 2">
+            <p style="margin-top: 1em">
+              Série/Repetição:
+              {{
+                workout.exerciseConfigurations![0]
+                  ? workout.exerciseConfigurations![0]!.series
+                  : ""
+              }}
+              x
+              {{
+                workout.exerciseConfigurations![0]
+                  ? workout.exerciseConfigurations![0]!.reps
+                  : ""
+              }}
+            </p>
+          </ng-container>
+
           <!-- Tempo de descanso -->
-          <p class="rest">Tempo de descanso: {{ workout?.rest }}</p>
+          <p
+            class="rest"
+            [class.p-spacer]="workout.exerciseConfigurations!.length > 1"
+          >
+            Tempo de descanso: {{ workout?.rest }}
+          </p>
+          <ng-container *ngIf="workout.exerciseConfigurations!.length < 2">
+            <p>
+              Método:
+              {{
+                workout.exerciseConfigurations![0]
+                  ? workout.exerciseConfigurations![0]!.method?.name
+                  : ""
+              }}
+            </p>
+          </ng-container>
           <!-- Observações -->
           <p class="obs" *ngIf="workout.observations">
             Sobre o exercicio: {{ workout?.observations }}
@@ -145,45 +177,73 @@
           <!-- Exercicios -->
           <!-- Collapse Exercicio -->
 
-          <mat-expansion-panel
-            [hideToggle]="false"
-            *ngFor="let exercise of workout.exerciseConfigurations"
-          >
-            <mat-expansion-panel-header>
-              {{ exercise.exercise?.name }}
-            </mat-expansion-panel-header>
+          <ng-container *ngIf="workout.exerciseConfigurations!.length === 1">
+            <mat-expansion-panel [hideToggle]="false" class="video">
+              <!-- Video -->
+              <!-- Collapse -->
+              <mat-expansion-panel-header>
+                <mat-panel-title>Video Explicativo</mat-panel-title>
+              </mat-expansion-panel-header>
+              <!-- Iframe resposnsivo -->
+              <div class="iframe-container">
+                <iframe
+                  width="560"
+                  height="315"
+                  [src]="secIframeLink(workout.exerciseConfigurations![0]!.id!)"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                ></iframe>
+              </div>
+              <!-- Iframe resposnsivo -->
+            </mat-expansion-panel>
+          </ng-container>
+          <ng-container *ngIf="workout.exerciseConfigurations!.length > 1">
+            <mat-expansion-panel
+              [hideToggle]="false"
+              class="single-exercise"
+              *ngFor="let exercise of workout.exerciseConfigurations"
+            >
+              <mat-expansion-panel-header>
+                {{ exercise.exercise?.name }}
+              </mat-expansion-panel-header>
 
-            <!-- Exercicio Desc -->
-            <p>Descrição{{ exercise.exercise?.description }}</p>
-            <!-- Exercicio Series/Reps -->
-            <!-- Metodo -->
-            <ng-container *ngIf="exercise?.method">
-              <p class="method">Método: {{ exercise?.method?.name }}</p>
-            </ng-container>
-            <p>Série/Repetição: {{ exercise.series }} x {{ exercise.reps }}</p>
+              <!-- Exercicio Desc -->
+              <!-- <p class="desc-ex">Descrição: {{ exercise.exercise?.description }}</p> -->
+              <!-- Exercicio Series/Reps -->
+              <!-- Metodo -->
+              <ng-container *ngIf="exercise?.method">
+                <p class="method" style="margin-top: 1em">
+                  Método: {{ exercise?.method?.name }}
+                </p>
+              </ng-container>
+              <p>
+                Série/Repetição: {{ exercise.series }} x {{ exercise.reps }}
+              </p>
 
-            <!-- Video -->
-            <!-- Collapse -->
-            <div class="video">
-              <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                  <mat-panel-title>Video Explicativo</mat-panel-title>
-                </mat-expansion-panel-header>
-                <!-- Iframe resposnsivo -->
-                <div class="iframe-container">
-                  <iframe
-                    width="560"
-                    height="315"
-                    [src]="secIframeLink(exercise.id!)"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen
-                  ></iframe>
-                </div>
-                <!-- Iframe resposnsivo -->
-              </mat-expansion-panel>
-            </div>
-          </mat-expansion-panel>
+              <!-- Video -->
+              <!-- Collapse -->
+              <div class="video">
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>Video Explicativo</mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <!-- Iframe resposnsivo -->
+                  <div class="iframe-container">
+                    <iframe
+                      width="560"
+                      height="315"
+                      [src]="secIframeLink(exercise.id!)"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                  <!-- Iframe resposnsivo -->
+                </mat-expansion-panel>
+              </div>
+            </mat-expansion-panel>
+          </ng-container>
         </mat-expansion-panel>
       </mat-accordion>
     </div>

@@ -68,3 +68,8 @@ $theme: mat.get-color-config(styles.$activeTheme);
     @return #fff; // Branco
   }
 }
+
+@mixin get-elevator($value) {
+  @include mat.elevation-transition();
+  @include mat.elevation($value);
+}
