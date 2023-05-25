@@ -75,7 +75,7 @@ export class SignUpComponent {
   }
 
   goToSignIn() {
-    console.log('goToSignUp');
+    // console.log('goToSignUp');
     this.resetForm();
     this.changeFormValue();
     this.onGoToSignIn.emit();

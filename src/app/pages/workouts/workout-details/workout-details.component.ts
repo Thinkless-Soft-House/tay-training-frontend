@@ -156,7 +156,7 @@ export class WorkoutDetailsComponent {
           const data = await this.workoutService.getById(+params['id'], [
             'trainingDays',
           ]);
-          console.log('data', data);
+          // console.log('data', data);
           this.formRef.controls['name'].setValue(data.name);
           this.formRef.controls['publicName'].setValue(data.publicName);
           this.formRef.controls['offlinePdf'].setValue(data.offlinePdf);
@@ -258,17 +258,17 @@ export class WorkoutDetailsComponent {
   }
 
   maskFilled(control: ControlInput) {
-    console.log('maskFilled');
+    // console.log('maskFilled');
   }
 
   dateEvents(name: string, event: any) {
-    console.log('dateEvents', name, event);
+    // console.log('dateEvents', name, event);
   }
 
   async onSubmit() {
-    console.log('onSubmit', this.formRef);
+    // console.log('onSubmit', this.formRef);
     const data = this.formRef.value;
-    console.log('form value', data);
+    // console.log('form value', data);
 
     const sheet = {
       name: data.name,
@@ -285,7 +285,7 @@ export class WorkoutDetailsComponent {
         }),
     } as TrainingSheet;
 
-    console.log('sheet', sheet);
+    // console.log('sheet', sheet);
 
     if (this.isEdit) {
       // Update
@@ -309,7 +309,7 @@ export class WorkoutDetailsComponent {
         );
         this.router.navigate(['workouts']);
       } catch (error) {
-        console.log('error on update', error);
+        // console.log('error on update', error);
       }
     } else {
       // Create
@@ -320,7 +320,7 @@ export class WorkoutDetailsComponent {
 
         this.router.navigate(['workouts']);
       } catch (error) {
-        console.log('error on create', error);
+        // console.log('error on create', error);
       }
     }
   }

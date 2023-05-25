@@ -37,7 +37,7 @@ export class ExercisesComponent extends MasterTable<ServiceBackendItemService> {
   // changeFilter(filter: any)
   // edit(row: any)
   deleteOne(row: any) {
-    console.log('deleteOne', row);
+    // console.log('deleteOne', row);
   }
   // changeTable(event: any)
 }

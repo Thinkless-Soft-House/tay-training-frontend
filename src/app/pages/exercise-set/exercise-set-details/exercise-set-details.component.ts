@@ -216,8 +216,8 @@ export class ExerciseSetDetailsComponent {
       return { name: e.name, value: e.id };
     });
 
-    console.log('exercise', this.allExercises);
-    console.log('methods', this.allMethods);
+    // console.log('exercise', this.allExercises);
+    // console.log('methods', this.allMethods);
 
     setTimeout(async () => {
       this.pageCanLoad = true;
@@ -239,7 +239,7 @@ export class ExerciseSetDetailsComponent {
         this.newExerciseList.push(ex);
       }
 
-      console.log('formRef canload');
+      // console.log('formRef canload');
     }, 200);
   }
   ngAfterViewInit() {
@@ -258,9 +258,9 @@ export class ExerciseSetDetailsComponent {
             'exerciseMethods.exerciseConfigurations',
           ]);
 
-        console.log('exerciseGroup', exerciseGroup);
+        // console.log('exerciseGroup', exerciseGroup);
 
-        console.log('formRef', this.formRef);
+        // console.log('formRef', this.formRef);
         this.formRef.controls['name'].setValue(exerciseGroup.name);
         this.formRef.controls['publicName'].setValue(exerciseGroup.publicName);
         this.formRef.controls['setCategories'].setValue(
@@ -291,7 +291,7 @@ export class ExerciseSetDetailsComponent {
           debounceTime(200),
           map((value) => {
             if (typeof value === 'string') {
-              console.log('value', value);
+              // console.log('value', value);
               exercise.exercise.config.autocompleteConfig.value =
                 this.checkValue(value) ? this.checkValue(value) : null;
 
@@ -330,7 +330,7 @@ export class ExerciseSetDetailsComponent {
   // Autocomplete Exercise End
 
   drop(event: CdkDragDrop<ExerciseMethod[]>) {
-    console.log('event', event);
+    // console.log('event', event);
     const prevIndex = this.exercicies.findIndex((d) => d === event.item.data);
     moveItemInArray(this.exercicies, prevIndex, event.currentIndex);
   }
@@ -566,21 +566,21 @@ export class ExerciseSetDetailsComponent {
   }
 
   addNewExercise() {
-    console.log('addNewExercise');
+    // console.log('addNewExercise');
     const exercise = this.initSetForms();
 
     exercise.method.selectOptions = this.allMethods;
-    console.log('exercise', exercise);
-    console.log('newExerciseList pre', this.newExerciseList);
+    // console.log('exercise', exercise);
+    // console.log('newExerciseList pre', this.newExerciseList);
     this.newExerciseList.push(exercise);
 
     this.fillAutocomplete(exercise);
 
-    console.log('newExerciseList pos', this.newExerciseList);
+    // console.log('newExerciseList pos', this.newExerciseList);
   }
 
   deleteNewExercise(index: number) {
-    console.log('deleteNewExercise', index);
+    // console.log('deleteNewExercise', index);
     this.newExerciseList.splice(index, 1);
   }
 
@@ -593,7 +593,7 @@ export class ExerciseSetDetailsComponent {
       exerciseConfigurations: configExercise,
     };
 
-    console.log('saved exercise', exercise);
+    // console.log('saved exercise', exercise);
     this.exercicies.push(exercise);
     // this.table?.renderRows();
 
@@ -601,11 +601,11 @@ export class ExerciseSetDetailsComponent {
   }
   removeExercise(event: any, index: number) {
     event.stopPropagation();
-    console.log('index', index);
+    // console.log('index', index);
     this.exercicies.splice(index, 1);
     // this.table?.renderRows();
 
-    console.log('exercisies', this.exercicies);
+    // console.log('exercisies', this.exercicies);
   }
   editExercise(event: any, index: number) {
     event.stopPropagation();
@@ -619,36 +619,36 @@ export class ExerciseSetDetailsComponent {
   // End new exercise methods
 
   maskFilled(control: ControlInput) {
-    console.log('maskFilled');
+    // console.log('maskFilled');
   }
 
   dateEvents(name: string, event: any) {
-    console.log('dateEvents', name, event);
+    // console.log('dateEvents', name, event);
   }
 
   async onSubmit() {
-    console.log('Iniciando o submit');
+    // console.log('Iniciando o submit');
     const data = this.formRef.value;
 
     try {
       // Create Exercise Groups (Exercise Set)
-      console.log('Criando o grupo de exercícios');
+      // console.log('Criando o grupo de exercícios');
       const exerciseSet: ExerciseSet = {
         name: data.name,
         category_id: data.setCategories,
         publicName: data.publicName,
       };
 
-      console.log('Salvando/Atualizando o grupo de exercícios');
+      // console.log('Salvando/Atualizando o grupo de exercícios');
       const exerciseSetCreated = !this.isEdit
         ? await this.exerciseSetService.create(exerciseSet)
         : await this.exerciseSetService.update(this.editId!, exerciseSet);
 
-      console.log('Grupo salvo/atualizado com sucesso');
-      console.log('Criando os métodos de exercícios');
+      // console.log('Grupo salvo/atualizado com sucesso');
+      // console.log('Criando os métodos de exercícios');
       // Create Exercise Methods
       const queryToSave = this.exercicies.map(async (e, i) => {
-        console.log('Map index', i);
+        // console.log('Map index', i);
         const toSave: ExerciseMethod = {
           id: e.id ? e.id : undefined,
           rest: e.rest,
@@ -656,13 +656,13 @@ export class ExerciseSetDetailsComponent {
           exerciseGroupId: exerciseSetCreated.id,
         };
 
-        console.log('Para salvar => ', toSave);
+        // console.log('Para salvar => ', toSave);
         const exerciseMethodCreated = !toSave.id
           ? await this.exerciseMethodsService.create(toSave)
           : await this.exerciseMethodsService.update(toSave.id, toSave);
 
-        console.log('Método de exercício salvo/atualizado com sucesso');
-        console.log('Criando as configurações de exercícios');
+        // console.log('Método de exercício salvo/atualizado com sucesso');
+        // console.log('Criando as configurações de exercícios');
         const exerciseConfigurations: ExerciseConfiguration[] =
           e.exerciseConfigurations!.map((exerciseConfiguration) => {
             return {
@@ -686,14 +686,14 @@ export class ExerciseSetDetailsComponent {
               exerciseConfigurations
             );
 
-        console.log('Configurações de exercicios salvas com sucesso');
+        // console.log('Configurações de exercicios salvas com sucesso');
         const ret = {
           exerciseSetId: exerciseSetCreated.id,
           exerciseMethodId: exerciseMethodCreated.id,
           exerciseConfigurationIds: exerciseConfigurationCreated,
         };
 
-        console.log('Rerutn final');
+        // console.log('Rerutn final');
         return ret;
       });
 
@@ -703,7 +703,7 @@ export class ExerciseSetDetailsComponent {
 
       this.router.navigate(['exercise-set']);
     } catch (error) {
-      console.log('error on create', error);
+      // console.log('error on create', error);
     }
   }
 

@@ -46,16 +46,12 @@ export class MasterTable<T extends IsService> {
     this.filterChange$.next(value);
   }
   edit(row: any) {
-    console.log('edit row', row);
     this.router.navigate([this.path, row.id]);
   }
   async delete(row: any) {
     this.loadingService.activeLoading();
-    console.log('delete row', row);
     await this.service.delete(row.id);
     // console.log('render table',z this.table);
   }
-  changeTable(event: any) {
-    console.log('changeTable', event);
-  }
+  changeTable(event: any) {}
 }

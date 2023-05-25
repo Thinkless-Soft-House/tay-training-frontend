@@ -38,7 +38,7 @@ export class PlannerComponent {
     this.distinctWorkouts = this.getDistinctWorkouts().map((e, i) => {
       return { workout: e!.exerciseGroup, index: i + 1 };
     });
-    console.log('this.distinctWorkouts', this.distinctWorkouts);
+    // console.log('this.distinctWorkouts', this.distinctWorkouts);
 
     this.createSanitizeUrls();
     console.log(this.planner);

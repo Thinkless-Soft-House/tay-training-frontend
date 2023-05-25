@@ -75,13 +75,13 @@ export class SignInComponent {
   }
 
   goToSignUp() {
-    console.log('goToSignUp');
+    // console.log('goToSignUp');
     this.resetForm();
     this.changeFormValue();
     this.onGoToSignUp.emit();
   }
   goToForgotPassword() {
-    console.log('goToForgotPassword');
+    // console.log('goToForgotPassword');
     this.onGoToForgotPassword.emit();
   }
 

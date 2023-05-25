@@ -63,7 +63,7 @@ export class SendCodeComponent {
   }
 
   goToSignIn() {
-    console.log('goToSignUp');
+    // console.log('goToSignUp');
     this.onGoToSignIn.emit();
   }
 

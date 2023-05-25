@@ -77,7 +77,7 @@ export class ExerciseDetailsComponent {
     private exercisesService: ExercisesService
   ) {
     actRoute.params.subscribe((params) => {
-      console.log('params', params);
+      // console.log('params', params);
     });
   }
 
@@ -102,7 +102,7 @@ export class ExerciseDetailsComponent {
         // Get data from API
         try {
           const data = await this.exercisesService.getById(+params['id']);
-          console.log('data', data);
+          // console.log('data', data);
           this.formRef.setValue({
             name: data.name,
             description: data.description,
@@ -144,17 +144,17 @@ export class ExerciseDetailsComponent {
   }
 
   maskFilled(control: ControlInput) {
-    console.log('maskFilled');
+    // console.log('maskFilled');
   }
 
   dateEvents(name: string, event: any) {
-    console.log('dateEvents', name, event);
+    // console.log('dateEvents', name, event);
   }
 
   async onSubmit() {
-    console.log('onSubmit', this.formRef);
+    // console.log('onSubmit', this.formRef);
     const data = this.formRef.value;
-    console.log('form value', data);
+    // console.log('form value', data);
 
     if (this.isEdit) {
       // Update
@@ -163,7 +163,7 @@ export class ExerciseDetailsComponent {
         await this.exercisesService.update(this.editId!, data);
         this.router.navigate(['exercises']);
       } catch (error) {
-        console.log('error on update', error);
+        // console.log('error on update', error);
       }
     } else {
       // Create
@@ -171,7 +171,7 @@ export class ExerciseDetailsComponent {
         await this.exercisesService.create(data);
         this.router.navigate(['exercises']);
       } catch (error) {
-        console.log('error on create', error);
+        // console.log('error on create', error);
       }
     }
   }

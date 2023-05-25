@@ -52,7 +52,6 @@ export class MasterTableComponent<T, Y> {
   ) {}
 
   private createColumns() {
-    console.log(this.columns);
     this.itemColumns = JSON.parse(JSON.stringify(this.columns));
 
     this.columns.push({
@@ -60,7 +59,6 @@ export class MasterTableComponent<T, Y> {
       title: 'Actions',
     });
     this.displayedColumns = this.columns.map((c) => c.name);
-    console.log(this.displayedColumns);
   }
 
   ngOnInit() {

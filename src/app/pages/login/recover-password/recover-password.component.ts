@@ -65,7 +65,7 @@ export class RecoverPasswordComponent {
   }
 
   goToSignIn() {
-    console.log('goToSignUp');
+    // console.log('goToSignUp');
     this.onGoToSignIn.emit();
   }
 

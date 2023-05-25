@@ -51,14 +51,15 @@ export class AppComponent {
   headerTitle = 'Meu aplicativo';
   atualRoute = '/';
 
+  version = '1.0.0';
   constructor(private router: Router, private loadingService: LoadingService) {
     this.monitoreRouteChanges();
+    console.log('Init app =>', this.version);
   }
 
   monitoreRouteChanges() {
     this.router.events.subscribe((val) => {
       if (val instanceof NavigationEnd) {
-        console.log('Rota alterada', val.url);
         this.loadingService.deactiveLoading();
 
         this.atualRoute = val.url;

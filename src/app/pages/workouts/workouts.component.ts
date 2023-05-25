@@ -66,8 +66,8 @@ export class WorkoutsComponent extends MasterTable<WorkoutsService> {
   openRouteInNewTab(routePath: string) {
     // Obtém a URL base do aplicativo.
     const baseHref = window.location.origin + '/';
-    console.log('location', this.location as any);
-    console.log('baseHref', baseHref);
+    // console.log('location', this.location as any);
+    // console.log('baseHref', baseHref);
 
     // Abre a rota em uma nova aba.
     window.open(baseHref + routePath, '_blank');

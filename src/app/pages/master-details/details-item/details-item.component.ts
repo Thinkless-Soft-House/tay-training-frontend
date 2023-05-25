@@ -111,7 +111,7 @@ export class DetailsItemComponent {
     public loadingService: LoadingService
   ) {
     actRoute.params.subscribe((params) => {
-      console.log('params', params);
+      // console.log('params', params);
     });
   }
 
@@ -157,14 +157,14 @@ export class DetailsItemComponent {
   }
 
   maskFilled(control: ControlInput) {
-    console.log('maskFilled');
+    // console.log('maskFilled');
   }
 
   dateEvents(name: string, event: any) {
-    console.log('dateEvents', name, event);
+    // console.log('dateEvents', name, event);
   }
 
   onSubmit() {
-    console.log('onSubmit', this.formRef);
+    // console.log('onSubmit', this.formRef);
   }
 }

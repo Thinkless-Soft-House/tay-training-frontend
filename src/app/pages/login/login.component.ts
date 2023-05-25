@@ -72,7 +72,7 @@ export class LoginComponent {
       password: this.form.password,
     };
 
-    console.log('my data', data);
+    // console.log('my data', data);
 
     // Try Login
 
@@ -94,7 +94,7 @@ export class LoginComponent {
       fullName: this.form.fullName,
     };
 
-    console.log('my data', data);
+    // console.log('my data', data);
 
     // Try Sign Up
 
@@ -115,7 +115,7 @@ export class LoginComponent {
       code: this.form.code,
     };
 
-    console.log('my data', data);
+    // console.log('my data', data);
 
     // Try Sign Up
 
@@ -137,7 +137,7 @@ export class LoginComponent {
       newPassword: this.form.newPassword,
     };
 
-    console.log('my data', data);
+    // console.log('my data', data);
 
     // Try Sign Up
 
