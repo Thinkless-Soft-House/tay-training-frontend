@@ -9,4 +9,10 @@ export class ExerciseMethodService extends BaseModelService {
   constructor(http: HttpClient) {
     super('/exercise-method', http);
   }
+
+  clearByExerciseGroupId(exerciseGroupId: number) {
+    return this.request(
+      this.http.post(`${this.path}/clear`, { exerciseGroupId })
+    );
+  }
 }

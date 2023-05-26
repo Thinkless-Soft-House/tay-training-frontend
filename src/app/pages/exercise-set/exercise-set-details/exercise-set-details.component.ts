@@ -647,19 +647,24 @@ export class ExerciseSetDetailsComponent {
       // console.log('Grupo salvo/atualizado com sucesso');
       // console.log('Criando os métodos de exercícios');
       // Create Exercise Methods
-      const queryToSave = this.exercicies.map(async (e, i) => {
+
+      if (this.editId) {
+        await this.exerciseMethodsService.clearByExerciseGroupId(this.editId);
+        console.log('Métodos de exercícios antigos removidos com sucesso');
+      }
+
+      for (const e of this.exercicies) {
+        console.log('Exercício => ', e);
         // console.log('Map index', i);
         const toSave: ExerciseMethod = {
-          id: e.id ? e.id : undefined,
           rest: e.rest,
           observations: e.observations,
           exerciseGroupId: exerciseSetCreated.id,
         };
 
         // console.log('Para salvar => ', toSave);
-        const exerciseMethodCreated = !toSave.id
-          ? await this.exerciseMethodsService.create(toSave)
-          : await this.exerciseMethodsService.update(toSave.id, toSave);
+        const exerciseMethodCreated = await this.exerciseMethodsService.create(toSave)
+        console.log('Método de exercício salvo/atualizado com sucesso');
 
         // console.log('Método de exercício salvo/atualizado com sucesso');
         // console.log('Criando as configurações de exercícios');
@@ -693,17 +698,19 @@ export class ExerciseSetDetailsComponent {
           exerciseConfigurationIds: exerciseConfigurationCreated,
         };
 
-        // console.log('Rerutn final');
-        return ret;
-      });
+       console.log('Retorno do salvamento', ret);
+      }
 
-      await Promise.all(queryToSave);
-      if (this.isEdit) await this.checkExerciseMethodsCreated();
+      // if (this.isEdit) await this.checkExerciseMethodsCreated();
       // Create Exercise Configurations
 
+      console.log('Salvamento concluído com sucesso');
+
       this.router.navigate(['exercise-set']);
+      return;
     } catch (error) {
       // console.log('error on create', error);
+      return;
     }
   }
 
