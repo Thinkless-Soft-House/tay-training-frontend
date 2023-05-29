@@ -287,11 +287,11 @@ export class ExerciseSetDetailsComponent {
     }).then(() => {
       exercise.exercise.config.autocompleteConfig.$filteredOptions =
         this.formRef.controls[exercise.exercise.config.name].valueChanges.pipe(
-          startWith(''),
+          startWith(exercise.exercise.value),
           debounceTime(200),
           map((value) => {
             if (typeof value === 'string') {
-              // console.log('value', value);
+              console.log('value', value);
               exercise.exercise.config.autocompleteConfig.value =
                 this.checkValue(value) ? this.checkValue(value) : null;
 
@@ -330,9 +330,7 @@ export class ExerciseSetDetailsComponent {
   // Autocomplete Exercise End
 
   drop(event: CdkDragDrop<ExerciseMethod[]>) {
-    // console.log('event', event);
-    const prevIndex = this.exercicies.findIndex((d) => d === event.item.data);
-    moveItemInArray(this.exercicies, prevIndex, event.currentIndex);
+    moveItemInArray(this.exercicies, event.previousIndex, event.currentIndex);
   }
 
   getWorkoutMultiName(index: number) {
@@ -663,7 +661,9 @@ export class ExerciseSetDetailsComponent {
         };
 
         // console.log('Para salvar => ', toSave);
-        const exerciseMethodCreated = await this.exerciseMethodsService.create(toSave)
+        const exerciseMethodCreated = await this.exerciseMethodsService.create(
+          toSave
+        );
         console.log('Método de exercício salvo/atualizado com sucesso');
 
         // console.log('Método de exercício salvo/atualizado com sucesso');
@@ -698,7 +698,7 @@ export class ExerciseSetDetailsComponent {
           exerciseConfigurationIds: exerciseConfigurationCreated,
         };
 
-       console.log('Retorno do salvamento', ret);
+        console.log('Retorno do salvamento', ret);
       }
 
       // if (this.isEdit) await this.checkExerciseMethodsCreated();

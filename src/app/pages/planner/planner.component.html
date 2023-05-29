@@ -12,7 +12,7 @@
 
     <table>
       <thead>
-        <th>X</th>
+        <th></th>
         <th>Sem. 1</th>
         <th>Sem. 2</th>
         <th>Sem. 3</th>
@@ -20,16 +20,6 @@
       </thead>
 
       <tbody>
-        <tr>
-          <td>Domingo</td>
-          <td *ngFor="let item of mountTable(1)">
-            {{
-              item === null || item === undefined
-                ? "FOLGA"
-                : getExerciseSetName(item.exerciseGroupId)
-            }}
-          </td>
-        </tr>
         <tr>
           <td>Segunda</td>
           <td *ngFor="let item of mountTable(2)">
@@ -90,6 +80,16 @@
             }}
           </td>
         </tr>
+        <tr>
+          <td>Domingo</td>
+          <td *ngFor="let item of mountTable(1)">
+            {{
+              item === null || item === undefined
+                ? "FOLGA"
+                : getExerciseSetName(item.exerciseGroupId)
+            }}
+          </td>
+        </tr>
       </tbody>
     </table>
 
@@ -127,7 +127,14 @@
           <mat-expansion-panel-header>
             <mat-panel-title>
               <!-- Collapse Nome do treino/combinação -->
-              {{ (iw + 1) + (workout.exerciseConfigurations!.length === 1 ? "º - Exercício " : "º - Combinação ")  }} -
+              {{
+                iw +
+                  1 +
+                  (workout.exerciseConfigurations!.length === 1
+                    ? "º - Exercício "
+                    : "º - Combinação ")
+              }}
+              -
               {{ getWorkoutMultiName(item!.exerciseGroupId!, workout.id!) }}
             </mat-panel-title>
           </mat-expansion-panel-header>
@@ -151,14 +158,8 @@
           </ng-container>
 
           <!-- Tempo de descanso -->
-          <p
-            class="rest"
-            [class.p-spacer]="workout.exerciseConfigurations!.length > 1"
-          >
-            Tempo de descanso: {{ workout?.rest }}
-          </p>
           <ng-container *ngIf="workout.exerciseConfigurations!.length < 2">
-            <p>
+            <p *ngIf="workout.exerciseConfigurations![0] && workout.exerciseConfigurations![0]!.method?.name">
               Método:
               {{
                 workout.exerciseConfigurations![0]
@@ -168,17 +169,14 @@
             </p>
           </ng-container>
           <!-- Observações -->
-          <p class="obs" *ngIf="workout.observations">
-            Sobre o exercicio: {{ workout?.observations }}
-          </p>
 
-          <hr class="divider-1" />
+          <!-- <hr class="divider-1" /> -->
 
           <!-- Exercicios -->
           <!-- Collapse Exercicio -->
 
           <ng-container *ngIf="workout.exerciseConfigurations!.length === 1">
-            <mat-expansion-panel [hideToggle]="false" class="video">
+            <mat-expansion-panel [hideToggle]="false" class="video p-spacer">
               <!-- Video -->
               <!-- Collapse -->
               <mat-expansion-panel-header>
@@ -202,7 +200,8 @@
             <mat-expansion-panel
               [hideToggle]="false"
               class="single-exercise"
-              *ngFor="let exercise of workout.exerciseConfigurations"
+              *ngFor="let exercise of workout.exerciseConfigurations; let wec = index"
+              [class.p-spacer]="wec === 0"
             >
               <mat-expansion-panel-header>
                 {{ exercise.exercise?.name }}
@@ -244,6 +243,14 @@
               </div>
             </mat-expansion-panel>
           </ng-container>
+
+          <p class="rest p-spacer">Tempo de descanso: {{ workout?.rest }}</p>
+          <p
+            class="obs"
+            *ngIf="workout.observations"
+          >
+            Sobre o exercicio: {{ workout?.observations }}
+          </p>
         </mat-expansion-panel>
       </mat-accordion>
     </div>
