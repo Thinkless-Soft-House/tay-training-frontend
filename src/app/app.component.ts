@@ -51,7 +51,7 @@ export class AppComponent {
   headerTitle = 'Meu aplicativo';
   atualRoute = '/';
 
-  version = '1.0.0';
+  version = '1.0.1';
   constructor(private router: Router, private loadingService: LoadingService) {
     this.monitoreRouteChanges();
     console.log('Init app =>', this.version);
