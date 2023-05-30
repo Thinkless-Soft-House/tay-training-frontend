@@ -35,6 +35,11 @@ export class PlannerComponent {
     ]);
 
     this.planner = res.data[0];
+    if (!this.planner) return;
+
+    this.planner.trainingDays = this.planner.trainingDays.sort(
+      (a, b) => a.day - b.day
+    );
     this.distinctWorkouts = this.getDistinctWorkouts().map((e, i) => {
       return { workout: e!.exerciseGroup, index: i + 1 };
     });

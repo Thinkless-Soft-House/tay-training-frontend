@@ -23,71 +23,134 @@
         <tr>
           <td>Segunda</td>
           <td *ngFor="let item of mountTable(2)">
-            {{
-              item === null || item === undefined
-                ? "FOLGA"
-                : getExerciseSetName(item.exerciseGroupId)
-            }}
+            <span
+              [matTooltip]="
+                (item?.exerciseGroup)!.publicName
+                  ? (item?.exerciseGroup)!.publicName
+                  : (item?.exerciseGroup)!.name
+              "
+              matTooltipPosition="right"
+            >
+              {{
+                item === null || item === undefined
+                  ? "OFF"
+                  : getExerciseSetName(item.exerciseGroupId)
+              }}
+            </span>
           </td>
         </tr>
         <tr>
           <td>Terça</td>
           <td *ngFor="let item of mountTable(3)">
-            {{
-              item === null || item === undefined
-                ? "FOLGA"
-                : getExerciseSetName(item.exerciseGroupId)
-            }}
+            <span
+              [matTooltip]="
+                (item?.exerciseGroup)!.publicName
+                  ? (item?.exerciseGroup)!.publicName
+                  : (item?.exerciseGroup)!.name
+              "
+              matTooltipPosition="right"
+            >
+              {{
+                item === null || item === undefined
+                  ? "OFF"
+                  : getExerciseSetName(item.exerciseGroupId)
+              }}
+            </span>
           </td>
         </tr>
         <tr>
           <td>Quarta</td>
           <td *ngFor="let item of mountTable(4)">
-            {{
-              item === null || item === undefined
-                ? "FOLGA"
-                : getExerciseSetName(item.exerciseGroupId)
-            }}
+            <span
+              [matTooltip]="
+                (item?.exerciseGroup)!.publicName
+                  ? (item?.exerciseGroup)!.publicName
+                  : (item?.exerciseGroup)!.name
+              "
+              matTooltipPosition="right"
+            >
+              {{
+                item === null || item === undefined
+                  ? "OFF"
+                  : getExerciseSetName(item.exerciseGroupId)
+              }}
+            </span>
           </td>
         </tr>
         <tr>
           <td>Quinta</td>
           <td *ngFor="let item of mountTable(5)">
-            {{
-              item === null || item === undefined
-                ? "FOLGA"
-                : getExerciseSetName(item.exerciseGroupId)
-            }}
+            <span
+              [matTooltip]="
+                (item?.exerciseGroup)!.publicName
+                  ? (item?.exerciseGroup)!.publicName
+                  : (item?.exerciseGroup)!.name
+              "
+              matTooltipPosition="right"
+            >
+              {{
+                item === null || item === undefined
+                  ? "OFF"
+                  : getExerciseSetName(item.exerciseGroupId)
+              }}
+            </span>
           </td>
         </tr>
         <tr>
           <td>Sexta</td>
           <td *ngFor="let item of mountTable(6)">
-            {{
-              item === null || item === undefined
-                ? "FOLGA"
-                : getExerciseSetName(item.exerciseGroupId)
-            }}
+            <span
+              [matTooltip]="
+                (item?.exerciseGroup)!.publicName
+                  ? (item?.exerciseGroup)!.publicName
+                  : (item?.exerciseGroup)!.name
+              "
+              matTooltipPosition="right"
+            >
+              {{
+                item === null || item === undefined
+                  ? "OFF"
+                  : getExerciseSetName(item.exerciseGroupId)
+              }}
+            </span>
           </td>
         </tr>
         <tr>
           <td>Sábado</td>
           <td *ngFor="let item of mountTable(7)">
-            {{
-              item === null || item === undefined
-                ? "FOLGA"
-                : getExerciseSetName(item.exerciseGroupId)
-            }}
+            <span
+              [matTooltip]="
+                (item?.exerciseGroup)!.publicName
+                  ? (item?.exerciseGroup)!.publicName
+                  : (item?.exerciseGroup)!.name
+              "
+              matTooltipPosition="right"
+            >
+              {{
+                item === null || item === undefined
+                  ? "OFF"
+                  : getExerciseSetName(item.exerciseGroupId)
+              }}
+            </span>
           </td>
         </tr>
         <tr>
           <td>Domingo</td>
           <td *ngFor="let item of mountTable(1)">
-            {{
-              item === null || item === undefined
-                ? "FOLGA"
-                : getExerciseSetName(item.exerciseGroupId)
-            }}
+            <span
+              [matTooltip]="
+                (item?.exerciseGroup)!.publicName
+                  ? (item?.exerciseGroup)!.publicName
+                  : (item?.exerciseGroup)!.name
+              "
+              matTooltipPosition="right"
+            >
+              {{
+                item === null || item === undefined
+                  ? "OFF"
+                  : getExerciseSetName(item.exerciseGroupId)
+              }}
+            </span>
           </td>
         </tr>
       </tbody>
@@ -159,7 +222,12 @@
 
           <!-- Tempo de descanso -->
           <ng-container *ngIf="workout.exerciseConfigurations!.length < 2">
-            <p *ngIf="workout.exerciseConfigurations![0] && workout.exerciseConfigurations![0]!.method?.name">
+            <p
+              *ngIf="
+                workout.exerciseConfigurations![0] &&
+                workout.exerciseConfigurations![0]!.method?.name
+              "
+            >
               Método:
               {{
                 workout.exerciseConfigurations![0]
@@ -200,7 +268,10 @@
             <mat-expansion-panel
               [hideToggle]="false"
               class="single-exercise"
-              *ngFor="let exercise of workout.exerciseConfigurations; let wec = index"
+              *ngFor="
+                let exercise of workout.exerciseConfigurations;
+                let wec = index
+              "
               [class.p-spacer]="wec === 0"
             >
               <mat-expansion-panel-header>
@@ -245,10 +316,7 @@
           </ng-container>
 
           <p class="rest p-spacer">Tempo de descanso: {{ workout?.rest }}</p>
-          <p
-            class="obs"
-            *ngIf="workout.observations"
-          >
+          <p class="obs" *ngIf="workout.observations">
             Sobre o exercicio: {{ workout?.observations }}
           </p>
         </mat-expansion-panel>
