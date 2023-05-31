@@ -647,8 +647,14 @@ export class ExerciseSetDetailsComponent {
       // Create Exercise Methods
 
       if (this.editId) {
-        await this.exerciseMethodsService.clearByExerciseGroupId(this.editId);
-        console.log('Métodos de exercícios antigos removidos com sucesso');
+        const r = await this.exerciseMethodsService.clearByExerciseGroupId(
+          this.editId
+        );
+        console.log('Métodos de exercícios antigos removidos com sucesso', r);
+      } else {
+        console.log(
+          'Não foi possível remover os métodos de exercícios antigos, novo grupo de exercícios'
+        );
       }
 
       for (const e of this.exercicies) {

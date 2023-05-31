@@ -2,6 +2,7 @@
   <!-- Header -->
   <div class="header">
     <!-- Nome do treino -->
+    <img src="assets/logo2.png" class="logo" alt="Logo Tay Training">
     <h1 class="title">Ficha de treino | Academia</h1>
 
     <h2 class="planner-title">{{ planner!.publicName }}</h2>
@@ -219,6 +220,8 @@
               }}
             </p>
           </ng-container>
+          <p class="rest p-spacer" *ngIf="workout.exerciseConfigurations!.length === 1">Tempo de descanso: {{ workout?.rest }}</p>
+
 
           <!-- Tempo de descanso -->
           <ng-container *ngIf="workout.exerciseConfigurations!.length < 2">
@@ -315,7 +318,7 @@
             </mat-expansion-panel>
           </ng-container>
 
-          <p class="rest p-spacer">Tempo de descanso: {{ workout?.rest }}</p>
+          <p class="rest p-spacer" *ngIf="workout.exerciseConfigurations!.length > 1">Tempo de descanso: {{ workout?.rest }}</p>
           <p class="obs" *ngIf="workout.observations">
             Sobre o exercicio: {{ workout?.observations }}
           </p>
