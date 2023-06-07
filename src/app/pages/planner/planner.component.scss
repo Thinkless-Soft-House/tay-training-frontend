@@ -94,7 +94,8 @@
         background-color: functions.adjust-color($background-color, "l", 8%);
       }
 
-      .iframe-container {
+      .iframe-container,
+      .miniature-video {
         position: relative;
         overflow: hidden;
         width: 100%;

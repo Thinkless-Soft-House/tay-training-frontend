@@ -2,7 +2,7 @@
   <!-- Header -->
   <div class="header">
     <!-- Nome do treino -->
-    <img src="assets/logo2.png" class="logo" alt="Logo Tay Training">
+    <img src="assets/logo2.png" class="logo" alt="Logo Tay Training" />
     <h1 class="title">Ficha de treino | Academia</h1>
 
     <h2 class="planner-title">{{ planner!.publicName }}</h2>
@@ -220,8 +220,12 @@
               }}
             </p>
           </ng-container>
-          <p class="rest p-spacer" *ngIf="workout.exerciseConfigurations!.length === 1">Tempo de descanso: {{ workout?.rest }}</p>
-
+          <p
+            class="rest p-spacer"
+            *ngIf="workout.exerciseConfigurations!.length === 1"
+          >
+            Tempo de descanso: {{ workout?.rest }}
+          </p>
 
           <!-- Tempo de descanso -->
           <ng-container *ngIf="workout.exerciseConfigurations!.length < 2">
@@ -247,23 +251,50 @@
           <!-- Collapse Exercicio -->
 
           <ng-container *ngIf="workout.exerciseConfigurations!.length === 1">
-            <mat-expansion-panel [hideToggle]="false" class="video p-spacer">
+            <mat-expansion-panel
+              [hideToggle]="false"
+              class="video p-spacer"
+              (opened)="matExpansionOpened(workout.exerciseConfigurations![0])"
+            >
               <!-- Video -->
               <!-- Collapse -->
               <mat-expansion-panel-header>
                 <mat-panel-title>Video Explicativo</mat-panel-title>
               </mat-expansion-panel-header>
               <!-- Iframe resposnsivo -->
-              <div class="iframe-container">
+              <div
+                class="iframe-container"
+                *ngIf="
+                  secIframeLink(workout.exerciseConfigurations![0]!.id!)
+                    .showIframe
+                "
+              >
                 <iframe
                   width="560"
                   height="315"
-                  [src]="secIframeLink(workout.exerciseConfigurations![0]!.id!)"
+                  [src]="
+                    secIframeLink(workout.exerciseConfigurations![0]!.id!).url
+                  "
                   frameborder="0"
                   allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                   allowfullscreen
+                  (load)="iframeLoaded(workout.exerciseConfigurations![0]!)"
                 ></iframe>
               </div>
+              <img
+                *ngIf="
+                  !secIframeLink(workout.exerciseConfigurations![0]!.id!)
+                    .showIframe
+                "
+                class="miniature-video"
+                width="560"
+                height="315"
+                [src]="
+                  secIframeLink(workout.exerciseConfigurations![0]!.id!)
+                    .miniature
+                "
+                alt=""
+              />
               <!-- Iframe resposnsivo -->
             </mat-expansion-panel>
           </ng-container>
@@ -297,28 +328,48 @@
               <!-- Video -->
               <!-- Collapse -->
               <div class="video">
-                <mat-expansion-panel>
+                <mat-expansion-panel (opened)="matExpansionOpened(exercise)">
                   <mat-expansion-panel-header>
                     <mat-panel-title>Video Explicativo</mat-panel-title>
                   </mat-expansion-panel-header>
                   <!-- Iframe resposnsivo -->
-                  <div class="iframe-container">
+                  <div
+                    class="iframe-container"
+                    *ngIf="secIframeLink(exercise.id!).showIframe"
+                  >
                     <iframe
                       width="560"
                       height="315"
-                      [src]="secIframeLink(exercise.id!)"
+                      [src]="secIframeLink(exercise.id!).url"
                       frameborder="0"
                       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                       allowfullscreen
+                      (load)="iframeLoaded(exercise)"
                     ></iframe>
                   </div>
+                  <img
+                    *ngIf="!secIframeLink(exercise.id!).showIframe"
+                    class="miniature-video"
+                    width="560"
+                    height="315"
+                    [src]="
+                      secIframeLink(workout.exerciseConfigurations![0]!.id!)
+                        .miniature
+                    "
+                    alt=""
+                  />
                   <!-- Iframe resposnsivo -->
                 </mat-expansion-panel>
               </div>
             </mat-expansion-panel>
           </ng-container>
 
-          <p class="rest p-spacer" *ngIf="workout.exerciseConfigurations!.length > 1">Tempo de descanso: {{ workout?.rest }}</p>
+          <p
+            class="rest p-spacer"
+            *ngIf="workout.exerciseConfigurations!.length > 1"
+          >
+            Tempo de descanso: {{ workout?.rest }}
+          </p>
           <p class="obs" *ngIf="workout.observations">
             Sobre o exercicio: {{ workout?.observations }}
           </p>

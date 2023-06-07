@@ -13,7 +13,15 @@ import { ExerciseSet } from '../exercise-set/exercise-set-details/exercise-set-d
 export class PlannerComponent {
   planner: TrainingSheet | null = null;
 
-  howToUrls: { id: number; url: SafeResourceUrl }[] = [];
+  howToUrls: {
+    id: number;
+    miniature?: string;
+    originalUrl: string;
+    url: SafeResourceUrl;
+    showIframe: boolean;
+    iframeLoaded: number;
+  }[] = [];
+
   distinctWorkouts: { workout: ExerciseSet | undefined; index: number }[] = [];
 
   constructor(
@@ -99,19 +107,44 @@ export class PlannerComponent {
     this.getDistinctWorkouts().forEach((workout) => {
       workout!.exerciseGroup?.exerciseMethods?.forEach((method) => {
         method!.exerciseConfigurations!.forEach((config) => {
+          const videoId = config!.exercise!.videoUrl!.split('/').pop();
+
           this.howToUrls.push({
             id: config!.id!,
+            miniature: `https://img.youtube.com/vi/${videoId}/0.jpg`,
+            originalUrl: config!.exercise!.videoUrl!,
             url: this.sanitizer.bypassSecurityTrustResourceUrl(
               config!.exercise!.videoUrl!
             ),
+            showIframe: false,
+            iframeLoaded: 0,
           });
         });
       });
     });
+
+    console.log('how to urls => ', this.howToUrls);
   }
 
   secIframeLink(id: number) {
-    return this.howToUrls.find((url) => url.id === id)!.url;
+    return this.howToUrls.find((url) => url.id === id)!;
+  }
+
+  matExpansionOpened(event: any) {
+    console.log('Salve! => ', event);
+    const howToUrlsIndex = this.howToUrls.findIndex((h) => h.id == event.id);
+    this.howToUrls[howToUrlsIndex].showIframe = true;
+  }
+
+  iframeLoaded(event: any) {
+    console.log('Iframe loaded! => ', event);
+    const howToUrlsIndex = this.howToUrls.findIndex((h) => h.id == event.id);
+
+    this.howToUrls[howToUrlsIndex].iframeLoaded += 1;
+
+    setTimeout(() => {
+      this.howToUrls[howToUrlsIndex].iframeLoaded += 1;
+    }, 500);
   }
 
   downloadPDF() {

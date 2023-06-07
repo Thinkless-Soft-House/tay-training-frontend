@@ -55,11 +55,14 @@ export class AppComponent {
   constructor(private router: Router, private loadingService: LoadingService) {
     this.monitoreRouteChanges();
     console.log('Init app =>', this.version);
+
+    console.log('Aplicativo iniciado')
   }
 
   monitoreRouteChanges() {
     this.router.events.subscribe((val) => {
       if (val instanceof NavigationEnd) {
+        console.log('Mudou de rota')
         this.loadingService.deactiveLoading();
 
         this.atualRoute = val.url;
