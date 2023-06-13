@@ -55,7 +55,7 @@
 
     th,
     td {
-      padding: 12px 15px;
+      padding: 8px;
       text-align: center;
     }
 
@@ -146,10 +146,6 @@
   }
 }
 
-.mat-expansion-panel-body {
-  padding: 1em;
-}
-
 .p-spacer {
   margin-top: 1em;
 }
@@ -158,5 +154,21 @@
   &.mat-expanded {
     $background-color: black;
     background-color: functions.adjust-color($background-color, "l", 25%);
+  }
+}
+
+::ng-deep .mat-expansion-panel-body {
+  padding: 1em !important;
+}
+
+@media (max-width: 500px) {
+  ::ng-deep .mat-expansion-panel-body {
+    padding: 0.5em !important;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .mat-expansion-panel-body {
+    padding: 0.5em;
   }
 }

@@ -46,6 +46,7 @@ export interface ExerciseMethod {
   id?: number;
   rest: string;
   observations: string;
+  order?: number;
 
   exerciseGroupId?: number;
   exerciseConfigurations?: ExerciseConfiguration[];
@@ -267,7 +268,12 @@ export class ExerciseSetDetailsComponent {
           exerciseGroup.category_id
         );
 
-        this.exercicies = exerciseGroup.exerciseMethods!;
+        this.exercicies = exerciseGroup.exerciseMethods!.map((e) => {
+          return {
+            ...e,
+            order: e.order ? e.order : e.id,
+          };
+        });
         this.exerciseMethodSaved = JSON.parse(JSON.stringify(this.exercicies));
 
         setTimeout(() => {
@@ -331,6 +337,12 @@ export class ExerciseSetDetailsComponent {
 
   drop(event: CdkDragDrop<ExerciseMethod[]>) {
     moveItemInArray(this.exercicies, event.previousIndex, event.currentIndex);
+    this.exercicies = this.exercicies.map((e, i) => {
+      return {
+        ...e,
+        order: i + 1,
+      };
+    });
   }
 
   getWorkoutMultiName(index: number) {
@@ -629,6 +641,7 @@ export class ExerciseSetDetailsComponent {
     const data = this.formRef.value;
 
     try {
+      this.loadingService.activeLoading();
       // Create Exercise Groups (Exercise Set)
       // console.log('Criando o grupo de exercícios');
       const exerciseSet: ExerciseSet = {
@@ -657,6 +670,13 @@ export class ExerciseSetDetailsComponent {
         );
       }
 
+      this.exercicies = this.exercicies.map((e, i) => {
+        return {
+          ...e,
+          order: i + 1,
+        };
+      });
+
       for (const e of this.exercicies) {
         console.log('Exercício => ', e);
         // console.log('Map index', i);
@@ -664,6 +684,7 @@ export class ExerciseSetDetailsComponent {
           rest: e.rest,
           observations: e.observations,
           exerciseGroupId: exerciseSetCreated.id,
+          order: e.order,
         };
 
         // console.log('Para salvar => ', toSave);
@@ -717,6 +738,8 @@ export class ExerciseSetDetailsComponent {
     } catch (error) {
       // console.log('error on create', error);
       return;
+    } finally {
+      this.loadingService.deactiveLoading();
     }
   }
 

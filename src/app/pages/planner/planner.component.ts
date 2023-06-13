@@ -1,9 +1,15 @@
 import { ActivatedRoute } from '@angular/router';
 import { Component, SecurityContext } from '@angular/core';
 import { WorkoutsService } from 'src/app/services/workouts.service';
-import { TrainingSheet } from '../workouts/workout-details/workout-details.component';
+import {
+  TrainingDay,
+  TrainingSheet,
+} from '../workouts/workout-details/workout-details.component';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { ExerciseSet } from '../exercise-set/exercise-set-details/exercise-set-details.component';
+import {
+  ExerciseMethod,
+  ExerciseSet,
+} from '../exercise-set/exercise-set-details/exercise-set-details.component';
 
 @Component({
   selector: 'app-planner',
@@ -51,6 +57,9 @@ export class PlannerComponent {
     this.distinctWorkouts = this.getDistinctWorkouts().map((e, i) => {
       return { workout: e!.exerciseGroup, index: i + 1 };
     });
+
+    console.log('distinctWorkouts', this.distinctWorkouts);
+
     // console.log('this.distinctWorkouts', this.distinctWorkouts);
 
     this.createSanitizeUrls();
@@ -74,7 +83,7 @@ export class PlannerComponent {
     return days;
   }
 
-  getDistinctWorkouts() {
+  getDistinctWorkouts(): (TrainingDay | undefined)[] {
     const workouts = this.planner?.trainingDays.map(
       (day) => day.exerciseGroupId
     );
@@ -82,6 +91,18 @@ export class PlannerComponent {
       return this.planner?.trainingDays.find(
         (day) => day.exerciseGroupId === id
       );
+    });
+  }
+
+  orderExMethods(em: ExerciseMethod[]) {
+    // Checar se tem a prop 'order' no objeto, se tiver, ordenar pelo valor dela, se não, ordenar pelo id
+
+    return em.sort((a, b) => {
+      if (a.order && b.order) {
+        return a.order - b.order;
+      } else {
+        return a.id! - b.id!;
+      }
     });
   }
 

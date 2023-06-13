@@ -7,9 +7,10 @@ import { MasterTableComponent } from './master-table/master-table.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
+import { LoadingComponent } from './loading/loading.component';
 
 @NgModule({
-  declarations: [HeaderComponent, SideMenuComponent, MasterTableComponent],
+  declarations: [HeaderComponent, SideMenuComponent, MasterTableComponent, LoadingComponent],
   imports: [
     CommonModule,
     MaterialBundleModule,

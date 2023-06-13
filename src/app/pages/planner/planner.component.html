@@ -184,7 +184,7 @@
       <mat-accordion>
         <mat-expansion-panel
           *ngFor="
-            let workout of item?.exerciseGroup?.exerciseMethods;
+            let workout of orderExMethods(item?.exerciseGroup?.exerciseMethods!);
             let iw = index
           "
         >

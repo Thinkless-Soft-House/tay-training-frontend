@@ -1,0 +1,9 @@
+.loading {
+  display: flex;
+  align-items: center;
+  padding: .5em 1em;
+
+  mat-spinner {
+    height: 50px !important;
+  }
+}
