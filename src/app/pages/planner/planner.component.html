@@ -184,7 +184,9 @@
       <mat-accordion>
         <mat-expansion-panel
           *ngFor="
-            let workout of orderExMethods(item?.exerciseGroup?.exerciseMethods!);
+            let workout of orderExMethods(
+              item?.exerciseGroup?.exerciseMethods!
+            );
             let iw = index
           "
         >
@@ -250,7 +252,12 @@
           <!-- Exercicios -->
           <!-- Collapse Exercicio -->
 
-          <ng-container *ngIf="workout.exerciseConfigurations!.length === 1">
+          <ng-container
+            *ngIf="
+              workout.exerciseConfigurations!.length === 1 &&
+              workout.exerciseConfigurations![0].exercise?.videoUrl
+            "
+          >
             <mat-expansion-panel
               [hideToggle]="false"
               class="video p-spacer"
@@ -327,7 +334,7 @@
 
               <!-- Video -->
               <!-- Collapse -->
-              <div class="video">
+              <div class="video" *ngIf="exercise.exercise?.videoUrl">
                 <mat-expansion-panel (opened)="matExpansionOpened(exercise)">
                   <mat-expansion-panel-header>
                     <mat-panel-title>Video Explicativo</mat-panel-title>

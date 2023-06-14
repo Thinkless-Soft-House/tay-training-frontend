@@ -160,6 +160,7 @@ export class WorkoutDetailsComponent {
           this.formRef.controls['name'].setValue(data.name);
           this.formRef.controls['publicName'].setValue(data.publicName);
           this.formRef.controls['offlinePdf'].setValue(data.offlinePdf);
+          this.formRef.controls['newTabPdf'].setValue(data.newTabPdf);
           this.fillTrainingDays(data);
         } catch (error) {
           console.error(error);

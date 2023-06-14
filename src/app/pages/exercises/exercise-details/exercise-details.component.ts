@@ -49,14 +49,12 @@ export class ExerciseDetailsComponent {
       config: {
         name: 'videoUrl',
 
-        required: true,
         maxlength: 100,
         minlength: 10,
         customValidators: {
           urlValidator: true,
         },
         errors: {
-          required: 'Campo obrigatório',
           minlength: 'Mínimo de 10 caracteres',
           maxlength: 'Máximo de 100 caracteres',
           invalidUrl: 'Url inválida',
