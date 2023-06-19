@@ -73,7 +73,7 @@
               ],
               "outputHashing": "all"
             },
-            "internal-docker": {
+            "lambda": {
               "buildOptimizer": false,
               "optimization": false,
               "vendorChunk": true,
@@ -83,7 +83,7 @@
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.internal-docker.ts"
+                  "with": "src/environments/environment.lambda.ts"
                 }
               ]
             },
@@ -110,8 +110,8 @@
             "production": {
               "browserTarget": "tay-training-frontend:build:production"
             },
-            "internal-docker": {
-              "browserTarget": "tay-training-frontend:build:internal-docker"
+            "lambda": {
+              "browserTarget": "tay-training-frontend:build:lambda"
             },
             "development": {
               "browserTarget": "tay-training-frontend:build:development"
