@@ -1,6 +1,8 @@
 FROM nginx
 COPY nginx.conf /etc/nginx/conf.d/configfile.template
 
+RUN rm -rf /usr/share/nginx/html/*
+
 COPY /dist/tay-training-frontend /usr/share/nginx/html
 
 ENV PORT 8080
