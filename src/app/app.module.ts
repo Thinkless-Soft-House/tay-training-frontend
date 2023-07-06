@@ -10,9 +10,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { CpfValidatorDirective } from './core/shared/directives/cpf-validator.directive';
 import { ExercisesComponent } from './pages/exercises/exercises.component';
+import { ExamplePdfViewerComponent } from './example-pdf-viewer/example-pdf-viewer.component';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, ExamplePdfViewerComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -21,6 +23,7 @@ import { ExercisesComponent } from './pages/exercises/exercises.component';
     MaterialBundleModule,
     ComponentsModule,
     HttpClientModule,
+    NgxExtendedPdfViewerModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

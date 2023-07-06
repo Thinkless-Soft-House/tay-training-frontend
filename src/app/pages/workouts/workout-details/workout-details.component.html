@@ -92,7 +92,7 @@
       </div>
     </div>
 
-    <div class="row">
+    <div class="row hide">
       <div class="col">
         <mat-form-field>
           <mat-label>{{ form["offlinePdf"].label }}</mat-label>
@@ -140,7 +140,7 @@
         </mat-form-field>
       </div>
     </div>
-    <div class="row">
+    <div class="row hide">
       <div class="col">
         <mat-form-field>
           <mat-label>{{ form["newTabPdf"].label }}</mat-label>
@@ -187,6 +187,41 @@
           </mat-error>
         </mat-form-field>
       </div>
+    </div>
+
+    <div class="row">
+      <div class="col pdf">
+        <!-- <p>{{ selectedFile?.name }}</p> -->
+        <button
+          mat-raised-button
+          [color]="selectedFile || editData?.pdfPath ? 'primary' : 'accent'"
+          (click)="pdfPathInput.click()"
+        >
+          {{
+            selectedFile || editData?.pdfPath
+              ? "PDF Selecionado"
+              : "Selecionar PDF"
+          }}
+        </button>
+        <button
+          [class.hide]="!selectedFile || editData?.pdfPath"
+          mat-icon-button
+          type="button"
+          (click)="clearSelectedFile()"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+        <input
+          type="file"
+          #pdfPathInput
+          class="hide"
+          accept="application/pdf"
+          (change)="handleFileInputChange($event.target!)"
+        />
+      </div>
+
+      <div class="col"></div>
+      <div class="col"></div>
     </div>
 
     <div class="row">

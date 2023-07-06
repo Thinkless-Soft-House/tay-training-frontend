@@ -385,7 +385,12 @@
     </div>
   </div>
 
-  <div class="offline" *ngIf="planner.offlinePdf || planner.newTabPdf">
+  <div class="offline" *ngIf="planner.pdfPath">
+    <button mat-raised-button color="primary" (click)="openPdf()">
+      Abrir PDF
+    </button>
+  </div>
+  <!-- <div class="offline" *ngIf="planner.offlinePdf || planner.newTabPdf">
     <button
       mat-raised-button
       color="primary"
@@ -403,5 +408,5 @@
     >
       Baixar PDF
     </button>
-  </div>
+  </div> -->
 </section>

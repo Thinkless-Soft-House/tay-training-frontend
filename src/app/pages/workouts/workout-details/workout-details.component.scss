@@ -1,12 +1,20 @@
 @use "src/functions.scss" as functions;
 
+.hide {
+  display: none;
+}
+
+.pdf {
+  display: flex;
+  align-items: center;
+}
+
 .day-card {
   width: 80%;
   margin: 0 auto;
   mat-card-content {
     padding: 0 0.5em;
     padding-top: 1.3em;
-
 
     @include functions.flexbox(
       $flex-direction: row,

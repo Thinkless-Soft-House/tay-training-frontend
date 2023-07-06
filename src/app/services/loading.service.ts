@@ -27,12 +27,9 @@ export class LoadingService {
 
     if (this.atualRef) this.atualRef.close();
     this.atualRef = dialogRef;
-    console.log('activeLoading => atualRef', this.atualRef);
   }
   deactiveLoading() {
-    console.log('deaactiveLoading');
     this.loading = false;
-    console.log('deactiveLoading => atualRef', this.atualRef);
     if (this.atualRef) this.atualRef.close();
   }
 }

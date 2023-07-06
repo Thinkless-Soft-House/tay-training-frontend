@@ -1,4 +1,4 @@
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Component, SecurityContext } from '@angular/core';
 import { WorkoutsService } from 'src/app/services/workouts.service';
 import {
@@ -33,7 +33,8 @@ export class PlannerComponent {
   constructor(
     private workoutsService: WorkoutsService,
     private activatedRoute: ActivatedRoute,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private router: Router
   ) {}
 
   async ngOnInit() {
@@ -54,6 +55,8 @@ export class PlannerComponent {
     this.planner.trainingDays = this.planner.trainingDays.sort(
       (a, b) => a.day - b.day
     );
+    console.log('this.planner.trainingDays', this.planner.trainingDays);
+
     this.distinctWorkouts = this.getDistinctWorkouts().map((e, i) => {
       return { workout: e!.exerciseGroup, index: i + 1 };
     });
@@ -189,5 +192,11 @@ export class PlannerComponent {
     a.href = url!;
     a.target = '_blank';
     a.click();
+  }
+
+  openPdf() {
+    this.router.navigate(['pdf'], {
+      relativeTo: this.activatedRoute,
+    });
   }
 }

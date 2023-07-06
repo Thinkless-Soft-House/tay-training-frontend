@@ -27,6 +27,7 @@ export interface TrainingSheet {
   slug: string;
   offlinePdf?: string;
   newTabPdf?: string;
+  pdfPath?: string;
   trainingDays: TrainingDay[];
 }
 export interface TrainingDay {
@@ -111,8 +112,12 @@ export class WorkoutDetailsComponent {
 
   isEdit = false;
   editId: number | null = null;
+  editData: TrainingSheet | null = null;
 
   step = 0;
+
+  @ViewChild('pdfPathInput') pdfPathInput: any;
+  selectedFile: File | undefined;
 
   constructor(
     private utilsService: UtilsService,
@@ -124,6 +129,18 @@ export class WorkoutDetailsComponent {
     private exersiceSetService: ExerciseSetService
   ) {
     this.createTrainingDaysControllers();
+  }
+
+  handleFileInputChange(input: any) {
+    const files = input.files;
+    if (files && files.length > 0) {
+      this.selectedFile = files[0];
+    }
+  }
+
+  clearSelectedFile() {
+    this.selectedFile = undefined;
+    this.pdfPathInput.nativeElement.value = '';
   }
 
   setStep(index: number) {
@@ -156,6 +173,7 @@ export class WorkoutDetailsComponent {
           const data = await this.workoutService.getById(+params['id'], [
             'trainingDays',
           ]);
+          this.editData = data;
           // console.log('data', data);
           this.formRef.controls['name'].setValue(data.name);
           this.formRef.controls['publicName'].setValue(data.publicName);
@@ -286,18 +304,42 @@ export class WorkoutDetailsComponent {
         }),
     } as TrainingSheet;
 
+    const a = sheet.trainingDays.map((e) => {
+      return {
+        ...e,
+        exerciseSetName: this.allExerciceSets.find(
+          (x) => x.id === e.exerciseGroupId
+        )?.name,
+        exerciseSetPublicName: this.allExerciceSets.find(
+          (x) => x.id === e.exerciseGroupId
+        )?.publicName,
+      };
+    });
+
+    console.log('a', a);
+    // return;
+
     // console.log('sheet', sheet);
 
     if (this.isEdit) {
       // Update
 
       try {
-        const sheetCreated = await this.workoutService.update(this.editId!, {
-          name: sheet.name,
-          publicName: sheet.publicName,
-          offlinePdf: sheet.offlinePdf,
-          newTabPdf: sheet.newTabPdf,
-        });
+        const formData = new FormData();
+
+        formData.append('name', sheet.name);
+        formData.append('publicName', sheet.publicName);
+        formData.append('offlinePdf', sheet.offlinePdf || '');
+        formData.append('newTabPdf', sheet.newTabPdf || '');
+
+        if (this.selectedFile) {
+          formData.append('file', this.selectedFile);
+        }
+
+        const sheetCreated = await this.workoutService.update(
+          this.editId!,
+          formData
+        );
 
         // update list Days
         const result = await this.trainingDayService.updateList(
@@ -315,8 +357,20 @@ export class WorkoutDetailsComponent {
     } else {
       // Create
       try {
+        const formData = new FormData();
+
+        formData.append('name', sheet.name);
+        formData.append('publicName', sheet.publicName);
+        formData.append('offlinePdf', sheet.offlinePdf || '');
+        formData.append('newTabPdf', sheet.newTabPdf || '');
+        formData.append('trainingDays', JSON.stringify(sheet.trainingDays));
+
+        if (this.selectedFile) {
+          formData.append('file', this.selectedFile);
+        }
+
         // Create Sheet
-        const sheetCreated = await this.workoutService.create(sheet);
+        const sheetCreated = await this.workoutService.create(formData);
         // Create Days
 
         this.router.navigate(['workouts']);
