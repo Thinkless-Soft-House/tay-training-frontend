@@ -225,6 +225,9 @@
     </div>
 
     <div class="row">
+      <div class="col"></div>
+    </div>
+    <div class="row">
       <div class="col">
         <h4>Dias da semana</h4>
       </div>
@@ -247,6 +250,7 @@
                   <mat-label>{{ item.label }}</mat-label>
                   <mat-select
                     [(ngModel)]="item.value"
+                    (ngModelChange)="getDistinctWorkouts()"
                     [name]="item.config.name"
                     [placeholder]="item.config.placeholder"
                     [disabled]="item.config.disabled"
@@ -290,6 +294,7 @@
                   <mat-label>{{ item.label }}</mat-label>
                   <mat-select
                     [(ngModel)]="item.value"
+                    (ngModelChange)="getDistinctWorkouts()"
                     [name]="item.config.name"
                     [placeholder]="item.config.placeholder"
                     [disabled]="item.config.disabled"
@@ -332,6 +337,7 @@
                   <mat-label>{{ item.label }}</mat-label>
                   <mat-select
                     [(ngModel)]="item.value"
+                    (ngModelChange)="getDistinctWorkouts()"
                     [name]="item.config.name"
                     [placeholder]="item.config.placeholder"
                     [disabled]="item.config.disabled"
@@ -374,6 +380,7 @@
                   <mat-label>{{ item.label }}</mat-label>
                   <mat-select
                     [(ngModel)]="item.value"
+                    (ngModelChange)="getDistinctWorkouts()"
                     [name]="item.config.name"
                     [placeholder]="item.config.placeholder"
                     [disabled]="item.config.disabled"
@@ -402,6 +409,28 @@
             </mat-action-row>
           </mat-expansion-panel>
         </mat-accordion>
+      </div>
+    </div>
+
+    <div class="row short-names" style="margin-top: 1.5em">
+      <div class="col">
+        <h4>Nomes para a tabela</h4>
+      </div>
+
+      <div class="row" *ngFor="let item of shortNamesInputs">
+        <!-- {{ "short-name_" + item.exerciseGroupId | json }} :::<br /> -->
+
+        <div class="col">
+          <mat-form-field appearance="fill">
+            <mat-label>{{ item.name }}</mat-label>
+            <input
+              matInput
+              [name]="'short-name_' + item.exerciseGroupId"
+              [(ngModel)]="item.defaultShortName"
+              />
+              <!-- [value]="item.defaultValue" -->
+          </mat-form-field>
+        </div>
       </div>
     </div>
 

@@ -28,7 +28,11 @@ export class PlannerComponent {
     iframeLoaded: number;
   }[] = [];
 
-  distinctWorkouts: { workout: ExerciseSet | undefined; index: number }[] = [];
+  distinctWorkouts: {
+    trainingDay: TrainingDay;
+    workout: ExerciseSet | undefined;
+    index: number;
+  }[] = [];
 
   constructor(
     private workoutsService: WorkoutsService,
@@ -58,7 +62,7 @@ export class PlannerComponent {
     console.log('this.planner.trainingDays', this.planner.trainingDays);
 
     this.distinctWorkouts = this.getDistinctWorkouts().map((e, i) => {
-      return { workout: e!.exerciseGroup, index: i + 1 };
+      return { trainingDay: e!, workout: e!.exerciseGroup, index: i + 1 };
     });
 
     console.log('distinctWorkouts', this.distinctWorkouts);
@@ -110,10 +114,17 @@ export class PlannerComponent {
   }
 
   getExerciseSetName(id: number) {
-    return `Treino ${
+    return this.distinctWorkouts.find(
+      (workout) => workout.workout!.id === id
+    ) &&
       this.distinctWorkouts.find((workout) => workout.workout!.id === id)
-        ?.index || 0
-    }`;
+        ?.trainingDay.shortName
+      ? this.distinctWorkouts.find((workout) => workout.workout!.id === id)
+          ?.trainingDay.shortName
+      : `Treino ${
+          this.distinctWorkouts.find((workout) => workout.workout!.id === id)
+            ?.index || 0
+        }`;
   }
   getWorkoutMultiName(egId: number, emId: number) {
     const eg = this.distinctWorkouts.find(

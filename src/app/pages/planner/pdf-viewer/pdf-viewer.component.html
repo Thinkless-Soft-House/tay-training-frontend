@@ -9,6 +9,14 @@
   </button>
   <span> PDF Offline </span>
   <span class="spacer"></span>
+  <button
+    class="menu-btn"
+    aria-label="Menu Toggle"
+    mat-icon-button
+    (click)="back()"
+  >
+    <mat-icon>arrow_back</mat-icon>
+  </button>
 </mat-toolbar>
 
 <ng-container *ngIf="load">

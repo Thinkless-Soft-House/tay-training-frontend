@@ -35,6 +35,7 @@ export interface TrainingDay {
   day: number;
   trainingSheetId: number;
   exerciseGroupId: number;
+  shortName: string;
 
   exerciseGroup?: ExerciseSet;
 }
@@ -119,6 +120,8 @@ export class WorkoutDetailsComponent {
   @ViewChild('pdfPathInput') pdfPathInput: any;
   selectedFile: File | undefined;
 
+  shortNamesInputs: any[] = [];
+  savedShortNames: any[] = [];
   constructor(
     private utilsService: UtilsService,
     private actRoute: ActivatedRoute,
@@ -157,29 +160,37 @@ export class WorkoutDetailsComponent {
 
   ngOnInit(): void {}
   async ngAfterViewInit() {
+    // console.log('1');
     this.allExerciceSets = await this.exersiceSetService.getAll();
     this.insertSets();
+    // console.log('2');
     this.actRoute.params.subscribe(async (params) => {
       if (params['id'] !== 'new') {
         this.isEdit = true;
         this.editId = +params['id'];
         // Load data...
+        // console.log('3');
         setTimeout(() => {
           this.loadingService.activeLoading();
         }, 50);
 
         // Get data from API
         try {
+          // console.log('4');
           const data = await this.workoutService.getById(+params['id'], [
             'trainingDays',
           ]);
           this.editData = data;
-          // console.log('data', data);
+          // console.log('5');
+          console.log('data', data);
           this.formRef.controls['name'].setValue(data.name);
           this.formRef.controls['publicName'].setValue(data.publicName);
           this.formRef.controls['offlinePdf'].setValue(data.offlinePdf);
           this.formRef.controls['newTabPdf'].setValue(data.newTabPdf);
+          // console.log('6');
           this.fillTrainingDays(data);
+          this.getDistinctWorkouts();
+          // console.log('7');
         } catch (error) {
           console.error(error);
         } finally {
@@ -247,6 +258,10 @@ export class WorkoutDetailsComponent {
       );
       if (control) {
         control.value = day.exerciseGroupId;
+        this.savedShortNames.push({
+          exerciseGroupId: day.exerciseGroupId,
+          value: day.shortName || null,
+        });
       }
     }
   }
@@ -284,6 +299,47 @@ export class WorkoutDetailsComponent {
     // console.log('dateEvents', name, event);
   }
 
+  getDistinctWorkouts() {
+    const workouts = this.trainingDays
+      .filter((e) => e.value !== -1)
+      .map((e) => e.value);
+
+    if (this.trainingDays.length === 0) {
+      this.shortNamesInputs = [];
+      return [];
+    }
+
+    // console.log('workouts', workouts);
+
+    this.shortNamesInputs = [...new Set(workouts)]
+      .map((id) => {
+        return this.trainingDays.find((control) => control.value === id);
+      })
+      .filter((e) => e!.value !== -1)
+      .map((e) => {
+        return {
+          day: +e!.config.name.split('_')[1],
+          exerciseGroupId: e!.value,
+        };
+      })
+      .sort((a, b) => a.day - b.day)
+      .map((e, index) => {
+        return {
+          ...e,
+          name: this.allExerciceSets.find((x) => x.id === e.exerciseGroupId)
+            ?.name,
+          defaultShortName:
+            this.savedShortNames.find(
+              (ssn) => ssn.exerciseGroupId === e.exerciseGroupId
+            )?.value || `Treino ${index + 1}`,
+        };
+      });
+
+    console.log('this.shortNamesInputs', this.shortNamesInputs);
+
+    return [];
+  }
+
   async onSubmit() {
     // console.log('onSubmit', this.formRef);
     const data = this.formRef.value;
@@ -300,23 +356,28 @@ export class WorkoutDetailsComponent {
           return {
             day: +e.config.name.split('_')[1],
             exerciseGroupId: e.value,
+            shortName: this.shortNamesInputs.find(
+              (x) => x.exerciseGroupId === e.value
+            )?.defaultShortName,
           };
         }),
     } as TrainingSheet;
+    // console.log('data', data);
+    // console.log('sheet', sheet);
 
-    const a = sheet.trainingDays.map((e) => {
-      return {
-        ...e,
-        exerciseSetName: this.allExerciceSets.find(
-          (x) => x.id === e.exerciseGroupId
-        )?.name,
-        exerciseSetPublicName: this.allExerciceSets.find(
-          (x) => x.id === e.exerciseGroupId
-        )?.publicName,
-      };
-    });
+    // const a = sheet.trainingDays.map((e) => {
+    //   return {
+    //     ...e,
+    //     exerciseSetName: this.allExerciceSets.find(
+    //       (x) => x.id === e.exerciseGroupId
+    //     )?.name,
+    //     exerciseSetPublicName: this.allExerciceSets.find(
+    //       (x) => x.id === e.exerciseGroupId
+    //     )?.publicName,
+    //   };
+    // });
 
-    console.log('a', a);
+    // console.log('a', a);
     // return;
 
     // console.log('sheet', sheet);
@@ -335,11 +396,12 @@ export class WorkoutDetailsComponent {
         if (this.selectedFile) {
           formData.append('file', this.selectedFile);
         }
-
+        console.log('sheet', sheet);
         const sheetCreated = await this.workoutService.update(
           this.editId!,
           formData
         );
+        console.log('sheetCreated', sheetCreated);
 
         // update list Days
         const result = await this.trainingDayService.updateList(
