@@ -60,14 +60,14 @@ export class WorkoutsComponent extends MasterTable<WorkoutsService> {
 
   callView(row: TrainingSheet) {
     console.log(row);
-    this.openRouteInNewTab(`/planner/${row.slug}`);
+    this.openRouteInNewTab(`planner/${row.slug}`);
   }
 
   openRouteInNewTab(routePath: string) {
     // Obtém a URL base do aplicativo.
     const baseHref = window.location.origin + '/';
     // console.log('location', this.location as any);
-    // console.log('baseHref', baseHref);
+    console.log('baseHref', baseHref + routePath);
 
     // Abre a rota em uma nova aba.
     window.open(baseHref + routePath, '_blank');
