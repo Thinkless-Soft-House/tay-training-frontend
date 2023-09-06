@@ -33,6 +33,11 @@ export class PlannerComponent {
     workout: ExerciseSet | undefined;
     index: number;
   }[] = [];
+  distinctWorkoutsSorted: {
+    t: TrainingDay;
+    shortNamePlanner: string;
+    index: number;
+  }[] = [];
 
   constructor(
     private workoutsService: WorkoutsService,
@@ -65,7 +70,18 @@ export class PlannerComponent {
       return { trainingDay: e!, workout: e!.exerciseGroup, index: i + 1 };
     });
 
+    this.distinctWorkoutsSorted = this.distinctWorkouts
+      .map((e, i) => {
+        return {
+          t: e!.trainingDay,
+          shortNamePlanner: this.getExerciseSetName(e.workout!.id!)!,
+          index: i + 1,
+        };
+      })
+      .sort((a, b) => a.shortNamePlanner.localeCompare(b.shortNamePlanner));
+
     console.log('distinctWorkouts', this.distinctWorkouts);
+    console.log('distinctWorkoutsSorted', this.distinctWorkoutsSorted);
 
     // console.log('this.distinctWorkouts', this.distinctWorkouts);
 

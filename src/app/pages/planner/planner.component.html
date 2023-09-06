@@ -168,16 +168,16 @@
   <div class="workouts">
     <div
       class="workout"
-      *ngFor="let item of getDistinctWorkouts(); let i = index"
+      *ngFor="let item of distinctWorkoutsSorted; let i = index"
     >
       <!-- Treino  -->
 
       <h3 class="workout-title">
-        {{ getExerciseSetName(item!.exerciseGroupId) }} -
+        {{ getExerciseSetName(item!.t.exerciseGroupId!) }} -
         {{
-          item?.exerciseGroup?.publicName
-            ? item?.exerciseGroup?.publicName
-            : item?.exerciseGroup?.name
+          item?.t?.exerciseGroup?.publicName
+            ? item?.t?.exerciseGroup?.publicName
+            : item?.t?.exerciseGroup?.name
         }}
       </h3>
 
@@ -185,7 +185,7 @@
         <mat-expansion-panel
           *ngFor="
             let workout of orderExMethods(
-              item?.exerciseGroup?.exerciseMethods!
+              item?.t?.exerciseGroup?.exerciseMethods!
             );
             let iw = index
           "
@@ -201,7 +201,7 @@
                     : "º - Combinação ")
               }}
               -
-              {{ getWorkoutMultiName(item!.exerciseGroupId!, workout.id!) }}
+              {{ getWorkoutMultiName(item!.t.exerciseGroupId!, workout.id!) }}
             </mat-panel-title>
           </mat-expansion-panel-header>
           <!-- {{ workout.method | json }} -->
