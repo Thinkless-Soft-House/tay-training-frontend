@@ -20,6 +20,7 @@ $theme: mat.get-color-config(styles.$activeTheme);
 
   @return map.get(map.get($theme, $color), $type);
 }
+
 @function get-theme-background($type: "background") {
   @return map.get(map.get($theme, "background"), $type);
 }
