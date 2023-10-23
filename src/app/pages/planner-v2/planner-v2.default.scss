@@ -1,14 +1,23 @@
 @use "../../../functions.scss" as functions;
 
+:host {
+  $color: functions.get-theme-color("primary", "main");
+  background-color: rgba($color, 0.025);
+  height: 100%; // Aplicando 20% de opacidade
+  min-height: 100vh;
+}
+
 #planner-v2 {
-  color: var(--accent-color);
+  color: #000;
+  max-width: 600px;
+  margin: 0 auto;
 
   padding: 1em;
   min-height: 100vh;
   position: relative;
 
   $color: functions.get-theme-color("primary", "main");
-  background-color: rgba($color, 0.025); // Aplicando 20% de opacidade
+  // background-color: rgba($color, 0.025); // Aplicando 20% de opacidade
 
   .logo {
     width: 120px;
@@ -30,6 +39,7 @@
       font-weight: bold;
       text-align: center;
       margin: 0.5em 0;
+      color: var(--primary-color);
     }
   }
 
@@ -62,7 +72,6 @@
 
     padding: 0.5em;
     background-color: var(--accent-color);
-
 
     .info {
       flex: 1;

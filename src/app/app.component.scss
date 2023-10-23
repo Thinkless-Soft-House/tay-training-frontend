@@ -1,5 +1,9 @@
 @use "../functions.scss" as functions;
 
+:host {
+  height: auto;
+}
+
 main {
   @include functions.flexbox();
   min-width: 100vw;
