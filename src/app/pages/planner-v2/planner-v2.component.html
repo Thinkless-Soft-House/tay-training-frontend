@@ -1,0 +1,40 @@
+<section id="planner-v2">
+  <!-- Header -->
+  <div class="logo">
+    <img src="assets/logo.png" class="logo" alt="Logo Tay Training" />
+  </div>
+  <div class="header">
+    <h3>{{ planner?.publicName || "" }}</h3>
+    <button mat-icon-button style="display: none">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+  </div>
+
+  <h3 class="about-table">
+    <i>
+      Essa estrutura de treinos é uma sugestão de como organiza-los durante as
+      semanas.
+    </i>
+  </h3>
+
+  <!-- Cards Semana -->
+
+  <div class="cards">
+    <div class="card mat-elevation-z2" matRipple (click)="goToWeek(1)">
+      <span class="text">Semana 1</span>
+      <mat-icon>arrow_forward</mat-icon>
+    </div>
+    <div class="card mat-elevation-z2" matRipple (click)="goToWeek(2)">
+      <span class="text">Semana 2</span>
+      <mat-icon>arrow_forward</mat-icon>
+    </div>
+    <div class="card mat-elevation-z2" matRipple (click)="goToWeek(3)">
+      <span class="text">Semana 3</span>
+      <mat-icon>arrow_forward</mat-icon>
+    </div>
+    <div class="card mat-elevation-z2" matRipple (click)="goToWeek(4)">
+      <span class="text">Semana 4</span>
+      <mat-icon>arrow_forward</mat-icon>
+    </div>
+  </div>
+</section>

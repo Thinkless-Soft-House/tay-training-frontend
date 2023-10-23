@@ -1,0 +1,173 @@
+<section id="planner-v2">
+  <!-- Header -->
+  <div class="logo">
+    <img src="assets/logo.png" class="logo" alt="Logo Tay Training" />
+  </div>
+  <div class="goback-content">
+    <div class="back-card" mat-ripple (click)="goBackWeek()">
+      <mat-icon>chevron_left</mat-icon>
+      <span class="info">Semanas</span>
+    </div>
+    <div class="back-card" mat-ripple (click)="goBackWorkout()">
+      <mat-icon>chevron_left</mat-icon>
+      <span class="info">Treinos</span>
+    </div>
+  </div>
+  <div class="header">
+    <h3>{{ planner?.publicName }}</h3>
+    <div></div>
+  </div>
+
+  <!-- Cards Semana -->
+  <ng-container *ngFor="let item of workout?.exerciseMethods; let i = index">
+    <div class="combine-text" *ngIf="item!.exerciseConfigurations!.length > 1">
+      <p class="combine-title">Exercicio Combinado</p>
+      <p>Alterne entre esses exercicios</p>
+      <p class="obs" *ngIf="item.observations">
+        <strong>Observações:</strong> {{ item.observations || "" }}
+      </p>
+    </div>
+    <swiper-container
+      class="slider"
+      pagination="true"
+      slides-per-view="auto"
+      space-between="10"
+      pagination-clickable="true"
+      *ngIf="item!.exerciseConfigurations!.length > 1"
+    >
+      <swiper-slide
+        class="slide"
+        *ngFor="let exerciseConfig of item.exerciseConfigurations!"
+      >
+        <div class="slide-content">
+          <div class="slide-header">
+            <p class="slide-title">{{ exerciseConfig.exercise?.name }}</p>
+            <div></div>
+          </div>
+          <div class="slide-body">
+            <div class="slide-info">
+              <p class="reps">
+                <strong>Repetições:</strong> {{ exerciseConfig.reps }}
+              </p>
+              <p class="serie">
+                <strong>Series:</strong> {{ exerciseConfig.series }}
+              </p>
+              <p class="rest"><strong>Descanso:</strong> {{ item.rest }}</p>
+            </div>
+            <div
+              class="slide-video"
+              (click)="
+                openVideo(
+                  exerciseConfig.exercise?.name!,
+                  secIframeLink(exerciseConfig.id!).url
+                )
+              "
+            >
+              <img
+                *ngIf="howToUrls.length > 0"
+                [src]="secIframeLink(exerciseConfig.id!).miniature"
+                alt=""
+              />
+              <mat-icon class="slide-video-icon" color="primary"
+                >play_circle</mat-icon
+              >
+            </div>
+          </div>
+        </div>
+      </swiper-slide>
+    </swiper-container>
+    <div
+      class="combine-text"
+      *ngIf="item!.exerciseConfigurations!.length === 1"
+    >
+      <p class="obs" *ngIf="item.observations">
+        <strong>Observações:</strong> {{ item.observations || "" }}
+      </p>
+    </div>
+    <div
+      class="one-shot-exercise"
+      *ngIf="item!.exerciseConfigurations!.length === 1"
+    >
+      <div class="slide-content">
+        <div class="slide-header">
+          <p class="slide-title">
+            {{ item.exerciseConfigurations![0].exercise?.name }}
+          </p>
+          <div></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-info">
+            <p class="reps">
+              <strong>Repetições:</strong>
+              {{ item.exerciseConfigurations![0].reps }}
+            </p>
+            <p class="serie">
+              <strong>Series:</strong>
+              {{ item.exerciseConfigurations![0].series }}
+            </p>
+            <p class="rest"><strong>Descanso:</strong> {{ item.rest }}</p>
+          </div>
+          <div
+            class="slide-video"
+            (click)="
+              openVideo(
+                item.exerciseConfigurations![0].exercise?.name!,
+                secIframeLink(item.exerciseConfigurations![0].id!).url
+              )
+            "
+          >
+            <img
+              *ngIf="howToUrls.length > 0"
+              [src]="
+                secIframeLink(item.exerciseConfigurations![0].id!).miniature
+              "
+              alt=""
+            />
+            <mat-icon class="slide-video-icon" color="primary"
+              >play_circle</mat-icon
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <!--
+  <div class="cards">
+    <div
+      class="card workout-card mat-elevation-z2"
+      *ngFor="let item of workout?.exerciseMethods; let i = index"
+      (click)="goToExercise(item.id!)"
+    >
+      <div class="card-content">
+        <div class="card-content">
+          <div class="card-icon">
+            <div class="card-icon-backdrop">
+              <mat-icon *ngIf="item!.exerciseConfigurations!.length === 1">
+                fitness_center
+              </mat-icon>
+              <mat-icon *ngIf="item.exerciseConfigurations!.length > 1">
+                link
+              </mat-icon>
+            </div>
+          </div>
+          <div class="card-field">
+            <h3 *ngIf="item!.exerciseConfigurations!.length === 1">
+              {{ i + 1 }}º Exercício
+            </h3>
+            <h3 *ngIf="item.exerciseConfigurations!.length > 1">
+              {{ i + 1 }}º Combinação
+            </h3>
+
+            <p *ngIf="item!.exerciseConfigurations!.length === 1">
+              {{ item!.exerciseConfigurations![0].exercise?.name }}
+            </p>
+            <p *ngIf="item.exerciseConfigurations!.length > 1">
+              {{ getWorkoutMultiName(item.exerciseConfigurations!) }}
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+--></section>

@@ -1,0 +1,53 @@
+@use "../../../../functions.scss" as functions;
+
+#planner-v2 {
+  .cards {
+    .card.week-card {
+      .card-content {
+        width: 100%;
+        box-sizing: border-box;
+        @include functions.flexbox(
+          $flex-direction: row,
+          $justify-content: space-between,
+          $align-items: center
+        );
+
+        .card-icon-backdrop {
+          @include functions.flexbox(
+            $justify-content: center,
+            $align-items: center
+          );
+          width: 50px;
+          height: 50px;
+
+          $color: functions.get-theme-color("primary", "main");
+          background-color: rgba($color, 0.9);
+          color: white;
+          border-radius: 8px;
+        }
+        .card-field {
+          flex: 1;
+          margin-left: 1em;
+          h3,
+          p {
+            margin: 0;
+            margin-bottom: 0.1em;
+          }
+        }
+        .card-goto {
+          font-size: 3em;
+        }
+      }
+
+      &.disabled-dayoff {
+        background-color: rgba($color: #000000, $alpha: .2);
+        .card-content {
+          .card-icon-backdrop {
+            $color: functions.get-theme-color("accent", "main");
+            background-color: rgba($color, 0.5);
+          }
+        }
+      }
+    }
+  }
+}
