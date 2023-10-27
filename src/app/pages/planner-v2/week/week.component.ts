@@ -47,7 +47,14 @@ export class WeekComponent implements OnInit, OnDestroy {
     if (!this.planner) return;
 
     this.week = this.pickDaysOfWeek(+this.weekParam!);
-    console.log(this.week);
+    this.week.forEach((day) => {
+      // Lista de logs importantes da semana
+
+      console.log('Dia: ', day?.day);
+      console.log('Nome curto: ', day?.shortName);
+      console.log('Nome publico: ', day?.exerciseGroup?.publicName);
+      console.log('-----###-----');
+    });
     return;
   }
 
@@ -95,6 +102,7 @@ export class WeekComponent implements OnInit, OnDestroy {
 
   goToWorkout(workout: number) {
     console.log(workout);
+    if (this.week[workout] === null) return;
     const slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
     const week = this.activatedRoute.snapshot.paramMap.get('week');
     console.log(workout);

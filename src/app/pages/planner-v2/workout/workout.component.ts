@@ -94,15 +94,31 @@ export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!this.planner) return;
 
     this.week = this.pickDaysOfWeek(+this.weekParam!);
+    this.week.forEach((day) => {
+      // Lista de logs importantes da semana
+
+      console.log('Dia: ', day?.day);
+      console.log('Nome curto: ', day?.shortName);
+      console.log('Nome publico: ', day?.exerciseGroup?.publicName);
+      console.log('-----###-----');
+    });
     if (
-      this.week[this.weekParam] === undefined ||
-      !this.week[this.weekParam]?.exerciseGroup
+      this.week[this.workoutParam] === undefined ||
+      !this.week[this.workoutParam]?.exerciseGroup
     ) {
       this.router.navigate([`/planner-v2/${slug}`]);
     } else {
-      this.workout = this.week[this.weekParam]!.exerciseGroup || null;
+      this.workout = this.week[this.workoutParam]!.exerciseGroup || null;
     }
-    console.log(this.week);
+
+    // Grupo de logs do escolhido:
+
+    console.log('-----ˆˆˆ-----');
+    console.log('O que foi escolhido: Index ' + this.workoutParam + ' da lista => ', this.week);
+    console.log('Dia: ', this.week[this.workoutParam]!.day);
+    console.log('Nome curto: ', this.week[this.workoutParam]!.shortName);
+    console.log('Nome publico: ', this.week[this.workoutParam]!.exerciseGroup?.publicName);
+    console.log('-----###-----');
     this.createSanitizeUrls();
     return;
   }

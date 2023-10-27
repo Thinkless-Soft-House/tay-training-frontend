@@ -4,22 +4,37 @@
     <img src="assets/logo.png" class="logo" alt="Logo Tay Training" />
   </div>
   <div class="goback-content">
-    <div class="back-card" mat-ripple (click)="goBackWeek()">
-      <mat-icon>chevron_left</mat-icon>
-      <span class="info">Semanas</span>
-    </div>
     <div class="back-card" mat-ripple (click)="goBackWorkout()">
       <mat-icon>chevron_left</mat-icon>
       <span class="info">Treinos</span>
     </div>
+    <div class="back-card" mat-ripple (click)="goBackWeek()">
+      <mat-icon>chevron_left</mat-icon>
+      <span class="info">Semanas</span>
+    </div>
   </div>
   <div class="header">
     <h3>{{ planner?.publicName }}</h3>
+    <h4>{{ workout?.publicName }}</h4>
     <div></div>
+    <div class="divider-header">
+      <div></div>
+      <mat-icon> fitness_center</mat-icon>
+      <div></div>
+    </div>
   </div>
 
   <!-- Cards Semana -->
   <ng-container *ngFor="let item of workout?.exerciseMethods; let i = index">
+    <div class="exercise-header">
+      <h2 class="exercise-title">
+        {{ i + 1 }}º
+        {{
+          item!.exerciseConfigurations!.length > 1 ? "Combinação" : "Exercício"
+        }}
+      </h2>
+    </div>
+
     <div class="combine-text" *ngIf="item!.exerciseConfigurations!.length > 1">
       <p class="combine-title">Exercicio Combinado</p>
       <p>Alterne entre esses exercicios</p>
@@ -30,6 +45,7 @@
     <swiper-container
       class="slider"
       pagination="true"
+      navigation="true"
       slides-per-view="auto"
       space-between="10"
       pagination-clickable="true"
@@ -46,11 +62,11 @@
           </div>
           <div class="slide-body">
             <div class="slide-info">
-              <p class="reps">
-                <strong>Repetições:</strong> {{ exerciseConfig.reps }}
-              </p>
               <p class="serie">
                 <strong>Series:</strong> {{ exerciseConfig.series }}
+              </p>
+              <p class="reps">
+                <strong>Repetições:</strong> {{ exerciseConfig.reps }}
               </p>
               <p class="rest"><strong>Descanso:</strong> {{ item.rest }}</p>
             </div>
@@ -130,6 +146,8 @@
         </div>
       </div>
     </div>
+
+    <hr class="divider" />
   </ng-container>
   <!--
   <div class="cards">

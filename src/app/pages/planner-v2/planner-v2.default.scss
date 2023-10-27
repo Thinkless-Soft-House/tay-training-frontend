@@ -4,7 +4,7 @@
   $color: functions.get-theme-color("primary", "main");
   background-color: rgba($color, 0.025);
   height: 100%; // Aplicando 20% de opacidade
-  min-height: 100vh;
+  // min-height: 100vh;
 }
 
 #planner-v2 {
