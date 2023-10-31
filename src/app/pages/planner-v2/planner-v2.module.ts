@@ -16,6 +16,7 @@ import {
   VideoDialogComponent,
   WorkoutComponent,
 } from './workout/workout.component';
+import { PdfViewerComponent } from '../planner/pdf-viewer/pdf-viewer.component';
 
 @NgModule({
   declarations: [

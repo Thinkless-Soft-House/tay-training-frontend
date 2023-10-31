@@ -33,6 +33,10 @@ export class PlannerV2Component implements OnInit, OnDestroy {
     this.router.navigate([`/planner-v2/${slug}/semana/${number}`]);
   }
 
+  openPdf() {
+    this.router.navigateByUrl('/planner-v2/pdf');
+  }
+
   ngOnDestroy(): void {
     document.body.classList.remove('theme-alternate');
   }

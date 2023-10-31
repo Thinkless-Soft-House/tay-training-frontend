@@ -12,7 +12,7 @@ import { PdfViewerComponent } from './pdf-viewer/pdf-viewer.component';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 
 @NgModule({
-  declarations: [PlannerComponent, PdfViewerComponent],
+  declarations: [PlannerComponent],
   imports: [
     CommonModule,
     PlannerRoutingModule,

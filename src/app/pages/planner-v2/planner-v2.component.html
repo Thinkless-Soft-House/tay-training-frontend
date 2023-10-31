@@ -37,4 +37,10 @@
       <mat-icon>arrow_forward</mat-icon>
     </div>
   </div>
+
+  <div class="offline" *ngIf="planner?.pdfPath">
+    <button mat-raised-button color="primary" (click)="openPdf()">
+      Abrir PDF
+    </button>
+  </div>
 </section>

@@ -4,9 +4,11 @@ import { PlannerV2Component } from './planner-v2.component';
 import { WeekComponent } from './week/week.component';
 import { WorkoutComponent } from './workout/workout.component';
 import { ExerciseComponent } from './exercise/exercise.component';
+import { PdfViewerComponent } from '../planner/pdf-viewer/pdf-viewer.component';
 
 const routes: Routes = [
   { path: ':slug', component: PlannerV2Component },
+  { path: ':slug/pdf', component: PdfViewerComponent },
   { path: ':slug/semana/:week', component: WeekComponent },
   { path: ':slug/semana/:week/treino/:workout', component: WorkoutComponent },
   {

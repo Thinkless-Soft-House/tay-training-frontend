@@ -50,9 +50,10 @@
         opacity: 0.5;
       }
 
-      mat-icon {
+      img {
         margin: 0 10px;
-        color: var(--primary-color);
+        height: 40px;
+        width: auto;
       }
     }
   }
