@@ -94,14 +94,14 @@ export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!this.planner) return;
 
     this.week = this.pickDaysOfWeek(+this.weekParam!);
-    this.week.forEach((day) => {
-      // Lista de logs importantes da semana
+    // this.week.forEach((day) => {
+    //   // Lista de logs importantes da semana
 
-      console.log('Dia: ', day?.day);
-      console.log('Nome curto: ', day?.shortName);
-      console.log('Nome publico: ', day?.exerciseGroup?.publicName);
-      console.log('-----###-----');
-    });
+    //   console.log('Dia: ', day?.day);
+    //   console.log('Nome curto: ', day?.shortName);
+    //   console.log('Nome publico: ', day?.exerciseGroup?.publicName);
+    //   console.log('-----###-----');
+    // });
     if (
       this.week[this.workoutParam] === undefined ||
       !this.week[this.workoutParam]?.exerciseGroup
@@ -113,12 +113,12 @@ export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Grupo de logs do escolhido:
 
-    console.log('-----ˆˆˆ-----');
-    console.log('O que foi escolhido: Index ' + this.workoutParam + ' da lista => ', this.week);
-    console.log('Dia: ', this.week[this.workoutParam]!.day);
-    console.log('Nome curto: ', this.week[this.workoutParam]!.shortName);
-    console.log('Nome publico: ', this.week[this.workoutParam]!.exerciseGroup?.publicName);
-    console.log('-----###-----');
+    // console.log('-----ˆˆˆ-----');
+    // console.log('O que foi escolhido: Index ' + this.workoutParam + ' da lista => ', this.week);
+    // console.log('Dia: ', this.week[this.workoutParam]!.day);
+    // console.log('Nome curto: ', this.week[this.workoutParam]!.shortName);
+    // console.log('Nome publico: ', this.week[this.workoutParam]!.exerciseGroup?.publicName);
+    // console.log('-----###-----');
     this.createSanitizeUrls();
     return;
   }

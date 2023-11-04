@@ -39,12 +39,13 @@ export class PdfViewerComponent implements OnInit {
     });
     console.log(file);
     this.fileUrl = URL.createObjectURL(file);
-    console.log(this.fileUrl);
+    // console.log(this.fileUrl);
 
     this.load = true;
   }
 
   back() {
-    this.router.navigate(['planner', this.slug]);
+    // console.log('back', this.router.url);
+    this.router.navigateByUrl(this.router.url.replace('/pdf', ''));
   }
 }

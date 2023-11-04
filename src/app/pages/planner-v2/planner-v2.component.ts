@@ -24,6 +24,7 @@ export class PlannerV2Component implements OnInit, OnDestroy {
     ]);
 
     this.planner = res.data[0];
+    console.log('pdf path', this.planner.pdfPath);
     if (!this.planner) return;
   }
 
@@ -34,7 +35,9 @@ export class PlannerV2Component implements OnInit, OnDestroy {
   }
 
   openPdf() {
-    this.router.navigateByUrl('/planner-v2/pdf');
+    console.log('open pdf');
+    const slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
+    this.router.navigateByUrl(`/planner-v2/${slug}/pdf`);
   }
 
   ngOnDestroy(): void {

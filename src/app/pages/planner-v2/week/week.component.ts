@@ -47,14 +47,14 @@ export class WeekComponent implements OnInit, OnDestroy {
     if (!this.planner) return;
 
     this.week = this.pickDaysOfWeek(+this.weekParam!);
-    this.week.forEach((day) => {
-      // Lista de logs importantes da semana
+    // this.week.forEach((day) => {
+    //   // Lista de logs importantes da semana
 
-      console.log('Dia: ', day?.day);
-      console.log('Nome curto: ', day?.shortName);
-      console.log('Nome publico: ', day?.exerciseGroup?.publicName);
-      console.log('-----###-----');
-    });
+    //   console.log('Dia: ', day?.day);
+    //   console.log('Nome curto: ', day?.shortName);
+    //   console.log('Nome publico: ', day?.exerciseGroup?.publicName);
+    //   console.log('-----###-----');
+    // });
     return;
   }
 
