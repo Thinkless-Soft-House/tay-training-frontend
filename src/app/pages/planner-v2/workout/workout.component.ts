@@ -71,14 +71,14 @@ export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
       +this.weekParam < 1 ||
       +this.weekParam > 4
     ) {
-      this.router.navigate([`/planner-v2/${slug}`]);
+      this.router.navigate([`/planner/${slug}`]);
     }
     if (
       this.workoutParam === undefined ||
       this.workoutParam === null ||
       isNaN(+this.workoutParam)
     ) {
-      this.router.navigate([`/planner-v2/${slug}`]);
+      this.router.navigate([`/planner/${slug}`]);
     }
     const res = await this.workoutsService.getByFilter({ slug }, [
       'trainingDays',
@@ -106,7 +106,7 @@ export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
       this.week[this.workoutParam] === undefined ||
       !this.week[this.workoutParam]?.exerciseGroup
     ) {
-      this.router.navigate([`/planner-v2/${slug}`]);
+      this.router.navigate([`/planner/${slug}`]);
     } else {
       this.workout = this.week[this.workoutParam]!.exerciseGroup || null;
     }
@@ -211,17 +211,17 @@ export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
     const slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
     const week = this.activatedRoute.snapshot.paramMap.get('week');
     this.router.navigate([
-      `/planner-v2/${slug}/semana/${week}/treino/${this.workoutParam}/exercicio/${exercise}`,
+      `/planner/${slug}/semana/${week}/treino/${this.workoutParam}/exercicio/${exercise}`,
     ]);
   }
   goBackWeek() {
     const slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
-    this.router.navigate([`/planner-v2/${slug}`]);
+    this.router.navigate([`/planner/${slug}`]);
   }
   goBackWorkout() {
     const slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
     const week = this.activatedRoute.snapshot.paramMap.get('week');
-    this.router.navigate([`/planner-v2/${slug}/semana/${week}`]);
+    this.router.navigate([`/planner/${slug}/semana/${week}`]);
   }
 
   ngOnDestroy(): void {

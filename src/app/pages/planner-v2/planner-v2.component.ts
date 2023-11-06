@@ -31,13 +31,13 @@ export class PlannerV2Component implements OnInit, OnDestroy {
   goToWeek(number: number) {
     console.log(number);
     const slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
-    this.router.navigate([`/planner-v2/${slug}/semana/${number}`]);
+    this.router.navigate([`/planner/${slug}/semana/${number}`]);
   }
 
   openPdf() {
     console.log('open pdf');
     const slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
-    this.router.navigateByUrl(`/planner-v2/${slug}/pdf`);
+    this.router.navigateByUrl(`/planner/${slug}/pdf`);
   }
 
   ngOnDestroy(): void {

@@ -49,12 +49,12 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'planner',
+    path: 'planner-v1',
     loadChildren: () =>
       import('./pages/planner/planner.module').then((m) => m.PlannerModule),
   },
   {
-    path: 'planner-v2',
+    path: 'planner',
     loadChildren: () =>
       import('./pages/planner-v2/planner-v2.module').then(
         (m) => m.PlannerV2Module

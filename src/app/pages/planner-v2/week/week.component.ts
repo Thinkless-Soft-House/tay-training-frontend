@@ -107,12 +107,12 @@ export class WeekComponent implements OnInit, OnDestroy {
     const week = this.activatedRoute.snapshot.paramMap.get('week');
     console.log(workout);
     this.router.navigate([
-      `/planner-v2/${slug}/semana/${week}/treino/${workout}`,
+      `/planner/${slug}/semana/${week}/treino/${workout}`,
     ]);
   }
   goBack() {
     const slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
-    this.router.navigate([`/planner-v2/${slug}`]);
+    this.router.navigate([`/planner/${slug}`]);
   }
 
   ngOnDestroy(): void {
