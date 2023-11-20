@@ -172,11 +172,16 @@ export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
   createSanitizeUrls() {
     this.workout!.exerciseMethods!.forEach((method) => {
       method.exerciseConfigurations!.forEach((config) => {
-        const videoId = config!.exercise!.videoUrl!.split('/').pop();
+        console.log('video url => ', config!.exercise!.videoUrl);
+        const videoId = config!
+          .exercise!.videoUrl!.split('/')
+          .pop()
+          ?.split('?')[0];
 
         this.howToUrls.push({
           id: config!.id!,
-          miniature: `https://img.youtube.com/vi/${videoId}/0.jpg`,
+          // miniature: `https://img.youtube.com/vi//0.jpg`,
+          miniature: `http://i3.ytimg.com/vi/${videoId}/hqdefault.jpg`,
           originalUrl: config!.exercise!.videoUrl!,
           url: this.sanitizer.bypassSecurityTrustResourceUrl(
             config!.exercise!.videoUrl!

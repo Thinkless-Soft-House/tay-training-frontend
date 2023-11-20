@@ -19,7 +19,7 @@
     <div></div>
     <div class="divider-header">
       <div></div>
-      <img src="../../../../assets/logo-only.png" alt="Logo">
+      <img src="../../../../assets/logo-only.png" alt="Logo" />
       <div></div>
     </div>
   </div>
@@ -38,6 +38,7 @@
     <div class="combine-text" *ngIf="item!.exerciseConfigurations!.length > 1">
       <p class="combine-title">Exercicio Combinado</p>
       <p>Alterne entre esses exercicios</p>
+
       <p class="obs" *ngIf="item.observations">
         <strong>Observações:</strong> {{ item.observations || "" }}
       </p>
@@ -64,6 +65,9 @@
             <div class="slide-info">
               <p class="serie">
                 <strong>Series:</strong> {{ exerciseConfig.series }}
+              </p>
+              <p class="serie">
+                <strong>Método:</strong> {{ exerciseConfig.method?.name }}
               </p>
               <p class="reps">
                 <strong>Repetições:</strong> {{ exerciseConfig.reps }}
