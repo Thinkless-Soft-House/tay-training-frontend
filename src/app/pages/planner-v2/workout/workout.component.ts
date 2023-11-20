@@ -45,6 +45,7 @@ export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
     iframeLoaded: number;
   }[] = [];
 
+  isLancamento = false;
   constructor(
     private workoutsService: WorkoutsService,
     private activatedRoute: ActivatedRoute,
@@ -55,9 +56,16 @@ export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     register();
+    console.log('after view init');
+    this.isLancamento =
+      this.activatedRoute.snapshot.queryParamMap.get('lancamento') === 'true';
   }
 
   async ngOnInit() {
+    this.activatedRoute.queryParams.subscribe((params) => {
+      this.isLancamento = params['lancamento'] === 'true';
+      console.log('lancamento => ', this.isLancamento);
+    });
     document.body.classList.add('theme-alternate');
 
     const slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
