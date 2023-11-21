@@ -8,10 +8,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
-import { CpfValidatorDirective } from './core/shared/directives/cpf-validator.directive';
-import { ExercisesComponent } from './pages/exercises/exercises.component';
 import { ExamplePdfViewerComponent } from './example-pdf-viewer/example-pdf-viewer.component';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [AppComponent, ExamplePdfViewerComponent],
@@ -24,6 +23,7 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     ComponentsModule,
     HttpClientModule,
     NgxExtendedPdfViewerModule,
+    FormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

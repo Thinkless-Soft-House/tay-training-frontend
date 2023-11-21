@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { LoadingService } from './services/loading.service';
 
 @Component({
@@ -48,24 +48,36 @@ export class AppComponent {
   };
 
   showSideBar = false;
+  showPasswordScreen = false;
+  passwordInput = '';
+  passwordValidated = false;
+
   headerTitle = 'Meu aplicativo';
   atualRoute = '/';
 
-  version = '2.0.2';
-  constructor(private router: Router, private loadingService: LoadingService) {
+  version = '2.1.0-lancamento';
+  constructor(
+    private router: Router,
+    private actRoute: ActivatedRoute,
+    private loadingService: LoadingService
+  ) {
     this.monitoreRouteChanges();
     console.log('Init app =>', this.version);
 
-    console.log('Aplicativo iniciado')
+    console.log('Aplicativo iniciado');
+
   }
 
   monitoreRouteChanges() {
     this.router.events.subscribe((val) => {
       if (val instanceof NavigationEnd) {
-        console.log('Mudou de rota')
         this.loadingService.deactiveLoading();
 
         this.atualRoute = val.url;
+        this.showPasswordScreen = this.definePasswordScreen();
+        this.checkValidatedPassword();
+        console.log('Atual route => ', this.atualRoute);
+        console.log('Show password screen => ', this.showPasswordScreen);
 
         this.showSideBar =
           this.routesWithSideBar
@@ -76,6 +88,57 @@ export class AppComponent {
         this.headerTitle = this.getHeaderTitle(val.url);
       }
     });
+  }
+
+  validatePassword() {
+    let password: any = '123';
+    const cleanRoute = this.atualRoute.split('?')[0];
+    if (
+      cleanRoute.includes('planner') &&
+      cleanRoute.includes('87-desafio-empina-e-trinca-l18') &&
+      cleanRoute.includes('/treino/1')
+    ) {
+      password = 'PERNOCAS';
+    }
+    if (
+      cleanRoute.includes('planner') &&
+      cleanRoute.includes('87-desafio-empina-e-trinca-l18') &&
+      cleanRoute.includes('/treino/2')
+    ) {
+      password = 'TRINCADA';
+    }
+    if (
+      cleanRoute.includes('planner') &&
+      cleanRoute.includes('87-desafio-empina-e-trinca-l18') &&
+      cleanRoute.includes('/treino/3')
+    ) {
+      password = 'BUMBUM';
+    }
+
+    console.log('Password => ', password);
+    this.passwordValidated = this.passwordInput === password;
+
+    if (this.passwordValidated) {
+      const objValidated = {
+        passwordValidated: true,
+        date: new Date().toISOString(),
+        url: this.atualRoute,
+      };
+      localStorage.setItem(
+        `passwordValidated_${this.atualRoute}`,
+        JSON.stringify(objValidated)
+      );
+    }
+  }
+
+  private checkValidatedPassword() {
+    const objValidated = JSON.parse(
+      localStorage.getItem(`passwordValidated_${this.atualRoute}`)!
+    );
+    console.log('Obj validated => ', objValidated);
+    if (objValidated && objValidated.passwordValidated) {
+      this.passwordValidated = true;
+    }
   }
 
   private getHeaderTitle(url: string) {
@@ -103,6 +166,15 @@ export class AppComponent {
     } else {
       return 'Meu App';
     }
+  }
+
+  private definePasswordScreen() {
+    const qParamPassword = this.actRoute.snapshot.queryParamMap.get('password');
+    if (qParamPassword === 'not') {
+      return false;
+    }
+    const isPlanner = this.atualRoute.includes('planner');
+    return isPlanner;
   }
 
   goToProfile() {

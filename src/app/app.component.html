@@ -1,5 +1,23 @@
 <ng-container *ngIf="!showSideBar">
-  <router-outlet></router-outlet>
+  <main>
+    <div class="password" *ngIf="showPasswordScreen && !passwordValidated">
+      <div class="password-form">
+        <mat-form-field>
+          <mat-label>Senha do treino</mat-label>
+          <input matInput [(ngModel)]="passwordInput" />
+        </mat-form-field>
+        <button
+          mat-raised-button
+          color="primary"
+          class="password-button"
+          (click)="validatePassword()"
+        >
+          Abrir treino
+        </button>
+      </div>
+    </div>
+    <router-outlet></router-outlet>
+  </main>
 </ng-container>
 <ng-container *ngIf="showSideBar">
   <main>
