@@ -65,7 +65,6 @@ export class AppComponent {
     console.log('Init app =>', this.version);
 
     console.log('Aplicativo iniciado');
-
   }
 
   monitoreRouteChanges() {
@@ -95,22 +94,19 @@ export class AppComponent {
     const cleanRoute = this.atualRoute.split('?')[0];
     if (
       cleanRoute.includes('planner') &&
-      cleanRoute.includes('87-desafio-empina-e-trinca-l18') &&
-      cleanRoute.includes('/treino/1')
+      cleanRoute.includes('87-desafio-empina-e-trinca-l18')
     ) {
       password = 'PERNOCAS';
     }
     if (
       cleanRoute.includes('planner') &&
-      cleanRoute.includes('87-desafio-empina-e-trinca-l18') &&
-      cleanRoute.includes('/treino/2')
+      cleanRoute.includes('88-treino-2-l18')
     ) {
       password = 'TRINCADA';
     }
     if (
       cleanRoute.includes('planner') &&
-      cleanRoute.includes('87-desafio-empina-e-trinca-l18') &&
-      cleanRoute.includes('/treino/3')
+      cleanRoute.includes('89-desafio-empina-e-trinca-l18-gluteo')
     ) {
       password = 'BUMBUM';
     }
