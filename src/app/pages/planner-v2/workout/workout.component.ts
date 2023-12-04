@@ -188,8 +188,8 @@ export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
 
         this.howToUrls.push({
           id: config!.id!,
-          // miniature: `https://img.youtube.com/vi//0.jpg`,
-          miniature: `http://i3.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+          miniature: `https://img.youtube.com/vi/${videoId}/0.jpg`,
+          // miniature: `http://i3.ytimg.com/vi/${videoId}/hqdefault.jpg`,
           originalUrl: config!.exercise!.videoUrl!,
           url: this.sanitizer.bypassSecurityTrustResourceUrl(
             config!.exercise!.videoUrl!
