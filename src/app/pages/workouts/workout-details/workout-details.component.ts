@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ControlInput } from 'src/app/core/classes/control.class';
+import { ControlInput } from 'src/app/core/classes/Control.class';
 import { ExerciseSetService } from 'src/app/services/exercise-set.service';
 import { ExercisesService } from 'src/app/services/exercises.service';
 import { LoadingService } from 'src/app/services/loading.service';

@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ControlInput } from 'src/app/core/classes/control.class';
+import { ControlInput } from 'src/app/core/classes/Control.class';
 import { LoadingService } from 'src/app/services/loading.service';
 import { MethodsService } from 'src/app/services/methods.service';
 import { UtilsService } from 'src/app/services/utils.service';

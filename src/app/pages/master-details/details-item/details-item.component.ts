@@ -3,7 +3,7 @@ import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { setDefaultOptions } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { ControlInput } from 'src/app/core/classes/control.class';
+import { ControlInput } from 'src/app/core/classes/Control.class';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingService } from 'src/app/services/loading.service';
 

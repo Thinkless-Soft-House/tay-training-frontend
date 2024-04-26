@@ -3,7 +3,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { Injectable } from '@angular/core';
 import { PaginationConfig } from '../core/interfaces/pagination.interface';
 import { NgForm } from '@angular/forms';
-import { ControlInput } from '../core/classes/control.class';
+import { ControlInput } from '../core/classes/Control.class';
 
 @Injectable({
   providedIn: 'root',

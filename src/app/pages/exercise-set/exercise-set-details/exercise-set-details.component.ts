@@ -11,7 +11,7 @@ import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ControlInput } from 'src/app/core/classes/control.class';
+import { ControlInput } from 'src/app/core/classes/Control.class';
 import { LoadingService } from 'src/app/services/loading.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { ExerciseSetService } from 'src/app/services/exercise-set.service';
