@@ -24,6 +24,8 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog';
 
+
+
 @Component({
   selector: 'app-workout',
   templateUrl: './workout.component.html',
