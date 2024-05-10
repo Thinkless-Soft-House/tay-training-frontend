@@ -27,6 +27,13 @@
     }
   }
 
+  .lancamento-content {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+  }
+
   .header {
     h4 {
       margin: 0;

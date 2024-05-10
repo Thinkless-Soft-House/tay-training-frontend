@@ -30,6 +30,7 @@ import {
   styleUrls: ['../planner-v2.default.scss', './workout.component.scss'],
 })
 export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
+  slug = '';
   planner: TrainingSheet | null = null;
   week: (TrainingDay | null)[] = [];
   workout: ExerciseSet | null = null;
@@ -46,6 +47,15 @@ export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
   }[] = [];
 
   isLancamento = false;
+
+  hardcodedWorkoutsLancamento = [
+    '91-desafio-turbina-resultados-treino-de-superiores',
+  ];
+  hardcodedVideo: any = {
+    '91-desafio-turbina-resultados-treino-de-superiores':
+      'https://www.youtube.com/watch?v=CdYG9rL3cyY',
+  };
+
   constructor(
     private workoutsService: WorkoutsService,
     private activatedRoute: ActivatedRoute,
@@ -56,9 +66,9 @@ export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     register();
-    console.log('after view init');
-    this.isLancamento =
-      this.activatedRoute.snapshot.queryParamMap.get('lancamento') === 'true';
+    // console.log('after view init');
+    // this.isLancamento =
+    //   this.activatedRoute.snapshot.queryParamMap.get('lancamento') === 'true';
   }
 
   async ngOnInit() {
@@ -88,6 +98,13 @@ export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
     ) {
       this.router.navigate([`/planner/${slug}`]);
     }
+
+    this.slug = slug;
+    if (this.hardcodedWorkoutsLancamento.includes(slug)) {
+      this.isLancamento = true;
+    } else {
+    }
+
     const res = await this.workoutsService.getByFilter({ slug }, [
       'trainingDays',
       'trainingDays.exerciseGroup',

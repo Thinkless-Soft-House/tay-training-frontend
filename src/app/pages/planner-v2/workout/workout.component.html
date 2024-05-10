@@ -13,6 +13,16 @@
       <span class="info">Semanas</span>
     </div>
   </div>
+  <div class="lancamento-content" *ngIf="isLancamento">
+    <a
+      *ngIf="hardcodedVideo[slug]"
+      mat-raised-button
+      [href]="hardcodedVideo[slug]"
+      color="primary"
+      target="_blank"
+      >Treino em vídeo</a
+    >
+  </div>
   <div class="header">
     <h3>{{ planner?.publicName }}</h3>
     <h4>{{ workout?.publicName }}</h4>
