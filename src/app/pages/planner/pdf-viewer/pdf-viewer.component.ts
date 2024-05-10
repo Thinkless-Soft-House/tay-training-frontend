@@ -46,6 +46,11 @@ export class PdfViewerComponent implements OnInit {
 
   back() {
     // console.log('back', this.router.url);
-    this.router.navigateByUrl(this.router.url.replace('/pdf', ''));
+    if (this.slug !== '91-desafio-turbina-resultados-treino-de-superiores')
+      this.router.navigateByUrl(this.router.url.replace('/pdf', ''));
+    else
+      this.router.navigateByUrl(
+        this.router.url.replace('/pdf', '/semana/1/treino/0')
+      );
   }
 }

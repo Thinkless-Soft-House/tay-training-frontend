@@ -254,6 +254,12 @@ export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
     this.router.navigate([`/planner/${slug}/semana/${week}`]);
   }
 
+  openPdf() {
+    console.log('open pdf');
+    const slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
+    this.router.navigateByUrl(`/planner/${slug}/pdf`);
+  }
+
   ngOnDestroy(): void {
     document.body.classList.remove('theme-alternate');
   }
