@@ -116,6 +116,7 @@ export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
     ]);
 
     this.planner = res.data[0];
+    console.log('planner => ', this.planner);
     if (!this.planner) return;
 
     this.week = this.pickDaysOfWeek(+this.weekParam!);
@@ -196,6 +197,7 @@ export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
 
   createSanitizeUrls() {
     this.workout!.exerciseMethods!.forEach((method) => {
+      console.log('method => ', method);
       method.exerciseConfigurations!.forEach((config) => {
         console.log('video url => ', config!.exercise!.videoUrl);
         const videoId = config!

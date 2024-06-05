@@ -259,6 +259,8 @@ export class ExerciseSetDetailsComponent {
             'exerciseMethods.exerciseConfigurations',
           ]);
 
+          console.log('exerciseGroup', exerciseGroup);
+
         // console.log('exerciseGroup', exerciseGroup);
 
         // console.log('formRef', this.formRef);
