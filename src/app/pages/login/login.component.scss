@@ -1,34 +1,46 @@
 @use "src/functions.scss" as functions;
+* {
+  box-sizing: border-box;
+}
 
-main {
+div.login {
+  width: min(90vw, 500px);
+  min-height: 100vh;
+  overflow-x: hidden;
+
+  padding: 1em;
+
   @include functions.flexbox($flex-direction: column);
 
-  .header {
-    @include functions.flexbox($justify-content: center, $flex-direction: column);
-    margin: 1em 0 1em 0;
-
-    text-align: center;
-  }
-
   .form-modal {
-    @include functions.flexbox($flex-direction: column);
+    width: min(90%, 500px);
+    min-height: 250px;
     padding: 1em;
+    background-color: functions.adjust-color(
+      functions.get-theme-background(),
+      "l",
+      10%
+    );
 
-    width: clamp(300px, 50%, 500px);
-    min-height: 100px;
-
-    background-color: functions.adjust-color(functions.get-theme-background(), 'l', 10%);
-
-    .img-logo {
-      width: 100%;
-      height: 100px;
-      object-fit: contain;
-    }
+    @include functions.flexbox($flex-direction: column);
 
     & > * {
       width: 100%;
     }
+
+    .img-logo {
+      width: 150px;
+      height: auto;
+    }
+
+    .header {
+      @include functions.flexbox(
+        $justify-content: center,
+        $flex-direction: column
+      );
+      margin: 1em 0 1em 0;
+
+      text-align: center;
+    }
   }
 }
-
-

@@ -1,28 +1,14 @@
-import {
-  AfterViewInit,
-  Component,
-  Inject,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+// workout.component.ts
+import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { WorkoutsService } from 'src/app/services/workouts.service';
 import {
-  TrainingSheet,
-  TrainingDay,
-} from '../../workouts/workout-details/workout-details.component';
-import {
-  Exercise,
-  ExerciseConfiguration,
-  ExerciseSet,
-} from '../../exercise-set/exercise-set-details/exercise-set-details.component';
+  WorkoutsService,
+  WorkoutDetail,
+  ExerciseMethod,
+} from 'src/app/services/workouts.service';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { register } from 'swiper/element/bundle';
-import {
-  MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogRef,
-} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-workout',
@@ -31,11 +17,12 @@ import {
 })
 export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
   slug = '';
-  planner: TrainingSheet | null = null;
-  week: (TrainingDay | null)[] = [];
-  workout: ExerciseSet | null = null;
+  planner: WorkoutDetail | null = null;
+  workout: ExerciseMethod[] = [];
   weekParam = 0;
   workoutParam = 0;
+
+  isLancamento = false;
 
   howToUrls: {
     id: number;
@@ -45,16 +32,6 @@ export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
     showIframe: boolean;
     iframeLoaded: number;
   }[] = [];
-
-  isLancamento = false;
-
-  hardcodedWorkoutsLancamento = [
-    '91-desafio-turbina-resultados-treino-de-superiores',
-  ];
-  hardcodedVideo: any = {
-    '91-desafio-turbina-resultados-treino-de-superiores':
-      'https://www.youtube.com/watch?v=CdYG9rL3cyY',
-  };
 
   constructor(
     private workoutsService: WorkoutsService,
@@ -83,150 +60,62 @@ export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
     this.workoutParam = +this.activatedRoute.snapshot.paramMap.get('workout')!;
 
     if (
-      this.weekParam === undefined ||
-      this.weekParam === null ||
-      isNaN(+this.weekParam) ||
-      +this.weekParam < 1 ||
-      +this.weekParam > 4
+      isNaN(this.weekParam) ||
+      this.weekParam < 1 ||
+      this.weekParam > 4 ||
+      isNaN(this.workoutParam)
     ) {
       this.router.navigate([`/planner/${slug}`]);
-    }
-    if (
-      this.workoutParam === undefined ||
-      this.workoutParam === null ||
-      isNaN(+this.workoutParam)
-    ) {
-      this.router.navigate([`/planner/${slug}`]);
+      return;
     }
 
     this.slug = slug;
-    if (this.hardcodedWorkoutsLancamento.includes(slug)) {
-      this.isLancamento = true;
-    } else {
-    }
 
-    const res = await this.workoutsService.getByFilter({ slug }, [
-      'trainingDays',
-      'trainingDays.exerciseGroup',
-      'trainingDays.exerciseGroup.category',
-      'trainingDays.exerciseGroup.exerciseMethods',
-      'trainingDays.exerciseGroup.exerciseMethods.exerciseConfigurations',
-      'trainingDays.exerciseGroup.exerciseMethods.exerciseConfigurations.exercise',
-      'trainingDays.exerciseGroup.exerciseMethods.exerciseConfigurations.method',
-    ]);
+    try {
+      const res = await this.workoutsService.getWorkoutDetail(
+        slug,
+        this.weekParam,
+        this.workoutParam
+      );
 
-    this.planner = res.data[0];
-    console.log('planner => ', this.planner);
-    if (!this.planner) return;
-
-    this.week = this.pickDaysOfWeek(+this.weekParam!);
-    // this.week.forEach((day) => {
-    //   // Lista de logs importantes da semana
-
-    //   console.log('Dia: ', day?.day);
-    //   console.log('Nome curto: ', day?.shortName);
-    //   console.log('Nome publico: ', day?.exerciseGroup?.publicName);
-    //   console.log('-----###-----');
-    // });
-    if (
-      this.week[this.workoutParam] === undefined ||
-      !this.week[this.workoutParam]?.exerciseGroup
-    ) {
-      this.router.navigate([`/planner/${slug}`]);
-    } else {
-      this.workout = this.week[this.workoutParam]!.exerciseGroup || null;
-    }
-
-    // Grupo de logs do escolhido:
-
-    // console.log('-----ˆˆˆ-----');
-    // console.log('O que foi escolhido: Index ' + this.workoutParam + ' da lista => ', this.week);
-    // console.log('Dia: ', this.week[this.workoutParam]!.day);
-    // console.log('Nome curto: ', this.week[this.workoutParam]!.shortName);
-    // console.log('Nome publico: ', this.week[this.workoutParam]!.exerciseGroup?.publicName);
-    // console.log('-----###-----');
-    this.createSanitizeUrls();
-    return;
-  }
-
-  pickDaysOfWeek(week: number) {
-    // Pegar os dias entre 1 e 28 do mês de acordo com a semana escolhida e preencher os dias faltantes valor = null
-    // 1 a 7: 1
-    // 8 a 14: 2
-    // 15 a 21: 3
-    // 22 a 28: 4
-
-    const days = [];
-    const start = week * 7 - 6;
-    const end = week * 7;
-    for (let i = start; i <= end; i++) {
-      const element = this.planner?.trainingDays.find((x) => x.day === i);
-      if (element) {
-        days.push(element);
-      } else {
-        days.push(null);
+      this.planner = res;
+      if (!this.planner) {
+        this.router.navigate([`/planner/${slug}`]);
+        return;
       }
+
+      this.workout = this.planner.workout.exerciseMethods;
+      this.createSanitizeUrls();
+    } catch (error) {
+      console.error('Error fetching workout detail:', error);
+      this.router.navigate([`/planner/${slug}`]);
     }
-    days.splice(0, 1);
-    return days;
-  }
-
-  getWeekDayName(index: number) {
-    switch (index) {
-      case 0:
-        return 'Segunda';
-      case 1:
-        return 'Terça';
-      case 2:
-        return 'Quarta';
-      case 3:
-        return 'Quinta';
-      case 4:
-        return 'Sexta';
-      case 5:
-        return 'Sábado';
-
-      default:
-        return '';
-    }
-  }
-
-  getWorkoutMultiName(ec: ExerciseConfiguration[]) {
-    return ec.map((e) => e!.exercise!.name).join(' + ');
   }
 
   createSanitizeUrls() {
-    this.workout!.exerciseMethods!.forEach((method) => {
-      console.log('method => ', method);
-      method.exerciseConfigurations!.forEach((config) => {
-        console.log('video url => ', config!.exercise!.videoUrl);
-        const videoId = config!
-          .exercise!.videoUrl!.split('/')
-          .pop()
-          ?.split('?')[0];
-
-        this.howToUrls.push({
-          id: config!.id!,
-          miniature: `https://img.youtube.com/vi/${videoId}/0.jpg`,
-          // miniature: `http://i3.ytimg.com/vi/${videoId}/hqdefault.jpg`,
-          originalUrl: config!.exercise!.videoUrl!,
-          url: this.sanitizer.bypassSecurityTrustResourceUrl(
-            config!.exercise!.videoUrl!
-          ),
-          showIframe: false,
-          iframeLoaded: 0,
-        });
+    this.workout.forEach((method) => {
+      method.exerciseConfigurations.forEach((config) => {
+        const videoUrl = config.exercise.videoUrl;
+        if (videoUrl) {
+          const videoId = videoUrl.split('/').pop()?.split('?')[0];
+          this.howToUrls.push({
+            id: config.id,
+            miniature: `https://img.youtube.com/vi/${videoId}/0.jpg`,
+            originalUrl: videoUrl,
+            url: this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl),
+            showIframe: false,
+            iframeLoaded: 0,
+          });
+        }
       });
     });
   }
 
   secIframeLink(id: number) {
-    const ret = this.howToUrls.find((url) => url.id === id)!;
-    return ret;
+    return this.howToUrls.find((url) => url.id === id)!;
   }
 
   openVideo(name: string, url: SafeResourceUrl) {
-    console.log(`Abrindo vídeo ${url}`);
     const ref = this.dialog.open(VideoDialogComponent, {
       data: { name, url },
       width: '90vw',
@@ -239,26 +128,19 @@ export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  goToExercise(exercise: number) {
-    const slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
-    const week = this.activatedRoute.snapshot.paramMap.get('week');
-    this.router.navigate([
-      `/planner/${slug}/semana/${week}/treino/${this.workoutParam}/exercicio/${exercise}`,
-    ]);
-  }
   goBackWeek() {
-    const slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
+    const slug = this.slug;
     this.router.navigate([`/planner/${slug}`]);
   }
+
   goBackWorkout() {
-    const slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
-    const week = this.activatedRoute.snapshot.paramMap.get('week');
+    const slug = this.slug;
+    const week = this.weekParam;
     this.router.navigate([`/planner/${slug}/semana/${week}`]);
   }
 
   openPdf() {
-    console.log('open pdf');
-    const slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
+    const slug = this.slug;
     this.router.navigateByUrl(`/planner/${slug}/pdf`);
   }
 

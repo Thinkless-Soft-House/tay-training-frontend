@@ -1,9 +1,11 @@
 <section id="planner-v2">
+  <!-- ola vei -->
+
   <!-- Header -->
   <div class="logo">
     <img src="assets/logo.png" class="logo" alt="Logo Tay Training" />
   </div>
-  <div class="goback-content" *ngIf="!isLancamento">
+  <div class="goback-content">
     <div class="back-card" mat-ripple (click)="goBackWorkout()">
       <mat-icon>chevron_left</mat-icon>
       <span class="info">Treinos</span>
@@ -13,22 +15,9 @@
       <span class="info">Semanas</span>
     </div>
   </div>
-  <div class="lancamento-content" *ngIf="isLancamento">
-    <a
-      *ngIf="hardcodedVideo[slug]"
-      mat-raised-button
-      [href]="hardcodedVideo[slug]"
-      color="primary"
-      target="_blank"
-      >Treino em vídeo</a
-    >
-    <button mat-raised-button color="primary" (click)="openPdf()">
-      Abrir PDF
-    </button>
-  </div>
   <div class="header">
     <h3>{{ planner?.publicName }}</h3>
-    <h4>{{ workout?.publicName }}</h4>
+    <h4>{{ planner?.workout?.publicName }}</h4>
     <div></div>
     <div class="divider-header">
       <div></div>
@@ -38,7 +27,7 @@
   </div>
 
   <!-- Cards Semana -->
-  <ng-container *ngFor="let item of workout?.exerciseMethods; let i = index">
+  <ng-container *ngFor="let item of workout; let i = index">
     <div class="exercise-header">
       <h2 class="exercise-title">
         {{ i + 1 }}º
@@ -166,43 +155,4 @@
 
     <hr class="divider" />
   </ng-container>
-  <!--
-  <div class="cards">
-    <div
-      class="card workout-card mat-elevation-z2"
-      *ngFor="let item of workout?.exerciseMethods; let i = index"
-      (click)="goToExercise(item.id!)"
-    >
-      <div class="card-content">
-        <div class="card-content">
-          <div class="card-icon">
-            <div class="card-icon-backdrop">
-              <mat-icon *ngIf="item!.exerciseConfigurations!.length === 1">
-                fitness_center
-              </mat-icon>
-              <mat-icon *ngIf="item.exerciseConfigurations!.length > 1">
-                link
-              </mat-icon>
-            </div>
-          </div>
-          <div class="card-field">
-            <h3 *ngIf="item!.exerciseConfigurations!.length === 1">
-              {{ i + 1 }}º Exercício
-            </h3>
-            <h3 *ngIf="item.exerciseConfigurations!.length > 1">
-              {{ i + 1 }}º Combinação
-            </h3>
-
-            <p *ngIf="item!.exerciseConfigurations!.length === 1">
-              {{ item!.exerciseConfigurations![0].exercise?.name }}
-            </p>
-            <p *ngIf="item.exerciseConfigurations!.length > 1">
-              {{ getWorkoutMultiName(item.exerciseConfigurations!) }}
-            </p>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </div>
---></section>
+</section>

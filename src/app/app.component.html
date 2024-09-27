@@ -21,8 +21,8 @@
 </ng-container>
 <ng-container *ngIf="showSideBar">
   <main>
-    <mat-drawer-container class="drawer-container" [hasBackdrop]="false">
-      <mat-drawer #drawer mode="side" opened>
+    <mat-drawer-container class="drawer-container">
+      <mat-drawer #drawer mode="over">
         <div class="side-menu">
           <app-side-menu [atualRoute]="atualRoute"> </app-side-menu>
         </div>

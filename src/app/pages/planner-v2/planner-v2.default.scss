@@ -1,10 +1,16 @@
 @use "../../../functions.scss" as functions;
 
+// main {
+//   background-color: rgba(247, 37, 133, 0.025);
+// }
+
 :host {
   $color: functions.get-theme-color("primary", "main");
   background-color: rgba($color, 0.025);
   height: 100%; // Aplicando 20% de opacidade
   // min-height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
 }
 
 #planner-v2 {

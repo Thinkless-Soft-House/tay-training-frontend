@@ -4,10 +4,10 @@
 @use "@angular/material" as mat;
 @use "src/styles.scss" as styles;
 
-// Theme Functions
-$theme: mat.get-color-config(styles.$activeTheme);
+// Variável privada (prefixada com hífen)
+$-theme: mat.get-color-config(styles.$activeTheme);
 
-// Color Functions
+// Funções Públicas
 
 @function get-theme-color($color, $type: "main") {
   $allowed-types: "main", "lighter", "darker", "200", "text", "lighter-contrast",
@@ -18,15 +18,14 @@ $theme: mat.get-color-config(styles.$activeTheme);
     $type: "main";
   }
 
-  @return map.get(map.get($theme, $color), $type);
+  @return map.get(map.get($-theme, $color), $type);
 }
 
 @function get-theme-background($type: "background") {
-  @return map.get(map.get($theme, "background"), $type);
+  @return map.get(map.get($-theme, "background"), $type);
 }
 
-// Common functions
-
+// Mixin Público
 @mixin flexbox(
   $justify-content: center,
   $align-items: center,
@@ -42,6 +41,7 @@ $theme: mat.get-color-config(styles.$activeTheme);
   }
 }
 
+// Função Pública
 @function adjust-color($color, $direction, $percentage) {
   $adjusted-color: $color;
 
@@ -56,6 +56,7 @@ $theme: mat.get-color-config(styles.$activeTheme);
   @return $adjusted-color;
 }
 
+// Função Pública
 @function yiq-color-contrast($background-color) {
   $r: red($background-color);
   $g: green($background-color);
@@ -70,6 +71,7 @@ $theme: mat.get-color-config(styles.$activeTheme);
   }
 }
 
+// Mixin Público
 @mixin get-elevator($value) {
   @include mat.elevation-transition();
   @include mat.elevation($value);

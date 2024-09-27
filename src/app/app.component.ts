@@ -55,7 +55,7 @@ export class AppComponent {
   headerTitle = 'Meu aplicativo';
   atualRoute = '/';
 
-  version = '2.1.0-lancamento';
+  version = '3.0.0';
   constructor(
     private router: Router,
     private actRoute: ActivatedRoute,

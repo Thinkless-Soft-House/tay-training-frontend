@@ -1,6 +1,7 @@
 import { Router } from '@angular/router';
 import { Component } from '@angular/core';
 import { MessengerService } from 'src/app/services/messenger.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 enum LoginType {
   LOGIN,
@@ -31,7 +32,8 @@ export class LoginComponent {
 
   constructor(
     private messangerService: MessengerService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   formChange(form: any) {
@@ -64,7 +66,7 @@ export class LoginComponent {
     }
   }
 
-  private submitSignIn() {
+  private async submitSignIn() {
     console.log(`sign in submit`);
 
     const data = {
@@ -72,12 +74,27 @@ export class LoginComponent {
       password: this.form.password,
     };
 
-    // console.log('my data', data);
+    console.log('my data', data);
 
     // Try Login
 
+    try {
+      const r = await this.authService.login(
+        this.form.email,
+        this.form.password
+      );
+      console.log('r', r);
+
+      this.router.navigate(['/']);
+    } catch (error) {
+      console.log('error', error);
+      this.messangerService.errorMessage({
+        message: (error as any).error.message || 'Erro no login',
+        action: 'Voltar',
+      });
+    }
     // if (success) {
-    this.router.navigate(['/']);
+
     // } else {
     //   this.messangerService.errorMessage({
     //     message: 'Email ou senha inválidos',
@@ -94,7 +111,7 @@ export class LoginComponent {
       fullName: this.form.fullName,
     };
 
-    // console.log('my data', data);
+    console.log('my data', data);
 
     // Try Sign Up
 

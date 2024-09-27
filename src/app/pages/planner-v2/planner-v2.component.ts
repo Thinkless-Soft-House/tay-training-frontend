@@ -19,11 +19,9 @@ export class PlannerV2Component implements OnInit, OnDestroy {
     document.body.classList.add('theme-alternate');
     const slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
 
-    const res = await this.workoutsService.getByFilter({ slug }, [
-      'trainingDays',
-    ]);
+    const res = await this.workoutsService.getPlannerHome(slug);
 
-    this.planner = res.data[0];
+    this.planner = res;
     console.log('pdf path', this.planner.pdfPath);
     if (!this.planner) return;
   }

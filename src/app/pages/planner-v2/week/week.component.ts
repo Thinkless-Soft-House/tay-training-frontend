@@ -1,11 +1,11 @@
+// week.component.ts
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { WorkoutsService } from 'src/app/services/workouts.service';
 import {
+  WorkoutsService,
+  WeekData,
   TrainingDay,
-  TrainingSheet,
-} from '../../workouts/workout-details/workout-details.component';
+} from 'src/app/services/workouts.service';
 
 @Component({
   selector: 'app-week',
@@ -13,16 +13,16 @@ import {
   styleUrls: ['../planner-v2.default.scss', './week.component.scss'],
 })
 export class WeekComponent implements OnInit, OnDestroy {
-  planner: TrainingSheet | null = null;
-  week: (TrainingDay | null)[] = [];
+  planner: WeekData | null = null;
+  weekDays: (TrainingDay | null)[] = [];
   weekParam = 0;
 
   constructor(
     private workoutsService: WorkoutsService,
     private activatedRoute: ActivatedRoute,
-    private sanitizer: DomSanitizer,
     private router: Router
   ) {}
+
   async ngOnInit() {
     document.body.classList.add('theme-alternate');
 
@@ -31,53 +31,29 @@ export class WeekComponent implements OnInit, OnDestroy {
     if (
       this.weekParam === undefined ||
       this.weekParam === null ||
-      isNaN(+this.weekParam) ||
-      +this.weekParam < 1 ||
-      +this.weekParam > 4
+      isNaN(this.weekParam) ||
+      this.weekParam < 1 ||
+      this.weekParam > 4
     ) {
       this.router.navigate([`/planner/${slug}`]);
+      return;
     }
-    const res = await this.workoutsService.getByFilter({ slug }, [
-      'trainingDays',
-      'trainingDays.exerciseGroup',
-      'trainingDays.exerciseGroup.category',
-    ]);
 
-    this.planner = res.data[0];
-    if (!this.planner) return;
-
-    this.week = this.pickDaysOfWeek(+this.weekParam!);
-    // this.week.forEach((day) => {
-    //   // Lista de logs importantes da semana
-
-    //   console.log('Dia: ', day?.day);
-    //   console.log('Nome curto: ', day?.shortName);
-    //   console.log('Nome publico: ', day?.exerciseGroup?.publicName);
-    //   console.log('-----###-----');
-    // });
-    return;
-  }
-
-  pickDaysOfWeek(week: number) {
-    // Pegar os dias entre 1 e 28 do mês de acordo com a semana escolhida e preencher os dias faltantes valor = null
-    // 1 a 7: 1
-    // 8 a 14: 2
-    // 15 a 21: 3
-    // 22 a 28: 4
-
-    const days = [];
-    const start = week * 7 - 6;
-    const end = week * 7;
-    for (let i = start; i <= end; i++) {
-      const element = this.planner?.trainingDays.find((x) => x.day === i);
-      if (element) {
-        days.push(element);
-      } else {
-        days.push(null);
+    try {
+      this.planner = await this.workoutsService.getWeekData(
+        slug,
+        this.weekParam
+      );
+      if (!this.planner) {
+        this.router.navigate([`/planner/${slug}`]);
+        return;
       }
+
+      this.weekDays = this.planner.weekDays;
+    } catch (error) {
+      console.error('Error fetching week data:', error);
+      this.router.navigate([`/planner/${slug}`]);
     }
-    days.splice(0, 1);
-    return days;
   }
 
   getWeekDayName(index: number) {
@@ -94,22 +70,18 @@ export class WeekComponent implements OnInit, OnDestroy {
         return 'Sexta';
       case 5:
         return 'Sábado';
-
       default:
         return '';
     }
   }
 
-  goToWorkout(workout: number) {
-    console.log(workout);
-    if (this.week[workout] === null) return;
+  goToWorkout(index: number) {
+    if (this.weekDays[index] === null) return;
     const slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
-    const week = this.activatedRoute.snapshot.paramMap.get('week');
-    console.log(workout);
-    this.router.navigate([
-      `/planner/${slug}/semana/${week}/treino/${workout}`,
-    ]);
+    const week = this.weekParam;
+    this.router.navigate([`/planner/${slug}/semana/${week}/treino/${index}`]);
   }
+
   goBack() {
     const slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
     this.router.navigate([`/planner/${slug}`]);

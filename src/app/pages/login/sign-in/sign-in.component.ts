@@ -4,10 +4,7 @@ import { NgForm } from '@angular/forms';
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
-  styleUrls: [
-    './../../../core/shared/scss/login-form-style.shared.scss',
-    './sign-in.component.scss',
-  ],
+  styleUrls: ['./sign-in.component.scss'],
 })
 export class SignInComponent {
   @Input() form: {

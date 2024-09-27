@@ -1,3 +1,4 @@
+<!-- week.component.html -->
 <section id="planner-v2">
   <!-- Header -->
   <div class="logo">
@@ -16,18 +17,17 @@
 
   <h3 class="about-table">
     <i>
-      Essa estrutura de treinos é uma sugestão de como organiza-los durante as
+      Essa estrutura de treinos é uma sugestão de como organizá-los durante as
       semanas.
     </i>
   </h3>
 
   <!-- Cards Semana -->
-
   <div class="cards">
     <div
       class="card week-card mat-elevation-z2"
       [class.disabled-dayoff]="item === null"
-      *ngFor="let item of week; let i = index"
+      *ngFor="let item of weekDays; let i = index"
       (click)="goToWorkout(i)"
     >
       <div class="card-content">
@@ -40,7 +40,7 @@
         <div class="card-field">
           <h3>{{ getWeekDayName(i) }}</h3>
           <p *ngIf="item !== null">
-            {{ item!.shortName || item.exerciseGroup?.publicName }}
+            {{ item.shortName || item.exerciseGroup?.publicName }}
           </p>
           <p *ngIf="item === null">Folga</p>
         </div>
