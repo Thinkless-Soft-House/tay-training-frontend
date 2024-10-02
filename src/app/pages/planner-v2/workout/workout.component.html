@@ -86,7 +86,7 @@
               "
             >
               <img
-                *ngIf="howToUrls.length > 0"
+                *ngIf="howToUrls.length > 0 && secIframeLink(exerciseConfig.id!)"
                 [src]="secIframeLink(exerciseConfig.id!).miniature"
                 alt=""
               />
@@ -139,7 +139,7 @@
             "
           >
             <img
-              *ngIf="howToUrls.length > 0"
+              *ngIf="howToUrls.length > 0 && secIframeLink(item.exerciseConfigurations![0].id!)"
               [src]="
                 secIframeLink(item.exerciseConfigurations![0].id!).miniature
               "
