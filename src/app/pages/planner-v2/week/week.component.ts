@@ -16,7 +16,7 @@ export class WeekComponent implements OnInit, OnDestroy {
   planner: WeekData | null = null;
   weekDays: (TrainingDay | null)[] = [];
   weekParam = 0;
-  
+
   // Estados de UI
   isLoading = true;
   hasError = false;
@@ -59,14 +59,14 @@ export class WeekComponent implements OnInit, OnDestroy {
         slug,
         this.weekParam
       );
-      
+
       if (!this.planner) {
         throw new Error('Dados do planner não encontrados');
       }
 
       // Validar se weekDays tem dados válidos (não apenas folgas)
       const hasValidData = this.validateWeekData(this.planner.weekDays);
-      
+
       if (!hasValidData && this.retryCount < this.maxRetries) {
         // Todos os dias são folga - possível problema de rede, tentar novamente
         console.warn(`Todos os dias retornaram como folga. Tentativa ${this.retryCount + 1}/${this.maxRetries}`);
@@ -78,7 +78,7 @@ export class WeekComponent implements OnInit, OnDestroy {
 
       this.weekDays = this.planner.weekDays;
       this.isLoading = false;
-      
+
       // Log para debug em produção
       if (!hasValidData) {
         console.warn('ALERTA: Semana carregada mas todos os dias são FOLGA', {
@@ -90,7 +90,7 @@ export class WeekComponent implements OnInit, OnDestroy {
       }
     } catch (error: any) {
       console.error('Erro ao carregar dados da semana:', error);
-      
+
       if (this.retryCount < this.maxRetries) {
         this.retryCount++;
         console.log(`Tentando novamente... (${this.retryCount}/${this.maxRetries})`);
@@ -98,7 +98,7 @@ export class WeekComponent implements OnInit, OnDestroy {
         await this.loadWeekData(slug);
         return;
       }
-      
+
       this.hasError = true;
       this.errorMessage = error?.message || 'Erro ao carregar os treinos. Verifique sua conexão.';
       this.isLoading = false;
