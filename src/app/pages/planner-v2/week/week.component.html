@@ -22,8 +22,25 @@
     </i>
   </h3>
 
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Carregando treinos...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="hasError && !isLoading" class="error-state">
+    <mat-icon class="error-icon">cloud_off</mat-icon>
+    <h4>Não foi possível carregar os treinos</h4>
+    <p>{{ errorMessage }}</p>
+    <button mat-raised-button color="primary" (click)="retryLoad()">
+      <mat-icon>refresh</mat-icon>
+      Tentar novamente
+    </button>
+  </div>
+
   <!-- Cards Semana -->
-  <div class="cards">
+  <div class="cards" *ngIf="!isLoading && !hasError">
     <div
       class="card week-card mat-elevation-z2"
       [class.disabled-dayoff]="item === null"
