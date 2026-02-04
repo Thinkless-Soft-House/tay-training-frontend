@@ -1,57 +1,7 @@
 @use "../../../../functions.scss" as functions;
 
 #planner-v2 {
-  // Loading State
-  .loading-state {
-    @include functions.flexbox(
-      $flex-direction: column,
-      $justify-content: center,
-      $align-items: center
-    );
-    padding: 3em;
-    text-align: center;
-
-    p {
-      margin-top: 1em;
-      color: #666;
-    }
-  }
-
-  // Error State
-  .error-state {
-    @include functions.flexbox(
-      $flex-direction: column,
-      $justify-content: center,
-      $align-items: center
-    );
-    padding: 3em;
-    text-align: center;
-
-    .error-icon {
-      font-size: 48px;
-      width: 48px;
-      height: 48px;
-      color: #f44336;
-      margin-bottom: 1em;
-    }
-
-    h4 {
-      margin: 0 0 0.5em 0;
-      color: #333;
-    }
-
-    p {
-      color: #666;
-      margin-bottom: 1.5em;
-    }
-
-    button {
-      mat-icon {
-        margin-right: 0.5em;
-      }
-    }
-  }
-
+  // Cards de treino
   .cards {
     .card.week-card {
       .card-content {

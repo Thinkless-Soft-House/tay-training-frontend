@@ -4,22 +4,54 @@
     <img src="assets/logo.png" class="logo" alt="Logo Tay Training" />
   </div>
   <div class="header">
-    <h3>{{ planner?.publicName || "" }}</h3>
-    <button mat-icon-button style="display: none">
-      <mat-icon>chevron_left</mat-icon>
-    </button>
+    <h3 (click)="onTitleClick()">{{ planner?.publicName || "Tay Training" }}</h3>
   </div>
 
-  <h3 class="about-table">
+  <h3 class="about-table" *ngIf="!isLoading && !errorType">
     <i>
-      Essa estrutura de treinos é uma sugestão de como organiza-los durante as
+      Essa estrutura de treinos é uma sugestão de como organizá-los durante as
       semanas.
     </i>
   </h3>
 
-  <!-- Cards Semana -->
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Carregando planner...</p>
+  </div>
 
-  <div class="cards">
+  <!-- Error State: Erro de Rede -->
+  <div *ngIf="errorType === 'network' && !isLoading" class="error-state">
+    <mat-icon class="error-icon">cloud_off</mat-icon>
+    <h4>Não foi possível conectar</h4>
+    <p>Verifique sua conexão com a internet.</p>
+    <div class="error-actions">
+      <button mat-raised-button color="primary" (click)="retryLoad()">
+        <mat-icon>refresh</mat-icon> Tentar novamente
+      </button>
+      <button mat-stroked-button color="accent" (click)="openPdf()">
+        <mat-icon>picture_as_pdf</mat-icon> Ver PDF Offline
+      </button>
+    </div>
+  </div>
+
+  <!-- Error State: Servidor/Indisponível -->
+  <div *ngIf="errorType === 'unavailable' && !isLoading" class="error-state">
+    <mat-icon class="error-icon warning">warning</mat-icon>
+    <h4>Planner indisponível</h4>
+    <p>Não conseguimos carregar seus dados agora.</p>
+    <div class="error-actions">
+      <button mat-raised-button color="primary" (click)="retryLoad()">
+        <mat-icon>refresh</mat-icon> Tentar novamente
+      </button>
+      <button mat-stroked-button color="accent" (click)="openPdf()">
+        <mat-icon>picture_as_pdf</mat-icon> Ver PDF Offline
+      </button>
+    </div>
+  </div>
+
+  <!-- Cards Semana -->
+  <div class="cards" *ngIf="!isLoading && !errorType">
     <div class="card mat-elevation-z2" matRipple (click)="goToWeek(1)">
       <span class="text">Semana 1</span>
       <mat-icon>arrow_forward</mat-icon>
@@ -38,9 +70,27 @@
     </div>
   </div>
 
-  <div class="offline" *ngIf="planner?.pdfPath">
+  <div class="offline" *ngIf="planner?.pdfPath && !isLoading && !errorType">
     <button mat-raised-button color="primary" (click)="openPdf()">
       Abrir PDF
     </button>
+  </div>
+
+  <!-- Debug Panel -->
+  <div class="debug-panel" *ngIf="showDebugPanel">
+    <div class="debug-header">
+      <h4>🔧 Debug Info (Home)</h4>
+      <button mat-icon-button (click)="closeDebugPanel()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="debug-content">
+      <pre>{{ debugData | json }}</pre>
+    </div>
+    <div class="debug-actions">
+      <button mat-stroked-button (click)="copyDebugInfo()">
+        <mat-icon>content_copy</mat-icon> Copiar
+      </button>
+    </div>
   </div>
 </section>

@@ -3,6 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkoutsService } from 'src/app/services/workouts.service';
+import { WakeLockService } from 'src/app/services/wake-lock.service';
 import {
   ExerciseSet,
   ExerciseConfiguration,
@@ -44,10 +45,12 @@ export class ExerciseComponent implements OnInit, OnDestroy {
     private ExerciseMethodService: ExerciseMethodService,
     private activatedRoute: ActivatedRoute,
     private sanitizer: DomSanitizer,
-    private router: Router
+    private router: Router,
+    private wakeLockService: WakeLockService
   ) {}
   async ngOnInit() {
     document.body.classList.add('theme-alternate');
+    await this.wakeLockService.requestWakeLock();
 
     const slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
     this.weekParam = +this.activatedRoute.snapshot.paramMap.get('week')!;
@@ -253,5 +256,6 @@ export class ExerciseComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     document.body.classList.remove('theme-alternate');
+    this.wakeLockService.releaseWakeLock();
   }
 }

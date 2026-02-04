@@ -5,7 +5,11 @@ import {
   WorkoutsService,
   WeekData,
   TrainingDay,
+  WeekDataResponse,
 } from 'src/app/services/workouts.service';
+import { WakeLockService } from 'src/app/services/wake-lock.service';
+
+type ErrorType = 'network' | 'empty' | 'unavailable' | null;
 
 @Component({
   selector: 'app-week',
@@ -16,25 +20,32 @@ export class WeekComponent implements OnInit, OnDestroy {
   planner: WeekData | null = null;
   weekDays: (TrainingDay | null)[] = [];
   weekParam = 0;
+  slug = '';
 
   // Estados de UI
   isLoading = true;
-  hasError = false;
-  errorMessage = '';
-  retryCount = 0;
-  private maxRetries = 3;
+  errorType: ErrorType = null;
+
+  // Debug mode (5 cliques no título)
+  debugClickCount = 0;
+  debugClickTimer: any = null;
+  showDebugPanel = false;
+  debugData: WeekDataResponse['debug'] | null = null;
 
   constructor(
     private workoutsService: WorkoutsService,
     private activatedRoute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private wakeLockService: WakeLockService
   ) {}
 
   async ngOnInit() {
     document.body.classList.add('theme-alternate');
+    await this.wakeLockService.requestWakeLock();
 
-    const slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
+    this.slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
     this.weekParam = +this.activatedRoute.snapshot.paramMap.get('week')!;
+
     if (
       this.weekParam === undefined ||
       this.weekParam === null ||
@@ -42,86 +53,118 @@ export class WeekComponent implements OnInit, OnDestroy {
       this.weekParam < 1 ||
       this.weekParam > 4
     ) {
-      this.router.navigate([`/planner/${slug}`]);
+      this.router.navigate([`/planner/${this.slug}`]);
       return;
     }
 
-    await this.loadWeekData(slug);
+    await this.loadWeekData();
   }
 
-  async loadWeekData(slug: string) {
+  async loadWeekData() {
     this.isLoading = true;
-    this.hasError = false;
-    this.errorMessage = '';
+    this.errorType = null;
 
     try {
-      this.planner = await this.workoutsService.getWeekData(
-        slug,
+      const result = await this.workoutsService.getWeekDataWithDebug(
+        this.slug,
         this.weekParam
       );
 
-      if (!this.planner) {
-        throw new Error('Dados do planner não encontrados');
-      }
+      // Guardar debug info para o painel escondido
+      this.debugData = result.debug;
 
-      // Validar se weekDays tem dados válidos (não apenas folgas)
-      const hasValidData = this.validateWeekData(this.planner.weekDays);
-
-      if (!hasValidData && this.retryCount < this.maxRetries) {
-        // Todos os dias são folga - possível problema de rede, tentar novamente
-        console.warn(`Todos os dias retornaram como folga. Tentativa ${this.retryCount + 1}/${this.maxRetries}`);
-        this.retryCount++;
-        await this.delay(1000 * this.retryCount); // Backoff exponencial
-        await this.loadWeekData(slug);
+      // Caso 1: Erro de rede (status != 2xx ou status 0)
+      if (result.debug.errorType === 'network') {
+        this.errorType = 'network';
+        this.isLoading = false;
         return;
       }
 
-      this.weekDays = this.planner.weekDays;
+      // Caso 2: Resposta vazia ou inválida (status 2xx mas sem dados)
+      if (!result.data || result.debug.errorType === 'empty' || result.debug.errorType === 'invalid') {
+        this.errorType = 'unavailable';
+        this.isLoading = false;
+        return;
+      }
+
+      // Caso 3: Dados válidos - verificar se todos são folga
+      const hasAnyTraining = result.data.weekDays.some(day => day !== null);
+
+      if (!hasAnyTraining) {
+        // Verificar se é um treino que deveria ter dados (baseado no nome)
+        // Se o planner existe mas não tem treinos, pode ser erro
+        // Vamos mostrar como "unavailable" para o usuário poder reportar
+        this.errorType = 'empty';
+        this.planner = result.data;
+        this.weekDays = result.data.weekDays;
+        this.isLoading = false;
+        return;
+      }
+
+      // Caso 4: Tudo OK - mostrar os treinos (pode ter folgas reais)
+      this.planner = result.data;
+      this.weekDays = result.data.weekDays;
       this.isLoading = false;
 
-      // Log para debug em produção
-      if (!hasValidData) {
-        console.warn('ALERTA: Semana carregada mas todos os dias são FOLGA', {
-          slug,
-          week: this.weekParam,
-          weekDays: this.weekDays,
-          planner: this.planner
-        });
-      }
     } catch (error: any) {
-      console.error('Erro ao carregar dados da semana:', error);
-
-      if (this.retryCount < this.maxRetries) {
-        this.retryCount++;
-        console.log(`Tentando novamente... (${this.retryCount}/${this.maxRetries})`);
-        await this.delay(1000 * this.retryCount);
-        await this.loadWeekData(slug);
-        return;
-      }
-
-      this.hasError = true;
-      this.errorMessage = error?.message || 'Erro ao carregar os treinos. Verifique sua conexão.';
+      // Fallback para erros não tratados
+      this.errorType = 'network';
+      this.debugData = {
+        url: 'unknown',
+        timestamp: Date.now(),
+        status: 0,
+        statusText: error?.message || 'Erro desconhecido',
+        rawResponse: JSON.stringify(error),
+        errorType: 'network',
+        errorMessage: error?.message
+      };
       this.isLoading = false;
     }
   }
 
   /**
-   * Valida se os dados da semana têm pelo menos um treino (não apenas folgas)
+   * Handler para cliques no título (5 cliques = modo debug)
    */
-  private validateWeekData(weekDays: (TrainingDay | null)[]): boolean {
-    if (!weekDays || !Array.isArray(weekDays)) return false;
-    // Verifica se pelo menos um dia tem treino (não é null)
-    return weekDays.some(day => day !== null);
+  onTitleClick() {
+    this.debugClickCount++;
+
+    // Reset após 2 segundos sem cliques
+    if (this.debugClickTimer) {
+      clearTimeout(this.debugClickTimer);
+    }
+
+    this.debugClickTimer = setTimeout(() => {
+      this.debugClickCount = 0;
+    }, 2000);
+
+    // 5 cliques abre o painel de debug
+    if (this.debugClickCount >= 5) {
+      this.showDebugPanel = !this.showDebugPanel;
+      this.debugClickCount = 0;
+    }
   }
 
-  private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  closeDebugPanel() {
+    this.showDebugPanel = false;
+  }
+
+  copyDebugInfo() {
+    const debugText = JSON.stringify(this.debugData, null, 2);
+    navigator.clipboard.writeText(debugText).then(() => {
+      alert('Debug info copiado!');
+    }).catch(() => {
+      // Fallback para navegadores sem clipboard API
+      prompt('Copie o debug info:', debugText);
+    });
   }
 
   async retryLoad() {
-    this.retryCount = 0;
-    const slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
-    await this.loadWeekData(slug);
+    await this.loadWeekData();
+  }
+
+  goToPdf() {
+    // Redireciona para a versão PDF offline
+    this.router.navigate([`/planner/${this.slug}/pdf`]);
   }
 
   getWeekDayName(index: number) {
@@ -145,17 +188,18 @@ export class WeekComponent implements OnInit, OnDestroy {
 
   goToWorkout(index: number) {
     if (this.weekDays[index] === null) return;
-    const slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
-    const week = this.weekParam;
-    this.router.navigate([`/planner/${slug}/semana/${week}/treino/${index}`]);
+    this.router.navigate([`/planner/${this.slug}/semana/${this.weekParam}/treino/${index}`]);
   }
 
   goBack() {
-    const slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
-    this.router.navigate([`/planner/${slug}`]);
+    this.router.navigate([`/planner/${this.slug}`]);
   }
 
   ngOnDestroy(): void {
     document.body.classList.remove('theme-alternate');
+    this.wakeLockService.releaseWakeLock();
+    if (this.debugClickTimer) {
+      clearTimeout(this.debugClickTimer);
+    }
   }
 }

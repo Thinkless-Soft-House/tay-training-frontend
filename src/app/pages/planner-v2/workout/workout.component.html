@@ -1,24 +1,18 @@
 <section id="planner-v2">
-  <!-- ola vei -->
-
   <!-- Header -->
   <div class="logo">
     <img src="assets/logo.png" class="logo" alt="Logo Tay Training" />
   </div>
   <div class="goback-content">
-    <div class="back-card" mat-ripple (click)="goBackWorkout()">
+    <div class="back-card" mat-ripple (click)="goBack()">
       <mat-icon>chevron_left</mat-icon>
-      <span class="info">Treinos</span>
-    </div>
-    <div class="back-card" mat-ripple (click)="goBackWeek()">
-      <mat-icon>chevron_left</mat-icon>
-      <span class="info">Semanas</span>
+      <span class="info">Voltar</span>
     </div>
   </div>
+
   <div class="header">
-    <h3>{{ planner?.publicName }}</h3>
+    <h3 (click)="onTitleClick()">{{ planner?.publicName || "Carregando..." }}</h3>
     <h4>{{ planner?.workout?.publicName }}</h4>
-    <div></div>
     <div class="divider-header">
       <div></div>
       <img src="../../../../assets/logo-only.png" alt="Logo" />
@@ -26,18 +20,49 @@
     </div>
   </div>
 
-  <!-- Cards Semana -->
-  <ng-container *ngFor="let item of workout; let i = index">
-    <div class="exercise-header">
-      <h2 class="exercise-title">
-        {{ i + 1 }}º
-        {{
-          item!.exerciseConfigurations!.length > 1 ? "Combinação" : "Exercício"
-        }}
-      </h2>
-    </div>
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Carregando detalhes do treino...</p>
+  </div>
 
-    <div class="combine-text" *ngIf="item!.exerciseConfigurations!.length > 1">
+  <!-- Error State: Erro de Rede -->
+  <div *ngIf="errorType === 'network' && !isLoading" class="error-state">
+    <mat-icon class="error-icon">cloud_off</mat-icon>
+    <h4>Não foi possível conectar</h4>
+    <p>Verifique sua conexão com a internet.</p>
+    <div class="error-actions">
+      <button mat-raised-button color="primary" (click)="retryLoad()">
+        <mat-icon>refresh</mat-icon> Tentar novamente
+      </button>
+    </div>
+  </div>
+
+  <!-- Error State: Treino Indisponível -->
+  <div *ngIf="errorType === 'unavailable' && !isLoading" class="error-state">
+    <mat-icon class="error-icon warning">warning</mat-icon>
+    <h4>Treino indisponível</h4>
+    <p>Não encontramos os detalhes deste treino.</p>
+    <div class="error-actions">
+      <button mat-raised-button color="primary" (click)="retryLoad()">
+        <mat-icon>refresh</mat-icon> Tentar novamente
+      </button>
+    </div>
+  </div>
+
+  <!-- Workout Content -->
+  <ng-container *ngIf="!isLoading && !errorType">
+    <ng-container *ngFor="let item of workout; let i = index">
+      <div class="exercise-header">
+        <h2 class="exercise-title">
+          {{ i + 1 }}º
+          {{
+            item!.exerciseConfigurations!.length > 1 ? "Combinação" : "Exercício"
+          }}
+        </h2>
+      </div>
+
+      <div class="combine-text" *ngIf="item!.exerciseConfigurations!.length > 1">
       <p class="combine-title">Exercicio Combinado</p>
       <p>Alterne entre esses exercicios</p>
 
@@ -60,7 +85,7 @@
       >
         <div class="slide-content">
           <div class="slide-header">
-            <p class="slide-title">{{ exerciseConfig.exercise?.name }}</p>
+            <p class="slide-title">{{ exerciseConfig.exercise.name }}</p>
             <div></div>
           </div>
           <div class="slide-body">
@@ -69,7 +94,7 @@
                 <strong>Series:</strong> {{ exerciseConfig.series }}
               </p>
               <p class="serie">
-                <strong>Método:</strong> {{ exerciseConfig.method?.name }}
+                <strong>Método:</strong> {{ exerciseConfig.method.name }}
               </p>
               <p class="reps">
                 <strong>Repetições:</strong> {{ exerciseConfig.reps }}
@@ -80,7 +105,7 @@
               class="slide-video"
               (click)="
                 openVideo(
-                  exerciseConfig.exercise?.name!,
+                  exerciseConfig.exercise.name!,
                   secIframeLink(exerciseConfig.id!).url
                 )
               "
@@ -113,7 +138,7 @@
       <div class="slide-content">
         <div class="slide-header">
           <p class="slide-title">
-            {{ item.exerciseConfigurations![0].exercise?.name }}
+            {{ item.exerciseConfigurations![0].exercise.name }}
           </p>
           <div></div>
         </div>
@@ -133,7 +158,7 @@
             class="slide-video"
             (click)="
               openVideo(
-                item.exerciseConfigurations![0].exercise?.name!,
+                item.exerciseConfigurations![0].exercise.name!,
                 secIframeLink(item.exerciseConfigurations![0].id!).url
               )
             "
@@ -154,5 +179,24 @@
     </div>
 
     <hr class="divider" />
+    </ng-container>
   </ng-container>
+
+  <!-- Debug Panel -->
+  <div class="debug-panel" *ngIf="showDebugPanel">
+    <div class="debug-header">
+      <h4>🔧 Debug Info (Workout)</h4>
+      <button mat-icon-button (click)="closeDebugPanel()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="debug-content">
+      <pre>{{ debugData | json }}</pre>
+    </div>
+    <div class="debug-actions">
+      <button mat-stroked-button (click)="copyDebugInfo()">
+        <mat-icon>content_copy</mat-icon> Copiar
+      </button>
+    </div>
+  </div>
 </section>

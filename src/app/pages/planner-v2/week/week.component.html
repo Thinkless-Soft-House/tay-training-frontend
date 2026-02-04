@@ -11,11 +11,12 @@
     </div>
   </div>
   <div class="header">
-    <h3>{{ planner?.publicName || "" }}</h3>
+    <!-- 5 cliques no título abre debug -->
+    <h3 (click)="onTitleClick()">{{ planner?.publicName || "Carregando..." }}</h3>
     <div></div>
   </div>
 
-  <h3 class="about-table">
+  <h3 class="about-table" *ngIf="!isLoading && !errorType">
     <i>
       Essa estrutura de treinos é uma sugestão de como organizá-los durante as
       semanas.
@@ -28,19 +29,59 @@
     <p>Carregando treinos...</p>
   </div>
 
-  <!-- Error State -->
-  <div *ngIf="hasError && !isLoading" class="error-state">
+  <!-- Error State: Erro de Rede -->
+  <div *ngIf="errorType === 'network' && !isLoading" class="error-state">
     <mat-icon class="error-icon">cloud_off</mat-icon>
-    <h4>Não foi possível carregar os treinos</h4>
-    <p>{{ errorMessage }}</p>
-    <button mat-raised-button color="primary" (click)="retryLoad()">
-      <mat-icon>refresh</mat-icon>
-      Tentar novamente
-    </button>
+    <h4>Não foi possível conectar</h4>
+    <p>Verifique sua conexão com a internet e tente novamente.</p>
+    <div class="error-actions">
+      <button mat-raised-button color="primary" (click)="retryLoad()">
+        <mat-icon>refresh</mat-icon>
+        Tentar novamente
+      </button>
+      <button mat-stroked-button color="accent" (click)="goToPdf()">
+        <mat-icon>picture_as_pdf</mat-icon>
+        Ver PDF Offline
+      </button>
+    </div>
   </div>
 
-  <!-- Cards Semana -->
-  <div class="cards" *ngIf="!isLoading && !hasError">
+  <!-- Error State: Treino Indisponível (2xx mas sem dados) -->
+  <div *ngIf="errorType === 'unavailable' && !isLoading" class="error-state">
+    <mat-icon class="error-icon warning">warning</mat-icon>
+    <h4>Treino temporariamente indisponível</h4>
+    <p>Não foi possível carregar os dados deste treino. Tente novamente ou acesse o PDF.</p>
+    <div class="error-actions">
+      <button mat-raised-button color="primary" (click)="retryLoad()">
+        <mat-icon>refresh</mat-icon>
+        Tentar novamente
+      </button>
+      <button mat-stroked-button color="accent" (click)="goToPdf()">
+        <mat-icon>picture_as_pdf</mat-icon>
+        Ver PDF Offline
+      </button>
+    </div>
+  </div>
+
+  <!-- Error State: Semana sem treinos (todos null - possível erro) -->
+  <div *ngIf="errorType === 'empty' && !isLoading" class="error-state">
+    <mat-icon class="error-icon warning">event_busy</mat-icon>
+    <h4>Semana sem treinos cadastrados</h4>
+    <p>Esta semana não possui treinos disponíveis. Se isso parecer incorreto, tente recarregar ou acesse o PDF.</p>
+    <div class="error-actions">
+      <button mat-raised-button color="primary" (click)="retryLoad()">
+        <mat-icon>refresh</mat-icon>
+        Tentar novamente
+      </button>
+      <button mat-stroked-button color="accent" (click)="goToPdf()">
+        <mat-icon>picture_as_pdf</mat-icon>
+        Ver PDF Offline
+      </button>
+    </div>
+  </div>
+
+  <!-- Cards Semana (quando tudo OK) -->
+  <div class="cards" *ngIf="!isLoading && !errorType">
     <div
       class="card week-card mat-elevation-z2"
       [class.disabled-dayoff]="item === null"
@@ -57,7 +98,7 @@
         <div class="card-field">
           <h3>{{ getWeekDayName(i) }}</h3>
           <p *ngIf="item !== null">
-            {{ item.shortName || item.exerciseGroup?.publicName }}
+            {{ item.shortName || item.exerciseGroup.publicName }}
           </p>
           <p *ngIf="item === null">Folga</p>
         </div>
@@ -68,6 +109,25 @@
           </button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Debug Panel (escondido - 5 cliques no título para abrir) -->
+  <div class="debug-panel" *ngIf="showDebugPanel">
+    <div class="debug-header">
+      <h4>🔧 Debug Info</h4>
+      <button mat-icon-button (click)="closeDebugPanel()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="debug-content">
+      <pre>{{ debugData | json }}</pre>
+    </div>
+    <div class="debug-actions">
+      <button mat-stroked-button (click)="copyDebugInfo()">
+        <mat-icon>content_copy</mat-icon>
+        Copiar
+      </button>
     </div>
   </div>
 </section>

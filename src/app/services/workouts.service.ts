@@ -63,6 +63,51 @@ export interface Method {
   name: string;
 }
 
+// Resposta estendida para incluir metadados de debug
+export interface WeekDataResponse {
+  data: WeekData | null;
+  debug: {
+    url: string;
+    timestamp: number;
+    status: number;
+    statusText: string;
+    rawResponse: string;
+    errorType?: 'network' | 'empty' | 'invalid' | null;
+    errorMessage?: string;
+    userAgent?: string;
+  };
+}
+
+// Resposta estendida para incluir metadados de debug
+export interface WorkoutDetailResponse {
+  data: WorkoutDetail | null;
+  debug: {
+    url: string;
+    timestamp: number;
+    status: number;
+    statusText: string;
+    rawResponse: string;
+    errorType?: 'network' | 'empty' | 'invalid' | null;
+    errorMessage?: string;
+    userAgent?: string;
+  };
+}
+
+// Resposta estendida para incluir metadados de debug
+export interface PlannerHomeResponse {
+  data: any | null;
+  debug: {
+    url: string;
+    timestamp: number;
+    status: number;
+    statusText: string;
+    rawResponse: string;
+    errorType?: 'network' | 'empty' | null;
+    errorMessage?: string;
+    userAgent?: string;
+  };
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -83,22 +128,203 @@ export class WorkoutsService extends BaseModelService {
     return this.request(req);
   }
 
+  async getPlannerHomeWithDebug(slug: string): Promise<PlannerHomeResponse> {
+    const timestamp = Date.now();
+    const url = `${this.path}/planner-home/${slug}?_t=${timestamp}`;
+
+    const debugInfo: PlannerHomeResponse['debug'] = {
+      url,
+      timestamp,
+      status: 0,
+      statusText: '',
+      rawResponse: '',
+      errorType: null,
+      userAgent: navigator.userAgent
+    };
+
+    try {
+      const response = await this.http.get<any>(url, {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache'
+        },
+        observe: 'response'
+      }).toPromise();
+
+      debugInfo.status = response?.status || 0;
+      debugInfo.statusText = response?.statusText || '';
+      debugInfo.rawResponse = JSON.stringify(response?.body);
+
+      const data = response?.body || null;
+
+      if (!data) {
+        debugInfo.errorType = 'empty';
+        debugInfo.errorMessage = 'Resposta vazia do servidor';
+        return { data: null, debug: debugInfo };
+      }
+
+      return { data, debug: debugInfo };
+
+    } catch (error: any) {
+      debugInfo.status = error?.status || 0;
+      debugInfo.statusText = error?.statusText || error?.message || 'Erro desconhecido';
+      debugInfo.rawResponse = JSON.stringify(error);
+      debugInfo.errorType = 'network';
+      debugInfo.errorMessage = error?.status === 0
+        ? 'Não foi possível conectar ao servidor. Verifique sua conexão.'
+        : `Erro ${error?.status}: ${error?.statusText || error?.message}`;
+
+      return { data: null, debug: debugInfo };
+    }
+  }
+
   async getPlannerHome(slug: string) {
-    const req = this.http.get<any>(`${this.path}/planner-home/${slug}`);
-    return await this.request(req);
+    const result = await this.getPlannerHomeWithDebug(slug);
+    if (!result.data) {
+      throw new Error(result.debug.errorMessage || 'Erro ao carregar o planner');
+    }
+    return result.data;
   }
+
+  async getWeekDataWithDebug(slug: string, week: number): Promise<WeekDataResponse> {
+    const timestamp = Date.now();
+    const url = `${this.path}/week/${slug}/${week}?_t=${timestamp}`;
+
+    const debugInfo: WeekDataResponse['debug'] = {
+      url,
+      timestamp,
+      status: 0,
+      statusText: '',
+      rawResponse: '',
+      errorType: null,
+      userAgent: navigator.userAgent
+    };
+
+    try {
+      const response = await this.http.get<WeekData>(url, {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache'
+        },
+        observe: 'response'
+      }).toPromise();
+
+      debugInfo.status = response?.status || 0;
+      debugInfo.statusText = response?.statusText || '';
+      debugInfo.rawResponse = JSON.stringify(response?.body);
+
+      const data = response?.body || null;
+
+      // Verificar se resposta está vazia ou inválida
+      if (!data) {
+        debugInfo.errorType = 'empty';
+        debugInfo.errorMessage = 'Resposta vazia do servidor';
+        return { data: null, debug: debugInfo };
+      }
+
+      if (!data.weekDays || !Array.isArray(data.weekDays)) {
+        debugInfo.errorType = 'invalid';
+        debugInfo.errorMessage = 'Estrutura de dados inválida';
+        return { data: null, debug: debugInfo };
+      }
+
+      return { data, debug: debugInfo };
+
+    } catch (error: any) {
+      debugInfo.status = error?.status || 0;
+      debugInfo.statusText = error?.statusText || error?.message || 'Erro desconhecido';
+      debugInfo.rawResponse = JSON.stringify({
+        name: error?.name,
+        message: error?.message,
+        status: error?.status,
+        error: error?.error
+      });
+      debugInfo.errorType = 'network';
+      debugInfo.errorMessage = error?.status === 0
+        ? 'Não foi possível conectar ao servidor. Verifique sua conexão.'
+        : `Erro ${error?.status}: ${error?.statusText || error?.message}`;
+
+      return { data: null, debug: debugInfo };
+    }
+  }
+
+  // Método legado para compatibilidade
   async getWeekData(slug: string, week: number): Promise<WeekData> {
-    const req = this.http.get<WeekData>(`${this.path}/week/${slug}/${week}`);
-    return await this.request(req);
+    const result = await this.getWeekDataWithDebug(slug, week);
+    if (!result.data) {
+      throw new Error(result.debug.errorMessage || 'Erro ao carregar dados');
+    }
+    return result.data;
   }
+
+  async getWorkoutDetailWithDebug(
+    slug: string,
+    week: number,
+    workout: number
+  ): Promise<WorkoutDetailResponse> {
+    const timestamp = Date.now();
+    const url = `${this.path}/workout-detail/${slug}/${week}/${workout}?_t=${timestamp}`;
+
+    const debugInfo: WorkoutDetailResponse['debug'] = {
+      url,
+      timestamp,
+      status: 0,
+      statusText: '',
+      rawResponse: '',
+      errorType: null,
+      userAgent: navigator.userAgent
+    };
+
+    try {
+      const response = await this.http.get<WorkoutDetail>(url, {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache'
+        },
+        observe: 'response'
+      }).toPromise();
+
+      debugInfo.status = response?.status || 0;
+      debugInfo.statusText = response?.statusText || '';
+      debugInfo.rawResponse = JSON.stringify(response?.body);
+
+      const data = response?.body || null;
+
+      if (!data) {
+        debugInfo.errorType = 'empty';
+        debugInfo.errorMessage = 'Resposta vazia do servidor';
+        return { data: null, debug: debugInfo };
+      }
+
+      return { data, debug: debugInfo };
+
+    } catch (error: any) {
+      debugInfo.status = error?.status || 0;
+      debugInfo.statusText = error?.statusText || error?.message || 'Erro desconhecido';
+      debugInfo.rawResponse = JSON.stringify({
+        name: error?.name,
+        message: error?.message,
+        status: error?.status,
+        error: error?.error
+      });
+      debugInfo.errorType = 'network';
+      debugInfo.errorMessage = error?.status === 0
+        ? 'Não foi possível conectar ao servidor. Verifique sua conexão.'
+        : `Erro ${error?.status}: ${error?.statusText || error?.message}`;
+
+      return { data: null, debug: debugInfo };
+    }
+  }
+
   async getWorkoutDetail(
     slug: string,
     week: number,
     workout: number
   ): Promise<WorkoutDetail> {
-    const req = this.http.get<WorkoutDetail>(
-      `${this.path}/workout-detail/${slug}/${week}/${workout}`
-    );
-    return await this.request(req);
+    const result = await this.getWorkoutDetailWithDebug(slug, week, workout);
+    if (!result.data) {
+      throw new Error(result.debug.errorMessage || 'Erro ao carregar detalhes do treino');
+    }
+    return result.data;
   }
 }

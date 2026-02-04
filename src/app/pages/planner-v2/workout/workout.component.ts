@@ -5,10 +5,14 @@ import {
   WorkoutsService,
   WorkoutDetail,
   ExerciseMethod,
+  WorkoutDetailResponse,
 } from 'src/app/services/workouts.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { register } from 'swiper/element/bundle';
+import { WakeLockService } from 'src/app/services/wake-lock.service';
+
+type ErrorType = 'network' | 'empty' | 'unavailable' | null;
 
 @Component({
   selector: 'app-workout',
@@ -24,6 +28,16 @@ export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isLancamento = false;
 
+  // Estados de UI
+  isLoading = true;
+  errorType: ErrorType = null;
+
+  // Debug mode
+  debugClickCount = 0;
+  debugClickTimer: any = null;
+  showDebugPanel = false;
+  debugData: WorkoutDetailResponse['debug'] | null = null;
+
   howToUrls: {
     id: number;
     miniature?: string;
@@ -38,22 +52,20 @@ export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private sanitizer: DomSanitizer,
     private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private wakeLockService: WakeLockService
   ) {}
 
   ngAfterViewInit() {
     register();
-    // console.log('after view init');
-    // this.isLancamento =
-    //   this.activatedRoute.snapshot.queryParamMap.get('lancamento') === 'true';
   }
 
   async ngOnInit() {
     this.activatedRoute.queryParams.subscribe((params) => {
       this.isLancamento = params['lancamento'] === 'true';
-      console.log('lancamento => ', this.isLancamento);
     });
     document.body.classList.add('theme-alternate');
+    await this.wakeLockService.requestWakeLock();
 
     const slug = this.activatedRoute.snapshot.paramMap.get('slug')!;
     this.weekParam = +this.activatedRoute.snapshot.paramMap.get('week')!;
@@ -70,29 +82,85 @@ export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     this.slug = slug;
+    await this.loadWorkoutData();
+  }
+
+  async loadWorkoutData() {
+    this.isLoading = true;
+    this.errorType = null;
 
     try {
-      const res = await this.workoutsService.getWorkoutDetail(
-        slug,
+      const result = await this.workoutsService.getWorkoutDetailWithDebug(
+        this.slug,
         this.weekParam,
         this.workoutParam
       );
 
-      this.planner = res;
-      if (!this.planner) {
-        this.router.navigate([`/planner/${slug}`]);
+      this.debugData = result.debug;
+
+      if (result.debug.errorType === 'network') {
+        this.errorType = 'network';
+        this.isLoading = false;
         return;
       }
 
+      if (!result.data || result.debug.errorType === 'empty') {
+        this.errorType = 'unavailable';
+        this.isLoading = false;
+        return;
+      }
+
+      this.planner = result.data;
       this.workout = this.planner.workout.exerciseMethods;
       this.createSanitizeUrls();
-    } catch (error) {
-      console.error('Error fetching workout detail:', error);
-      this.router.navigate([`/planner/${slug}`]);
+      this.isLoading = false;
+    } catch (error: any) {
+      this.errorType = 'network';
+      this.debugData = {
+        url: 'unknown',
+        timestamp: Date.now(),
+        status: 0,
+        statusText: error?.message || 'Erro desconhecido',
+        rawResponse: JSON.stringify(error),
+        errorType: 'network',
+        errorMessage: error?.message
+      };
+      this.isLoading = false;
     }
   }
 
-  createSanitizeUrls() {
+  onTitleClick() {
+    this.debugClickCount++;
+    if (this.debugClickTimer) clearTimeout(this.debugClickTimer);
+    this.debugClickTimer = setTimeout(() => { this.debugClickCount = 0; }, 2000);
+    if (this.debugClickCount >= 5) {
+      this.showDebugPanel = !this.showDebugPanel;
+      this.debugClickCount = 0;
+    }
+  }
+
+  closeDebugPanel() {
+    this.showDebugPanel = false;
+  }
+
+  copyDebugInfo() {
+    const debugText = JSON.stringify(this.debugData, null, 2);
+    navigator.clipboard.writeText(debugText).then(() => {
+      alert('Debug info copiado!');
+    }).catch(() => {
+      prompt('Copie o debug info:', debugText);
+    });
+  }
+
+  async retryLoad() {
+    await this.loadWorkoutData();
+  }
+
+  goBack() {
+    this.router.navigate([`/planner/${this.slug}/semana/${this.weekParam}`]);
+  }
+
+  async createSanitizeUrls() {
     this.workout.forEach((method) => {
       method.exerciseConfigurations.forEach((config) => {
         const videoUrl = config.exercise.videoUrl;
@@ -146,6 +214,7 @@ export class WorkoutComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     document.body.classList.remove('theme-alternate');
+    this.wakeLockService.releaseWakeLock();
   }
 }
 
