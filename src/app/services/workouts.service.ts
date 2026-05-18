@@ -128,12 +128,37 @@ export class WorkoutsService extends BaseModelService {
     return this.request(req);
   }
 
+  /**
+   * Gera variantes do slug adicionando/removendo zeros à esquerda
+   * em cada segmento numérico entre hífens, sem repetir o original.
+   * Ex: "13-mes-01-1-ano-5x" → ["13-mes-01-01-ano-5x"]
+   *     "13-mes-01-01-ano"   → ["13-mes-01-1-ano"]
+   */
+  private slugVariants(slug: string): string[] {
+    const variants = new Set<string>();
+    // Adiciona zero em dígito isolado: -1- ou -1 no final → -01-
+    variants.add(slug.replace(/(^|-)([0-9])(-|$)/g, '$10$2$3'));
+    // Remove zero à esquerda: -01- → -1-
+    variants.add(slug.replace(/(^|-)0([1-9])(-|$)/g, '$1$2$3'));
+    variants.delete(slug);
+    return Array.from(variants);
+  }
+
+  /** GET simples: retorna o body ou null se vazio. Lança em erro de rede. */
+  private async tryFetch<T>(url: string): Promise<T | null> {
+    const response = await this.http.get<T>(url, {
+      headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' },
+      observe: 'response'
+    }).toPromise();
+    return response?.body ?? null;
+  }
+
   async getPlannerHomeWithDebug(slug: string): Promise<PlannerHomeResponse> {
     const timestamp = Date.now();
-    const url = `${this.path}/planner-home/${slug}?_t=${timestamp}`;
+    const slugsToTry = [slug, ...this.slugVariants(slug)];
 
     const debugInfo: PlannerHomeResponse['debug'] = {
-      url,
+      url: `${this.path}/planner-home/${slug}?_t=${timestamp}`,
       timestamp,
       status: 0,
       statusText: '',
@@ -143,27 +168,20 @@ export class WorkoutsService extends BaseModelService {
     };
 
     try {
-      const response = await this.http.get<any>(url, {
-        headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache'
-        },
-        observe: 'response'
-      }).toPromise();
-
-      debugInfo.status = response?.status || 0;
-      debugInfo.statusText = response?.statusText || '';
-      debugInfo.rawResponse = JSON.stringify(response?.body);
-
-      const data = response?.body || null;
-
-      if (!data) {
-        debugInfo.errorType = 'empty';
-        debugInfo.errorMessage = 'Resposta vazia do servidor';
-        return { data: null, debug: debugInfo };
+      for (const candidate of slugsToTry) {
+        const url = `${this.path}/planner-home/${candidate}?_t=${timestamp}`;
+        const data = await this.tryFetch<any>(url);
+        if (data) {
+          debugInfo.url = url;
+          debugInfo.status = 200;
+          debugInfo.rawResponse = JSON.stringify(data);
+          return { data, debug: debugInfo };
+        }
       }
 
-      return { data, debug: debugInfo };
+      debugInfo.errorType = 'empty';
+      debugInfo.errorMessage = 'Resposta vazia do servidor';
+      return { data: null, debug: debugInfo };
 
     } catch (error: any) {
       debugInfo.status = error?.status || 0;
@@ -188,10 +206,10 @@ export class WorkoutsService extends BaseModelService {
 
   async getWeekDataWithDebug(slug: string, week: number): Promise<WeekDataResponse> {
     const timestamp = Date.now();
-    const url = `${this.path}/week/${slug}/${week}?_t=${timestamp}`;
+    const slugsToTry = [slug, ...this.slugVariants(slug)];
 
     const debugInfo: WeekDataResponse['debug'] = {
-      url,
+      url: `${this.path}/week/${slug}/${week}?_t=${timestamp}`,
       timestamp,
       status: 0,
       statusText: '',
@@ -201,34 +219,29 @@ export class WorkoutsService extends BaseModelService {
     };
 
     try {
-      const response = await this.http.get<WeekData>(url, {
-        headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache'
-        },
-        observe: 'response'
-      }).toPromise();
-
-      debugInfo.status = response?.status || 0;
-      debugInfo.statusText = response?.statusText || '';
-      debugInfo.rawResponse = JSON.stringify(response?.body);
-
-      const data = response?.body || null;
-
-      // Verificar se resposta está vazia ou inválida
-      if (!data) {
-        debugInfo.errorType = 'empty';
-        debugInfo.errorMessage = 'Resposta vazia do servidor';
-        return { data: null, debug: debugInfo };
+      for (const candidate of slugsToTry) {
+        const url = `${this.path}/week/${candidate}/${week}?_t=${timestamp}`;
+        const data = await this.tryFetch<WeekData>(url);
+        if (data && Array.isArray(data.weekDays) && data.weekDays.some(d => d !== null)) {
+          debugInfo.url = url;
+          debugInfo.status = 200;
+          debugInfo.rawResponse = JSON.stringify(data);
+          return { data, debug: debugInfo };
+        }
       }
 
-      if (!data.weekDays || !Array.isArray(data.weekDays)) {
-        debugInfo.errorType = 'invalid';
-        debugInfo.errorMessage = 'Estrutura de dados inválida';
-        return { data: null, debug: debugInfo };
+      // Nenhum candidato teve treinos — pode ser semana toda de folga real. Devolve o original.
+      const fallbackUrl = `${this.path}/week/${slug}/${week}?_t=${timestamp}`;
+      const fallback = await this.tryFetch<WeekData>(fallbackUrl);
+      if (fallback && Array.isArray(fallback.weekDays)) {
+        debugInfo.status = 200;
+        debugInfo.rawResponse = JSON.stringify(fallback);
+        return { data: fallback, debug: debugInfo };
       }
 
-      return { data, debug: debugInfo };
+      debugInfo.errorType = 'empty';
+      debugInfo.errorMessage = 'Resposta vazia do servidor';
+      return { data: null, debug: debugInfo };
 
     } catch (error: any) {
       debugInfo.status = error?.status || 0;
@@ -262,11 +275,11 @@ export class WorkoutsService extends BaseModelService {
     week: number,
     workout: number
   ): Promise<WorkoutDetailResponse> {
+    const slugsToTry = [slug, ...this.slugVariants(slug)];
     const timestamp = Date.now();
-    const url = `${this.path}/workout-detail/${slug}/${week}/${workout}?_t=${timestamp}`;
 
     const debugInfo: WorkoutDetailResponse['debug'] = {
-      url,
+      url: `${this.path}/workout-detail/${slug}/${week}/${workout}?_t=${timestamp}`,
       timestamp,
       status: 0,
       statusText: '',
@@ -276,27 +289,20 @@ export class WorkoutsService extends BaseModelService {
     };
 
     try {
-      const response = await this.http.get<WorkoutDetail>(url, {
-        headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache'
-        },
-        observe: 'response'
-      }).toPromise();
-
-      debugInfo.status = response?.status || 0;
-      debugInfo.statusText = response?.statusText || '';
-      debugInfo.rawResponse = JSON.stringify(response?.body);
-
-      const data = response?.body || null;
-
-      if (!data) {
-        debugInfo.errorType = 'empty';
-        debugInfo.errorMessage = 'Resposta vazia do servidor';
-        return { data: null, debug: debugInfo };
+      for (const candidate of slugsToTry) {
+        const url = `${this.path}/workout-detail/${candidate}/${week}/${workout}?_t=${timestamp}`;
+        const data = await this.tryFetch<WorkoutDetail>(url);
+        if (data) {
+          debugInfo.url = url;
+          debugInfo.status = 200;
+          debugInfo.rawResponse = JSON.stringify(data);
+          return { data, debug: debugInfo };
+        }
       }
 
-      return { data, debug: debugInfo };
+      debugInfo.errorType = 'empty';
+      debugInfo.errorMessage = 'Resposta vazia do servidor';
+      return { data: null, debug: debugInfo };
 
     } catch (error: any) {
       debugInfo.status = error?.status || 0;
