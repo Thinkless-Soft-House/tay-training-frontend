@@ -345,13 +345,15 @@ export class WorkoutDetailsComponent {
     const data = this.formRef.value;
     // console.log('form value', data);
 
+    const validGroupIds = new Set(this.allExerciceSets.map((x) => x.id));
+
     const sheet = {
       name: data.name,
       publicName: data.publicName,
       offlinePdf: data.offlinePdf,
       newTabPdf: data.newTabPdf,
       trainingDays: this.trainingDays
-        .filter((e) => e.value !== -1)
+        .filter((e) => e.value !== -1 && validGroupIds.has(e.value as number))
         .map((e) => {
           return {
             day: +e.config.name.split('_')[1],
@@ -418,6 +420,13 @@ export class WorkoutDetailsComponent {
       }
     } else {
       // Create
+      if (sheet.trainingDays.length === 0) {
+        alert(
+          'Selecione ao menos um dia de treino antes de salvar.'
+        );
+        return;
+      }
+
       try {
         const formData = new FormData();
 
@@ -436,8 +445,11 @@ export class WorkoutDetailsComponent {
         // Create Days
 
         this.router.navigate(['workouts']);
-      } catch (error) {
-        // console.log('error on create', error);
+      } catch (error: any) {
+        alert(
+          error?.error?.message ||
+            'Não foi possível salvar a ficha de treino. Verifique os dados e tente novamente.'
+        );
       }
     }
   }
